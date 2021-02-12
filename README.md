@@ -3,7 +3,7 @@ An R package designed to integrate and visualize various levels of epigenomic in
 
 This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 
-# Packae installation in R
+# Package installation in R
 
 # Use if you do not have devtools currently installed
 install.packages("devtools")
@@ -24,8 +24,7 @@ library(epiRomics)
 
 # Accessing the documentation
 
-?epiRomics
-
+help(package = 'epiRomics', help_type = 'html')
 
 # Citation Notes
 If you use epiRomics, please cite: 
