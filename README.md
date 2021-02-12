@@ -7,6 +7,7 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 # Use if you do not have devtools currently installed
 install.packages("devtools")
+
 devtools::install_github("hadley/devtools")
 
 # Load devtools library
