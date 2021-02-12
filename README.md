@@ -22,6 +22,10 @@ install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfb
 
 library(epiRomics)
 
+# Accessing the documentation
+
+?epiRomics
+
 
 # Citation Notes
 If you use epiRomics, please cite: 
