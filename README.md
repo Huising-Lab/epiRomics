@@ -16,7 +16,7 @@ library(devtools)
 # Install 
 #Note this repository is private. Please do not share the line below or it's authentication token with anyone outside the lab.
 
-install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30")
+install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30", build_vignettes = TRUE)
 
 # Load library
 
