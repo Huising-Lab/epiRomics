@@ -2,7 +2,8 @@ Package: epiRomics
 Type: Package
 Title: epigenomic analysis package built for R (epiRomics)
 Version: 0.1.0
-Authors@R: person("Alex M.", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre"))
+Authors@R: person("Alex M.", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre")),
+person("Huising Lab", "@ University of California, Davis",  role = "cph"))
 Maintainer: Alex M. Mawla <ammawla@ucdavis.edu>
 Description: A package designed to integrate various levels of epigenomic information, including, but not limited to ChIP and Histone next-generation sequencing. Regulatory network analysis can be done by using combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis can identify co-occurance of epigenomic data located at regions of interest. Finally, this package allows for various results to be visualized. 
   This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
