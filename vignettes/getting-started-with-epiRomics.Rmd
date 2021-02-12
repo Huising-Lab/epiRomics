@@ -4,7 +4,7 @@ output: rmarkdown::html_vignette
 author: "Authors: Alex M. Mawla. Copyright 2020 - Present."
 vignette: >
 %\VignetteIndexEntry{getting-started-with-epiRomics}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
   ---
   
