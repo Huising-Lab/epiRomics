@@ -9,6 +9,7 @@
 epiRomics_track_layer <- function(epiRomics_putative_enhanceosome, epiRomics_index, epiRomics_dB, epiRomics_track_connection) {
     epiRomics_class_save <- epiRomics_putative_enhanceosome
     epiRomics_putative_enhanceosome <- epiRomics_putative_enhanceosome@annotations[epiRomics_index, ]
+    # Can this load with library to save time? 
     Gviz::GeneRegionTrack(eval(parse(text = epiRomics_class_save@txdb)))
     chr <- base::as.character(BiocGenerics::unique(GenomeInfoDb::seqnames(epiRomics_putative_enhanceosome)))
     # gen <- GenomeInfoDb::genome(epiRomics_putative_enhanceosome)
@@ -20,22 +21,30 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome, epiRomics_ind
     atrack <- Gviz::AnnotationTrack(epiRomics_putative_enhanceosome, name = base::paste0("Putative_Enhancer_Index_",
         epiRomics_index), feature = "Enhancer", min.height = 15, size = 15)
     itrack <- Gviz::IdeogramTrack(genome = "mm10", chromosome = chr)
-
+    if (min(atrack) < min(txTr)) {
+        min_track <- min(atrack)
+    } else {min_track <- min(txTr)}
+    if (max(atrack) < max(txTr)) { 
+        max_track <- max(txTr) 
+        } else {max_track <- max(atrack)}
+    min_track <- min_track - 1000
+    max_track <- max_track + 1000
+    region_track <-GRanges(seqnames=chr, ranges=IRanges(start=min_track, end=max_track))
     epiRomics_db_data_table <- epiRomics_class_save@meta
     epiRomics_chips <- epiRomics_db_data_table[epiRomics_db_data_table$type == "chip", "name"]
     epiRomics_chips_db_access <- base::paste0("mm10_custom_", epiRomics_chips)
     chip_tracks <- list()
     for (i in 1:base::length(epiRomics_chips_db_access)) {
         chip_tracks <- c(chip_tracks, Gviz::AnnotationTrack(IRanges::subsetByOverlaps(epiRomics_dB@annotations[epiRomics_dB@annotations$type ==
-            epiRomics_chips_db_access[i], ], epiRomics_putative_enhanceosome), name = epiRomics_chips[i],
+            epiRomics_chips_db_access[i], ], region_track), name = epiRomics_chips[i],
             feature = "ChIP", min.height = 10, size = 10))
     }
-    range_max <- maxCovFiles(epiRomics_track_connection[,1], epiRomics_putative_enhanceosome)
-    max_cov <- range_max$X+5
+    range_max <- maxCovFiles(epiRomics_track_connection[,1], region_track)
+    max_cov <- plyr::round_any(range_max$X+(range_max$X*0.1), 10, f=ceiling)
     chromatin_tracks <- list()
     for (i in 1:base::dim(epiRomics_track_connection)[1]) {
-        chromatin_tracks <- c(chromatin_tracks, Gviz::DataTrack( size = 10, epiRomics_track_connection[i,1], col=epiRomics_track_connection[i,3], fill=epiRomics_track_connection[i,3], col.histogram=epiRomics_track_connection[i,3], ylim=c(0, max_cov),   start=min(atrack),end=max(txTr),genome = epiRomics_dB@genome, type = "hist",chromosome = chr,  name = epiRomics_track_connection[i,2]))
+        chromatin_tracks <- c(chromatin_tracks, Gviz::DataTrack( size = 10, epiRomics_track_connection[i,1], col=epiRomics_track_connection[i,3], fill=epiRomics_track_connection[i,3], col.histogram=epiRomics_track_connection[i,3], ylim=c(0, max_cov),   start=min_track,end=max_track,genome = epiRomics_dB@genome, type = "hist",chromosome = chr,  name = epiRomics_track_connection[i,2]))
     }
 
-    Gviz::plotTracks(base::c(itrack, gtrack, txTr,chromatin_tracks,  atrack, chip_tracks), extend.right = 1000, extend.left = 1000)
+    Gviz::plotTracks(base::c(itrack, gtrack, txTr,chromatin_tracks,  atrack, chip_tracks), from = min_track, to = max_track)
 }
