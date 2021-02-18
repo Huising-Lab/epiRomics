@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_enhancer_predictor_test.R
 \name{epiRomics_enhancer_predictor_test}
 \alias{epiRomics_enhancer_predictor_test}
-\title{Identifies putative enhancer regions utilizing select histone marks}
+\title{Interrogates various histone marks against a curated database to determine which are most informative}
 \usage{
 epiRomics_enhancer_predictor_test(
   epiRomics_dB,
@@ -21,5 +21,5 @@ epiRomics_enhancer_predictor_test(
 Variable of class dataframe further exploring top histone marks that may determine enhancer regions
 }
 \description{
-Identifies putative enhancer regions utilizing select histone marks
+Interrogates various histone marks against a curated database to determine which are most informative
 }
