@@ -17,6 +17,7 @@ comment = "#>"
 
 ```{r setup}
 library(epiRomics)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 ```
 
 
