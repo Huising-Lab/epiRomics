@@ -20,7 +20,7 @@
     options(timeout = max(3000, getOption("timeout")))
     
 
-    to_install <-
+    to_install_cran <-
       c(
         "AnnotationDbi",
         "annotatr",
@@ -45,6 +45,36 @@
         utils::install.packages(i)
       }
     }
+    
+    to_install_bc <-
+      c(
+        "AnnotationDbi",
+        "annotatr",
+        "BiocGenerics",
+        "ChIPseeker",
+        "data.table",
+        "GenomeInfoDb",
+        "GenomicFeatures",
+        "GenomicRanges",
+        "Gviz",
+        "IRanges",
+        "party",
+        "plyr",
+        "rtracklayer",
+        "org.Hs.eg.db",
+        "TxDb.Hsapiens.UCSC.hg38.knownGene"
+      )
+    
+    if (!requireNamespace("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+    for (i in to_install_bc) {
+      message(paste("looking for ", i))
+      if (!requireNamespace(i)) {
+        message(paste("     installing", i))
+        BiocManager::install(i)
+      }
+    }
+    
 
     # Download ChIP, Histone, Functional, and DBA Alpha versus Beta
   
