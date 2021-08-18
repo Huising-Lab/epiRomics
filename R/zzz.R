@@ -38,7 +38,7 @@
         "org.Hs.eg.db",
         "TxDb.Hsapiens.UCSC.hg38.knownGene"
       )
-    for (i in to_install) {
+    for (i in to_install_cran) {
       message(paste("looking for ", i))
       if (!requireNamespace(i)) {
         message(paste("     installing", i))
