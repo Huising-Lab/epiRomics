@@ -61,7 +61,7 @@ The [human islet regulome database](http://pasqualilab.upf.edu/app/isletregulome
 # Citation Notes
 If you use epiRomics, please cite: 
 
-*in process of biorXiv submission as well as peer-reviewed publication. TBD.*
+Alex M. Mawla & Mark O. Huising. (2021). epiRomics: a multi-omics R package to identify and visualize enhancers. *in process of biorXiv submission as well as peer-reviewed publication. TBD.*
   
   
 
