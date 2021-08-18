@@ -61,7 +61,7 @@ The human islet regulome database was retrieved (Miguel-Escalada, et al., 2019) 
 # Citation Notes
 If you use epiRomics, please cite: 
 
-<in process of biorXiv submission as well as peer-reviewed publication. TBD. >
+*in process of biorXiv submission as well as peer-reviewed publication. TBD.*
   
   
 
