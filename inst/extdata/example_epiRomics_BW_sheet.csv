@@ -1,5 +1,5 @@
-﻿path,name,color
-/Users/Mawla/Desktop/Huising_ATAC_RStudio_2.0/BigWigs/Pooled_Alpha_ppois.bw,alpha,#e13c64
-/Users/Mawla/Desktop/Huising_ATAC_RStudio_2.0/BigWigs/Pooled_Alpha_TD_ppois.bw,TD,#9632dc
-/Users/Mawla/Desktop/Huising_ATAC_RStudio_2.0/BigWigs/Pooled_Beta_ppois.bw,beta,#008b00
-/Users/Mawla/Desktop/Huising_ATAC_RStudio_2.0/BigWigs/Pooled_Delta_ppois.bw,delta,#0000e1
+path,name,color,type
+BigWigs/Kaestner_Alpha.atac.signal.subset.chr1.bigwig,Alpha_ATAC,#e13c64,atac
+BigWigs/Kaestner_Beta.atac.signal.subset.chr1.bigwig,Beta_ATAC,#008b00,atac
+BigWigs/Kaestner_Beta.rna.signal.subset.chr1.bigwig,Beta_RNA,#008b00,rna
+BigWigs/Kaestner_Alpha.rna.signal.subset.chr1.bigwig,Alpha_RNA,#e13c64,rna

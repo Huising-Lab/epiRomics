@@ -21,24 +21,27 @@ epiRomics_build_dB <-
           epiRomics_db_data_table[i, "name"],
           "_file <- ",
           "'",
-          epiRomics_db_data_table[i, "path"] ,
+          epiRomics_db_data_table[i, "path"],
           "'"
         )
       ))
       annotatr::read_annotations(
         con = base::eval(base::parse(text = (
-          base::paste0(epiRomics_db_data_table[i, "name"],
-                       "_file")
+          base::paste0(
+            epiRomics_db_data_table[i, "name"],
+            "_file"
+          )
         ))),
         genome = epiRomics_db_data_table[i, "genome"],
         name = epiRomics_db_data_table[i, "name"],
         format = epiRomics_db_data_table[i, "format"]
       )
     }
-    epiRomics_db_annot_list <-  base::c(# Pre-built (needs data.table package exported)
+    epiRomics_db_annot_list <- base::c( # Pre-built (needs data.table package exported)
       annotatr::builtin_annotations()[annotatr::builtin_annotations() %like%
-                                        epiRomics_genome],
-      (annotatr::annotatr_cache$list_env()))
+        epiRomics_genome],
+      (annotatr::annotatr_cache$list_env())
+    )
     epiRomics_dB <- methods::new("epiRomicsS4")
 
     epiRomics_dB@annotations <-
@@ -53,6 +56,6 @@ epiRomics_build_dB <-
     epiRomics_dB@meta <- epiRomics_db_data_table
     epiRomics_dB@txdb <- txdb_organism
     epiRomics_dB@organism <- epiRomics_organism
-    epiRomics_dB@genome <-  epiRomics_genome
+    epiRomics_dB@genome <- epiRomics_genome
     base::return(epiRomics_dB)
   }
