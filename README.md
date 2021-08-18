@@ -14,10 +14,6 @@ devtools::install_github("hadley/devtools")
 library(devtools)
 
 # Install 
-#Note this repository is private. Please do not share the line below or it's authentication token with anyone outside the lab.
-
-
-# Build
 
 install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30")
 
