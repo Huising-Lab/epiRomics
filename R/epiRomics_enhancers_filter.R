@@ -7,13 +7,14 @@
 #' @export
 
 
-epiRomics_enhancers_filter <- function(epiRomics_putative_enhancers, epiRomics_dB, epiRomics_type="mm10_custom_fantom") {
-    epiRomics_enhanceosome_raw_calls <- epiRomics_putative_enhancers@annotations
-    epiRomics_functional <- epiRomics_dB@annotations
-    # mm10_enhancers_fantom
-    epiRomics_putative_enhancers_filtered <- epiRomics_putative_enhancers
-    epiRomics_putative_enhancers_filtered@annotations <- IRanges::subsetByOverlaps(epiRomics_enhanceosome_raw_calls,
-        epiRomics_functional[epiRomics_functional$type == epiRomics_type,
-            ])
-    base::return(epiRomics_putative_enhancers_filtered)
+epiRomics_enhancers_filter <- function(epiRomics_putative_enhancers, epiRomics_dB, epiRomics_type = "mm10_custom_fantom") {
+  epiRomics_enhanceosome_raw_calls <- epiRomics_putative_enhancers@annotations
+  epiRomics_functional <- epiRomics_dB@annotations
+  # mm10_enhancers_fantom
+  epiRomics_putative_enhancers_filtered <- epiRomics_putative_enhancers
+  epiRomics_putative_enhancers_filtered@annotations <- IRanges::subsetByOverlaps(
+    epiRomics_enhanceosome_raw_calls,
+    epiRomics_functional[epiRomics_functional$type == epiRomics_type, ]
+  )
+  base::return(epiRomics_putative_enhancers_filtered)
 }

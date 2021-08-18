@@ -7,9 +7,11 @@
 
 
 epiRomics_regions_of_interest <- function(epiRomics_putative_enhanceosome, epiRomics_test_regions) {
-    epiRomics_identified_regions_of_interest <- epiRomics_putative_enhanceosome
-    epiRomics_identified_regions_of_interest@annotations <- IRanges::subsetByOverlaps(epiRomics_putative_enhanceosome@annotations, 
-        epiRomics_test_regions)
-    
-    base::return(epiRomics_identified_regions_of_interest)
+  epiRomics_identified_regions_of_interest <- epiRomics_putative_enhanceosome
+  epiRomics_identified_regions_of_interest@annotations <- IRanges::subsetByOverlaps(
+    epiRomics_putative_enhanceosome@annotations,
+    epiRomics_test_regions
+  )
+
+  base::return(epiRomics_identified_regions_of_interest)
 }

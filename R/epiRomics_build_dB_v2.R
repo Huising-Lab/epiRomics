@@ -2,7 +2,7 @@
 #'
 #' @param epiRomics_db_file character string of path to properly formatted csv file containing epigenetic data. [See vignette for more details]
 #' @param txdb_organism a character string containing the TxDB associated with your data.
-#' @param epiRomics_genome a character string containing the genome associated with your data. e.g. "mm10" or "hg19".
+#' @param epiRomics_genome a character string containing the genome associated with your data. e.g. "mm10" or "hg38".
 #' @param epiRomics_organism a character string containing the org.db associated with your data.
 #' @return Variable of class epiRomics for further downstream analysis
 #' @export
@@ -21,27 +21,30 @@ epiRomics_build_dB_2 <-
           epiRomics_db_data_table[i, "name"],
           "_file <- ",
           "'",
-          epiRomics_db_data_table[i, "path"] ,
+          epiRomics_db_data_table[i, "path"],
           "'"
         )
       ))
       annotatr::read_annotations(
         con = base::eval(base::parse(text = (
-          base::paste0(epiRomics_db_data_table[i, "name"],
-                       "_file")
+          base::paste0(
+            epiRomics_db_data_table[i, "name"],
+            "_file"
+          )
         ))),
         genome = epiRomics_db_data_table[i, "genome"],
         name = epiRomics_db_data_table[i, "name"],
         format = epiRomics_db_data_table[i, "format"],
-        if (format%in%c("chip", "histone")) {
-          extraCols=c("signal"="numeric", "pval"="numeric", "qval"="numeric", "peak"="numeric")
+        if (format %in% c("chip", "histone")) {
+          extraCols <- c("signal" = "numeric", "pval" = "numeric", "qval" = "numeric", "peak" = "numeric")
         }
       )
     }
-    epiRomics_db_annot_list <-  base::c(# Pre-built (needs data.table package exported)
+    epiRomics_db_annot_list <- base::c( # Pre-built (needs data.table package exported)
       annotatr::builtin_annotations()[annotatr::builtin_annotations() %like%
-                                        epiRomics_genome],
-      (annotatr::annotatr_cache$list_env()))
+        epiRomics_genome],
+      (annotatr::annotatr_cache$list_env())
+    )
     epiRomics_dB <- methods::new("epiRomicsS4")
 
     epiRomics_dB@annotations <-
@@ -56,6 +59,6 @@ epiRomics_build_dB_2 <-
     epiRomics_dB@meta <- epiRomics_db_data_table
     epiRomics_dB@txdb <- txdb_organism
     epiRomics_dB@organism <- epiRomics_organism
-    epiRomics_dB@genome <-  epiRomics_genome
+    epiRomics_dB@genome <- epiRomics_genome
     base::return(epiRomics_dB)
   }

@@ -12,5 +12,10 @@ A package designed to integrate various levels of epigenomic information, includ
 \author{
 \strong{Maintainer}: Alex M. Mawla \email{ammawla@ucdavis.edu}
 
+Other contributors:
+\itemize{
+  \item Huising Lab @ University of California, Davis [copyright holder]
+}
+
 }
 \keyword{internal}

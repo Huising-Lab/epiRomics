@@ -1,7 +1,7 @@
 Package: epiRomics
 Type: Package
 Title: epigenomic analysis package built for R (epiRomics)
-Version: 0.1.0
+Version: 0.1.2
 Authors@R: c(
   person("Alex M", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre")),
   person("Huising Lab", "@ University of California, Davis",  role = "cph"))
@@ -24,7 +24,10 @@ Imports:
 	methods (>= 4.0-2),
 	AnnotationDbi (>= 1.50-3),
 	GenomicFeatures (>= 1.40-1),
-	rtracklayer (>= 1.48-0)
+	rtracklayer (>= 1.48-0),
+	plyr (>= 1.8.6),
+	org.Hs.eg.db (>= 3.13.0),
+	TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,
