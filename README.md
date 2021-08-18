@@ -3,6 +3,10 @@ An R package designed to integrate and visualize various levels of epigenomic in
 
 This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 
+[**Getting Started with EpiRomics Walkthrough**](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
+
+
+
 # Package installation in R
 
 # Use if you do not have devtools currently installed
