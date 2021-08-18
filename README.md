@@ -5,7 +5,7 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 [**Getting Started with EpiRomics Walkthrough**](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
 
-
+[**epiRomics Reference Manual**](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics_0.1.2%20Reference%20Manual.pdf)
 
 # Package installation in R
 
@@ -30,6 +30,9 @@ library(epiRomics)
 
 [Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
 
+[**epiRomics Reference Manual**](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics_0.1.2%20Reference%20Manual.pdf)
+
+or
 
 help(package = 'epiRomics', help_type = 'html')
 
