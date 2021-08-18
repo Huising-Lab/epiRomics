@@ -19,6 +19,6 @@ An S4 class to manage epiRomics databases and downstream results
 
 \item{\code{organism}}{org.db string name}
 
-\item{\code{genome}}{genome name, e.g. 'mm10' or 'hg19'}
+\item{\code{genome}}{genome name, e.g. 'mm10' or 'hg38'}
 }}
 

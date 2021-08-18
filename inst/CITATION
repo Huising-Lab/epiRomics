@@ -1,0 +1,19 @@
+citHeader("To cite epiRomics in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{epiRomics}",
+  author       = personList(as.person("Alex M. Mawla"),
+                   as.person("Mark O. Huising")),
+  journal      = "boiXriv",
+  year         = "2021",
+  volume       = "unk",
+  number       = "unk",
+  pages        = "unk",
+  url          = "unk",
+
+  textVersion  =
+  paste("Alex M. Mawla & Mark O. Huising (2021).",
+        "epiRomics.",
+        "bioRxiv",
+        "unk.")
+)
