@@ -15,7 +15,7 @@ library(devtools)
 
 # Install 
 
-install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30")
+install_github(repo="Huising-Lab/epiRomics")
 
 
 # Load library
