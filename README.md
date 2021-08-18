@@ -26,7 +26,7 @@ library(epiRomics)
 
 help(package = 'epiRomics', help_type = 'html')
 
-
+[Getting Started with Epiromics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
 
 # Citation Notes
 If you use epiRomics, please cite: 
