@@ -16,11 +16,8 @@ library(devtools)
 # Install 
 #Note this repository is private. Please do not share the line below or it's authentication token with anyone outside the lab.
 
-#Slower, but includes vignette walkthrough
 
-install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30", build_vignettes = TRUE)
-
-#To build without vignette. This is much faster, but will not include walkthrough
+# Build
 
 install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfbcef9f0685f1b9fa30")
 
@@ -28,11 +25,6 @@ install_github(repo="Huising-Lab/epiRomics", auth_token="5edce3483dbcbb83dc24dfb
 # Load library
 
 library(epiRomics)
-
-# Accessing the vignette with example data to learn how to use epiRomics
-
-vignette("getting-started-with-epiRomics")
-
 
 # Accessing the documentation
 
@@ -45,8 +37,4 @@ If you use epiRomics, please cite:
 
 <Methods paper citation>
   
-For some background on the implementation of epiRomics, see:
 
-<Alpha, Beta, Delta ATAC manuscript citation>
-
-<ObOb/Lean Beta ATAC manuscript citation>
