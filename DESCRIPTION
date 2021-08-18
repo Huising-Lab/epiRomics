@@ -23,7 +23,9 @@ Imports:
 	AnnotationDbi (>= 1.50-3),
 	GenomicFeatures (>= 1.40-1),
 	rtracklayer (>= 1.48-0),
-	plyr (>= 1.8.6)
+	plyr (>= 1.8.6),
+	org.Hs.eg.db (>= 3.13.0),
+	TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,

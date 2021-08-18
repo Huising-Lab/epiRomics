@@ -16,7 +16,7 @@ epiRomics_build_dB_2(
 
 \item{txdb_organism}{a character string containing the TxDB associated with your data.}
 
-\item{epiRomics_genome}{a character string containing the genome associated with your data. e.g. "mm10" or "hg19".}
+\item{epiRomics_genome}{a character string containing the genome associated with your data. e.g. "mm10" or "hg38".}
 
 \item{epiRomics_organism}{a character string containing the org.db associated with your data.}
 }
