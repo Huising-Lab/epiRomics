@@ -10,17 +10,51 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 # Package installation in R
 
-# Use if you do not have devtools currently installed
+# Use if you do not have devtools or remotes currently installed
 install.packages("devtools")
-
+install.packages("remotes")
 devtools::install_github("hadley/devtools")
 
-# Load devtools library
-library(devtools)
+
+# Install BioConductor
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
+BiocManager::install()
+
+# Install dependencies (working on a fix)
+
+ to_install_bc <-
+ c(
+ "AnnotationDbi",
+ "annotatr",
+ "BiocGenerics",
+ "GenomicFeatures",
+ "GenomicRanges",
+ "Gviz",
+ "IRanges",
+ "rtracklayer"
+ "org.Hs.eg.db",
+ "TxDb.Hsapiens.UCSC.hg38.knownGene"
+)
+
+for (i in to_install_bc) {
+  message(paste("looking for ", i))
+  if (!requireNamespace(i)) {
+  message(paste("     installing", i))
+  BiocManager::install(i, type="source")
+  }
+}
+
+
+
+# Load remotes library
+library(remotes)
 
 # Install 
 
-install_github(repo="Huising-Lab/epiRomics")
+install_github(repo="Huising-Lab/epiRomics", repos=BiocManager::repositories() , source=TRUE)
+remotes::install_github(repo="Huising-Lab/epiRomics", repos=BiocManager::repositories() , source=TRUE, dependencies=TRUE)
 
 
 # Load library
