@@ -24,7 +24,7 @@
       c(
         "data.table",
         "party",
-        "plyr",
+        "plyr"
       )
     for (i in to_install_cran) {
       message(paste("looking for ", i))
