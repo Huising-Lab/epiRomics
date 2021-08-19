@@ -18,7 +18,10 @@
     base::packageStartupMessage("Automatic dependency check and verification of sample data presence")
 
     options(timeout = max(3000, getOption("timeout")))
-
+  
+    if (!requireNamespace("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+    BiocManager::install(version = "3.13")
 
     to_install_cran <-
       c(
