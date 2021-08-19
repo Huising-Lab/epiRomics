@@ -16,27 +16,15 @@
     # messages using
     base::packageStartupMessage("epiRomics package loaded.")
     base::packageStartupMessage("Automatic dependency check and verification of sample data presence")
-  
+
     options(timeout = max(3000, getOption("timeout")))
-    
+
 
     to_install_cran <-
       c(
-        "AnnotationDbi",
-        "annotatr",
-        "BiocGenerics",
-        "ChIPseeker",
         "data.table",
-        "GenomeInfoDb",
-        "GenomicFeatures",
-        "GenomicRanges",
-        "Gviz",
-        "IRanges",
         "party",
         "plyr",
-        "rtracklayer",
-        "org.Hs.eg.db",
-        "TxDb.Hsapiens.UCSC.hg38.knownGene"
       )
     for (i in to_install_cran) {
       message(paste("looking for ", i))
@@ -45,28 +33,26 @@
         utils::install.packages(i)
       }
     }
-    
+
     to_install_bc <-
       c(
         "AnnotationDbi",
         "annotatr",
         "BiocGenerics",
         "ChIPseeker",
-        "data.table",
         "GenomeInfoDb",
         "GenomicFeatures",
         "GenomicRanges",
         "Gviz",
         "IRanges",
-        "party",
-        "plyr",
         "rtracklayer",
         "org.Hs.eg.db",
         "TxDb.Hsapiens.UCSC.hg38.knownGene"
       )
-    
-    if (!requireNamespace("BiocManager", quietly = TRUE))
+
+    if (!requireNamespace("BiocManager", quietly = TRUE)) {
       install.packages("BiocManager")
+    }
     for (i in to_install_bc) {
       message(paste("looking for ", i))
       if (!requireNamespace(i)) {
@@ -74,25 +60,25 @@
         BiocManager::install(i)
       }
     }
-    
+
 
     # Download ChIP, Histone, Functional, and DBA Alpha versus Beta
-  
-    # BED 
-      destfile <- paste0(
+
+    # BED
+    destfile <- paste0(
       system.file(package = "epiRomics"),
       "/extdata/BED_Annotation.tar.gz"
     )
-    
+
     fileURL <-
       "https://dl.dropboxusercontent.com/s/qf0hca9rnrbn70j/BED_Annotation.tar.gz"
     if (!file.exists(destfile)) {
       utils::download.file(fileURL, destfile, method = "auto")
     }
 
-    utils::untar(paste0(system.file(package = "epiRomics"),"/extdata/BED_Annotation.tar.gz"), exdir=paste0(system.file(package = "epiRomics"),"/extdata/"))
-    
-    
+    utils::untar(paste0(system.file(package = "epiRomics"), "/extdata/BED_Annotation.tar.gz"), exdir = paste0(system.file(package = "epiRomics"), "/extdata/"))
+
+
     # CHIP
     destfile <- paste0(
       system.file(package = "epiRomics"),
@@ -103,11 +89,11 @@
     if (!file.exists(destfile)) {
       utils::download.file(fileURL, destfile, method = "auto")
     }
- 
-    utils::untar(paste0(system.file(package = "epiRomics"),"/extdata/ChIP.tar.gz"), exdir=paste0(system.file(package = "epiRomics"),"/extdata/"))
-    
-    
-    
+
+    utils::untar(paste0(system.file(package = "epiRomics"), "/extdata/ChIP.tar.gz"), exdir = paste0(system.file(package = "epiRomics"), "/extdata/"))
+
+
+
     # Histone
     destfile <- paste0(
       system.file(package = "epiRomics"),
@@ -119,8 +105,8 @@
       utils::download.file(fileURL, destfile, method = "auto")
     }
 
-    utils::untar(paste0(system.file(package = "epiRomics"),"/extdata/Histone.tar.gz"), exdir=paste0(system.file(package = "epiRomics"),"/extdata/"))   
-    
+    utils::untar(paste0(system.file(package = "epiRomics"), "/extdata/Histone.tar.gz"), exdir = paste0(system.file(package = "epiRomics"), "/extdata/"))
+
     # Bigwig
     destfile <- paste0(
       system.file(package = "epiRomics"),
@@ -131,8 +117,8 @@
     if (!file.exists(destfile)) {
       utils::download.file(fileURL, destfile, method = "auto")
     }
-    utils::untar(paste0(system.file(package = "epiRomics"),"/extdata/BigWigs.tar.gz"), exdir=paste0(system.file(package = "epiRomics"),"/extdata/"))   
-   
+    utils::untar(paste0(system.file(package = "epiRomics"), "/extdata/BigWigs.tar.gz"), exdir = paste0(system.file(package = "epiRomics"), "/extdata/"))
+
     # DBA
     destfile <- paste0(
       system.file(package = "epiRomics"),
@@ -143,10 +129,10 @@
     if (!file.exists(destfile)) {
       utils::download.file(fileURL, destfile, method = "auto")
     }
-    utils::untar(paste0(system.file(package = "epiRomics"),"/extdata/DBA_Beta_Versus_Alpha.tar.gz"), exdir=paste0(system.file(package = "epiRomics"),"/extdata/"))   
-    
-   
-    
+    utils::untar(paste0(system.file(package = "epiRomics"), "/extdata/DBA_Beta_Versus_Alpha.tar.gz"), exdir = paste0(system.file(package = "epiRomics"), "/extdata/"))
+
+
+
     # Fix paths for dB build
     example_epiRomics_Db_sheet <-
       utils::read.csv(file = system.file("extdata", "example_epiRomics_Db_sheet.csv", package = "epiRomics"))
@@ -156,10 +142,10 @@
         "/extdata/",
         example_epiRomics_Db_sheet$path
       )
-    data.table::fwrite(example_epiRomics_Db_sheet, file=paste0(
+    data.table::fwrite(example_epiRomics_Db_sheet, file = paste0(
       system.file(package = "epiRomics"),
       "/extdata/example_epiRomics_Db_sheet_user_paths.csv"
-    ), sep =",", quote = FALSE, row.names = FALSE, col.names = TRUE)
+    ), sep = ",", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
 
@@ -173,15 +159,15 @@
         "/extdata/",
         epiRomics_track_connection$path
       )
-   
-    
-    data.table::fwrite(epiRomics_track_connection, file=paste0(
+
+
+    data.table::fwrite(epiRomics_track_connection, file = paste0(
       system.file(package = "epiRomics"),
       "/extdata/example_epiRomics_BW_sheet_user_paths.csv"
-    ), sep =",", quote = FALSE, row.names = FALSE, col.names = TRUE)
-    
-    
-    
-    
+    ), sep = ",", quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+
+
+
     packageStartupMessage("You are ready to go. For feedback, please email: ammawla@ucdavis.edu")
   }
