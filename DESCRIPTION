@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Remotes:
-      bioc::GenomicRanges, bioc::ChIPseeker
+      bioc::GenomicRanges, bioc::ChIPseeker, github::Bioconductor/GenomicFeatures
 Imports:
       remotes,
       data.table (>= 1.12.8),
