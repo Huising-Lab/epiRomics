@@ -12,14 +12,16 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 # Use if you do not have devtools or remotes currently installed
 install.packages("devtools")
+
 install.packages("remotes")
-devtools::install_github("hadley/devtools")
 
 
 # Install BioConductor
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
+
 install.packages("BiocManager")
+
 BiocManager::install()
 
 # Install dependencies (working on a fix)
@@ -53,8 +55,7 @@ library(remotes)
 
 # Install 
 
-install_github(repo="Huising-Lab/epiRomics", repos=BiocManager::repositories() , source=TRUE)
-remotes::install_github(repo="Huising-Lab/epiRomics", repos=BiocManager::repositories() , source=TRUE, dependencies=TRUE)
+install_github(repo="Huising-Lab/epiRomics")
 
 
 # Load library
