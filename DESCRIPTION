@@ -13,7 +13,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
 	data.table (>= 1.12-8),
-	GenomicRanges (>= 1.41-5),
+	GenomicRanges (>= 1.44-0),
 	BiocGenerics (>= 0.35-4),
 	ChIPseeker (>= 1.5-1),
 	GenomeInfoDb (>= 1.25-0),
@@ -25,9 +25,9 @@ Imports:
 	AnnotationDbi (>= 1.50-3),
 	GenomicFeatures (>= 1.40-1),
 	rtracklayer (>= 1.48-0),
-	plyr (>= 1.8.6),
-	org.Hs.eg.db (>= 3.13.0),
-	TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
+	plyr (>= 1.8-6),
+	org.Hs.eg.db (>= 3.13-0),
+	TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13-0)
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,
