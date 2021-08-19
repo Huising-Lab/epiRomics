@@ -19,9 +19,9 @@
 
     options(timeout = max(3000, getOption("timeout")))
   
-#    if (!requireNamespace("BiocManager", quietly = TRUE))
-#      install.packages("BiocManager")
-#    BiocManager::install()
+    if (!requireNamespace("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+    BiocManager::install()
 
 
     to_install_cran <-
@@ -38,27 +38,27 @@
       }
     }
 
-#    to_install_bc <-
-#      c(
- #       "AnnotationDbi",
-  #      "annotatr",
-   #     "BiocGenerics",
-    ###  "GenomicFeatures",
-       # "GenomicRanges",
-      ##  "Gviz",
-      #  "IRanges",
-      ##  "rtracklayer",
-      ##  "org.Hs.eg.db",
-      #  "TxDb.Hsapiens.UCSC.hg38.knownGene"
-      #)
+   to_install_bc <-
+      c(
+        "AnnotationDbi",
+        "annotatr",
+        "BiocGenerics",
+     "GenomicFeatures",
+       "GenomicRanges",
+        "Gviz",
+        "IRanges",
+        "rtracklayer",
+        "org.Hs.eg.db",
+       "TxDb.Hsapiens.UCSC.hg38.knownGene"
+      )
 
- #   for (i in to_install_bc) {
-#      message(paste("looking for ", i))
-#      if (!requireNamespace(i)) {
-#        message(paste("     installing", i))
-#        BiocManager::install(i, type="source")
-#      }
-#    }
+    for (i in to_install_bc) {
+      message(paste("looking for ", i))
+     if (!requireNamespace(i)) {
+       message(paste("     installing", i))
+       BiocManager::install(i, type="source")
+     }
+   }
 
 
     # Download ChIP, Histone, Functional, and DBA Alpha versus Beta
