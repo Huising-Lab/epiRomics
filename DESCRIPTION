@@ -11,11 +11,16 @@ Description: A package designed to integrate various levels of epigenomic inform
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Remotes:
+      bioc::GenomicRanges (>= 1.44.0),
+      bioc::ChIPseeker (>= 1.5-1),
+      bioc::TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
 Imports:
+      remotes,
       data.table (>= 1.12.8),
-      biocViews::GenomicRanges (>= 1.44.0),
-      biocViews::BiocGenerics (>= 0.35.4),
-      biocViews::ChIPseeker (>= 1.5-1),
+      GenomicRanges (>= 1.44.0),
+      BiocGenerics (>= 0.35.4),
+      ChIPseeker (>= 1.5-1),
       GenomeInfoDb (>= 1.25.0),
       Gviz (>= 1.33.2),
       IRanges (>= 2.23.10),
