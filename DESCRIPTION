@@ -13,9 +13,9 @@ Encoding: UTF-8
 LazyData: true
 Imports:
       data.table (>= 1.12.8),
-      biocViews:GenomicRanges (>= 1.44.0),
-      biocViews:BiocGenerics (>= 0.35.4),
-      biocViews:ChIPseeker (>= 1.5-1),
+      biocViews::GenomicRanges (>= 1.44.0),
+      biocViews::BiocGenerics (>= 0.35.4),
+      biocViews::ChIPseeker (>= 1.5-1),
       GenomeInfoDb (>= 1.25.0),
       Gviz (>= 1.33.2),
       IRanges (>= 2.23.10),
