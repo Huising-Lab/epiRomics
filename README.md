@@ -4,7 +4,7 @@ An R package designed to integrate and visualize various levels of epigenomic in
 
 This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 
-Paper: [**epiRomics: a multi-omics R package to identify and visualize enhancers.**](https://www.biorxiv.org/content/10.1101/2021.08.19.456732v1)
+**Paper:** [**epiRomics: a multi-omics R package to identify and visualize enhancers.**](https://www.biorxiv.org/content/10.1101/2021.08.19.456732v1)
 
 
 [**Getting Started with EpiRomics Walkthrough**](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
