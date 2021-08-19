@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Remotes:
-      bioc::GenomicRanges, bioc::ChIPseeker, bioc::TxDb.Hsapiens.UCSC.hg38.knownGene
+      bioc::GenomicRanges, bioc::ChIPseeker
 Imports:
       remotes,
       data.table (>= 1.12.8),
