@@ -1,19 +1,16 @@
 citHeader("To cite epiRomics in publications use:")
 
 citEntry(entry = "Article",
-  title        = "{epiRomics}",
+  title        = "{epiRomics: a multi-omics R package to identify and visualize enhancers}",
   author       = personList(as.person("Alex M. Mawla"),
                    as.person("Mark O. Huising")),
   journal      = "boiXriv",
   year         = "2021",
-  volume       = "unk",
-  number       = "unk",
-  pages        = "unk",
-  url          = "unk",
+  url          = "https://doi.org/10.1101/2021.08.19.456732",
 
   textVersion  =
   paste("Alex M. Mawla & Mark O. Huising (2021).",
-        "epiRomics.",
+        "epiRomics: a multi-omics R package to identify and visualize enhancers",
         "bioRxiv",
-        "unk.")
+        "2021.08.19.456732.")
 )
