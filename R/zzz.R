@@ -60,7 +60,7 @@
       message(paste("looking for ", i))
       if (!requireNamespace(i)) {
         message(paste("     installing", i))
-        BiocManager::install(i)
+        BiocManager::install(i, type="source)
       }
     }
 
