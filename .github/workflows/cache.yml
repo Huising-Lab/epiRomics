@@ -1,0 +1,21 @@
+# This is a basic workflow to help you get started with Actions
+
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+- uses: actions/cache@v2
+  if: startsWith(runner.os, 'Linux')
+  with:
+    path: ~/.local/share/renv
+    key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-renv-
