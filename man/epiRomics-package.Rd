@@ -10,7 +10,7 @@ A package designed to integrate various levels of epigenomic information, includ
   This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 }
 \author{
-\strong{Maintainer}: Alex M Mawla \email{ammawla@ucdavis.edu}
+\strong{Maintainer}: Alex M. Mawla \email{ammawla@ucdavis.edu}
 
 Other contributors:
 \itemize{
