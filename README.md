@@ -1,4 +1,7 @@
 # epiRomics: a multi-omics R package to identify and visualize enhancers
+ <!-- badges: start -->
+  [![Codecov test coverage](https://codecov.io/gh/Huising-Lab/epiRomics/branch/main/graph/badge.svg)](https://codecov.io/gh/Huising-Lab/epiRomics?branch=main)
+  <!-- badges: end -->
 
 An R package designed to integrate and visualize various levels of epigenomic information, including but not limited to: ChIP, Histone, ATAC, and RNA sequencing. epiRomics is also designed for regulatory network analysis in order to identify enhancer and enhanceosome regions from these data. 
 
