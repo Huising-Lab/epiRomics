@@ -17,10 +17,7 @@ name: cache-dependencies
 
 jobs:
   cache-dependencies:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-    - uses: actions/cache@v2
+  - uses: actions/cache@v2
     if: startsWith(runner.os, 'Linux')
      with:
       path: ~/.local/share/renv
