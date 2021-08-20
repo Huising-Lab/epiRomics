@@ -11,6 +11,7 @@ Description: A package designed to integrate various levels of epigenomic inform
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Imports:
       data.table (>= 1.12.8),
       GenomicRanges (>= 1.44.0),
