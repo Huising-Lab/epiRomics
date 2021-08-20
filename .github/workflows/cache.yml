@@ -12,16 +12,10 @@ on:
       - main
       - master
 
-
-name: cache-dependencies
-
-jobs:
-  cache-dependencies:
-  - uses: actions/cache@v2
-    if: startsWith(runner.os, 'Linux')
-     with:
-      path: ~/.local/share/renv
-      key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
-      restore-keys: |
-        ${{ runner.os }}-renv-
-
+- uses: actions/cache@v2
+  if: startsWith(runner.os, 'Linux')
+  with:
+    path: ~/.local/share/renv
+    key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-renv-
