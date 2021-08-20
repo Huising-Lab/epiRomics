@@ -20,7 +20,7 @@
     options(timeout = max(3000, getOption("timeout")))
   
     if (!requireNamespace("BiocManager", quietly = TRUE))
-      install.packages("BiocManager")
+      utils::install.packages("BiocManager")
     BiocManager::install()
 
 
