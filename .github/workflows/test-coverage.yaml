@@ -43,11 +43,6 @@ jobs:
           remotes::install_cran("covr")
         shell: Rscript {0}
 
-      - name: Test vignette
-        run: |
-          source("vignettes/getting-started-with-epiRomics.R")
-        shell: Rscript {0}
-
 
       - name: Test coverage
         run: covr::codecov()
