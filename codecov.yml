@@ -1,3 +1,6 @@
+codecov:
+  token: 343b7418-40f9-476b-acad-1fff73687813
+  
 comment: false
 
 coverage:
@@ -13,5 +16,3 @@ coverage:
         threshold: 1%
         informational: true
 
-codecov:
-  token: 343b7418-40f9-476b-acad-1fff73687813
