@@ -3,7 +3,7 @@ Type: Package
 Title: epigenomic analysis package built for R (epiRomics)
 Version: 0.1.1
 Authors@R: c(
-  person("Alex M", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre")),
+  person("Alex M.", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre")),
   person("Huising Lab", "@ University of California, Davis",  role = "cph"))
 Maintainer: Alex M. Mawla <ammawla@ucdavis.edu>
 Description: A package designed to integrate various levels of epigenomic information, including, but not limited to ChIP and Histone next-generation sequencing. Regulatory network analysis can be done by using combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis can identify co-occurance of epigenomic data located at regions of interest. Finally, this package allows for various results to be visualized. 
@@ -11,8 +11,10 @@ Description: A package designed to integrate various levels of epigenomic inform
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Imports:
       data.table (>= 1.12.8),
+      BiocManager (>= 1.30.16),
       GenomicRanges (>= 1.44.0),
       BiocGenerics (>= 0.35.4),
       ChIPseeker (>= 1.5-1),
