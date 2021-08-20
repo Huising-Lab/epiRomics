@@ -32,6 +32,7 @@ Imports:
       TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
 RoxygenNote: 7.1.1
 Suggests: 
+    covr,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
