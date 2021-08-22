@@ -1,43 +1,58 @@
-Package: epiRomics
 Type: Package
+Package: epiRomics
 Title: epigenomic analysis package built for R (epiRomics)
-Version: 0.1.1
-Authors@R: c(
-  person("Alex M.", "Mawla", email = "ammawla@ucdavis.edu", role = c("aut", "cre")),
-  person("Huising Lab", "@ University of California, Davis",  role = "cph"))
+Version: 0.1.3
+Authors@R: 
+    c(person(given = "Alex M.",
+             family = "Mawla",
+             role = c("aut", "cre"),
+             email = "ammawla@ucdavis.edu"),
+      person(given = "Huising Lab",
+             family = "@ University of California, Davis",
+             role = "cph"))
 Maintainer: Alex M. Mawla <ammawla@ucdavis.edu>
-Description: A package designed to integrate various levels of epigenomic information, including, but not limited to ChIP and Histone next-generation sequencing. Regulatory network analysis can be done by using combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis can identify co-occurance of epigenomic data located at regions of interest. Finally, this package allows for various results to be visualized. 
-  This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
+Description: A package designed to integrate various levels of epigenomic
+    information, including, but not limited to ChIP and Histone
+    next-generation sequencing. Regulatory network analysis can be done by
+    using combinatory approaches to infer regions of significance, such as
+    enhancers. Downstream analysis can identify co-occurance of epigenomic
+    data located at regions of interest. Finally, this package allows for
+    various results to be visualized.  This package is currently in
+    development. Please contact <ammawla@ucdavis.edu> for suggestions,
+    feedback, or bug reporting.
 License: MIT + file LICENSE
+Depends:
+    R (>= 4.0.0)
+Imports:
+    AnnotationDbi (>= 1.54.1),
+    annotatr (>= 1.18.1),
+    BiocGenerics (>= 0.38.0),
+    BiocManager (>= 1.30.16),
+    ChIPseeker (>= 1.28.3),
+    data.table (>= 1.12.8),
+    GenomeInfoDb (>= 1.28.1),
+    GenomicFeatures (>= 1.44.1),
+    GenomicRanges (>= 1.44.0),
+    Gviz (>= 1.36.2),
+    IRanges (>= 2.26.0),
+    methods (>= 4.0.2),
+    party (>= 1.3.3),
+    plyr (>= 1.8.6),
+    rtracklayer (>= 1.52.1),
+    utils,
+    enrichplot,
+    org.Hs.eg.db (>= 3.13.0),
+    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
+    knitr,
+    rmarkdown,
+    pkgdown
+Suggests: 
+    covr,
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+biocViews:
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
-biocViews:
-Depends:
-      R (>= 4.0.0)
-Imports:
-      data.table (>= 1.12.8),
-      enrichplot (>= 1.12.2),
-      BiocManager (>= 1.30.16),
-      GenomicRanges (>= 1.44.0),
-      BiocGenerics (>= 0.35.4),
-      ChIPseeker (>= 1.5-1),
-      GenomeInfoDb (>= 1.25.0),
-      Gviz (>= 1.33.2),
-      IRanges (>= 2.23.10),
-      annotatr (>= 1.15.2),
-	   party (>= 1.3.3),
-   	methods (>= 4.0.2),
-  	   AnnotationDbi (>= 1.50.3),
-  	   GenomicFeatures (>= 1.40.1),
-      rtracklayer (>= 1.48.0),
-      plyr (>= 1.8.6),
-      org.Hs.eg.db (>= 3.13.0),
-      TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0)
 RoxygenNote: 7.1.1
-Suggests: 
-    testthat (>= 3.0.0),
-    covr,
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
-Config/testthat/edition: 3
