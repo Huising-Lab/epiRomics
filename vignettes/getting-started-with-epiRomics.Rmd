@@ -15,12 +15,6 @@ knitr::opts_chunk$set(collapse = TRUE,
 ```
 
 ```{r setup}
-# Install devtools
-install.packages("devtools")
-
-# Install epiRomics
-devtools::install_github(repo="Huising-Lab/epiRomics")
-
 # Load packages
 library(epiRomics)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
