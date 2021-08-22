@@ -52,7 +52,6 @@ Suggests:
 VignetteBuilder: 
     knitr
 biocViews:
-Remotes: bioc::release/AnnotationDbi, bioc::release/annotatr, bioc::release/BiocGenerics, bioc::release/BiocManager, bioc::release/ChIPseeker, bioc::release/GenomeInfoDb, bioc::release/GenomicFeatures, bioc::release/GenomicRanges, bioc::release/Gviz, bioc::release/IRanges, bioc::release/rtracklayer, bioc::release/org.Hs.eg.db, bioc::release/enrichplot, bioc::release/org.Hs.eg.db, bioc::release/TxDb.Hsapiens.UCSC.hg38.knownGene  
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
