@@ -10,8 +10,8 @@ epiRomics_region_tracks <- function(epiRomics_region, epiRomics_dB, epiRomics_tr
   chr <- base::as.character(BiocGenerics::unique(GenomeInfoDb::seqnames(epiRomics_region)))
   gtrack <- Gviz::GenomeAxisTrack()
   txTr <- Gviz::GeneRegionTrack(base::eval(base::parse(text = epiRomics_dB@txdb)),
-    start = start(epiRomics_region),
-    end = end(epiRomics_region), chromosome = chr, collapseTranscripts = TRUE,
+    start = BiocGenerics::start(epiRomics_region),
+    end = BiocGenerics::end(epiRomics_region), chromosome = chr, collapseTranscripts = TRUE,
     symbol = epiRomics_region$SYMBOL, name = epiRomics_region$SYMBOL, transcriptAnnotation = "symbol",
     geneSymbol = TRUE, howId = TRUE, min.height = 10, size = 10
   )

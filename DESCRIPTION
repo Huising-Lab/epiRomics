@@ -16,6 +16,7 @@ Depends:
       R (>= 4.0.0)
 Imports:
       data.table (>= 1.12.8),
+      enrichplot (>= 1.12.2),
       BiocManager (>= 1.30.16),
       GenomicRanges (>= 1.44.0),
       BiocGenerics (>= 0.35.4),

@@ -31,9 +31,9 @@
         "plyr"
       )
     for (i in to_install_cran) {
-      message(paste("looking for ", i))
+      base::packageStartupMessage(paste("looking for ", i))
       if (!requireNamespace(i)) {
-        message(paste("     installing", i))
+        base::packageStartupMessage(paste("     installing", i))
         utils::install.packages(i)
       }
     }
@@ -53,9 +53,9 @@
       )
 
     for (i in to_install_bc) {
-      message(paste("looking for ", i))
+      base::packageStartupMessage(paste("looking for ", i))
      if (!requireNamespace(i)) {
-       message(paste("     installing", i))
+       base::packageStartupMessage(paste("     installing", i))
        BiocManager::install(i, type="source")
      }
    }
@@ -168,5 +168,5 @@
 
 
 
-    packageStartupMessage("You are ready to go. For feedback, please email: ammawla@ucdavis.edu")
+    base::packageStartupMessage("You are ready to go. For feedback, please email: ammawla@ucdavis.edu")
   }
