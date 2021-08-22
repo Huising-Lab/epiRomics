@@ -12,9 +12,9 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 **Resources**:
 
-[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
+[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.pdf)
 
-[epiRomics Reference Manual](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics_0.1.2%20Reference%20Manual.pdf)
+[epiRomics Reference Manual](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics-manual.pdf)
 
 [Methods for sample data in vignette](https://www.biorxiv.org/content/biorxiv/early/2021/08/19/2021.08.19.456732/DC1/embed/media-1.docx?download=true)
 
@@ -36,9 +36,9 @@ library(epiRomics)
 
 # Accessing the documentation
 
-[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/Getting%20Started%20with%20EpiRomics.pdf)
+[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.pdf)
 
-[epiRomics Reference Manual](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics_0.1.2%20Reference%20Manual.pdf)
+[epiRomics Reference Manual](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics-manual.pdf)
 
 or
 
