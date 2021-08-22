@@ -7,7 +7,7 @@ vignette: >
  %\VignetteEngine{knitr::rmarkdown}
  %\VignetteEncoding{UTF-8}
 ---
-  
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
 collapse = TRUE,
@@ -20,7 +20,6 @@ library(epiRomics)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(org.Hs.eg.db)
 ```
-
 
 ```{r example data check}
 # This package includes some example data to get you started, delineating human pancreatic islet enhancers between alpha and beta cells. 
@@ -57,10 +56,10 @@ example_epiRomics_Db_sheet <-
 ```
 
 ```{r data format and load}
+
 # Required columns: name, path, genome, format, and type
 # genome must be in proper format, e.g. mm10 or hg38
 # type: histone or chip. chip is required for some downstream functions
-
 
 head(example_epiRomics_Db_sheet)
 
@@ -107,7 +106,6 @@ epiRomics_putative_enhancers_filtered_fantom <-
 epiRomics_putative_enhancers_filtered_fantom@annotations
 ```
 
-
 ```{r putative enhancers filtering active regulome}
 # We can also filter putative enhancer calls against active enhancers from the human islet regulome database
 
@@ -133,8 +131,6 @@ epiRomics_putative_enhancers_filtered_regulome_super@annotations
 
 ```
 
-
-
 ```{r putative enhancers filtering ucnes}
 # We can also filter putative enhancer calls against the human islet regulome database
 
@@ -145,7 +141,6 @@ epiRomics_putative_enhancers_filtered_ucnes <-
 epiRomics_putative_enhancers_filtered_ucnes@annotations
 
 ```
-
 
 ```{r putative enhancers to enhanceosome}
 # Biology has established that enhancers can be quite redundant, and not all play an active role in regulating a cell's activity. How can we utilize other epigenomic data in order to identify true enhanceosome regions? One way is to cross this list against all ChIP data of the cell type. A true enhanceosome region should have made it through our filtering thus far, and contain several binding sites for known TFs. Co-binding is expected, and the list is sorted by the highest number of ChIP hits within the region. 
@@ -258,8 +253,6 @@ epiRomics_track_layer_human(
 )
 ```
 
-
-
 ```{r data ucnes}
 # Or, about a region that overlapped with ultra-conserved non coding elements? 
 
@@ -298,7 +291,6 @@ epiRomics_putative_enhanceosome_stringent <-
 
 ```
 
-
 ```{r fig6, fig.width=10, fig.height=15}
 
 epiRomics_track_layer_human(
@@ -308,7 +300,6 @@ epiRomics_track_layer_human(
     epiRomics_track_connection = epiRomics_track_connection
 )
 ```
-
 
 ```{r integrate chromatin data}
 # How can we use these putative enhanceosome regions to infer biology between cell states? In this example, we will integrate ATAC-Seq data differential testing showing differences in chromatin accessibility between alpha and beta cells 
@@ -333,5 +324,3 @@ epiRomics_track_layer_human(beta_enhancer_regions,
                       epiRomics_track_connection = epiRomics_track_connection
 )
 ```
-
-
