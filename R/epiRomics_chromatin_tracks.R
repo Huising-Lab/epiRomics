@@ -20,7 +20,7 @@ epiRomics_chromatin_tracks <-
     epiRomics_gene_map <-
       GenomicFeatures::genes((base::eval(base::parse(text = epiRomics_dB@txdb))))
     epiRomics_gene_map_track <-
-      epiRomics_gene_map[epiRomics_gene_map$gene_id == epiRomics_entrez_id,]
+      epiRomics_gene_map[epiRomics_gene_map$gene_id == epiRomics_entrez_id, ]
     # Uncommented the below line to fix max width issue for certain genes, such as MafA
     epiRomics_gene_map_track <-
       GenomicRanges::resize(
@@ -45,10 +45,12 @@ epiRomics_chromatin_tracks <-
       )
     itrack <- Gviz::IdeogramTrack(genome = "mm10", chromosome = chr)
     epiRomics_track_connection_chromatin <-
-      epiRomics_track_connection[epiRomics_track_connection$type == "atac",]
+      epiRomics_track_connection[epiRomics_track_connection$type == "atac", ]
     range_max <-
-      maxCovFiles(epiRomics_track_connection_chromatin[, 1],
-                  epiRomics_gene_map_track)
+      maxCovFiles(
+        epiRomics_track_connection_chromatin[, 1],
+        epiRomics_gene_map_track
+      )
     max_cov <-
       plyr::round_any((range_max$X + (range_max$X * 0.1)), accuracy = 10, f = ceiling)
     chromatin_tracks <- list()
@@ -74,10 +76,12 @@ epiRomics_chromatin_tracks <-
     if (table(epiRomics_track_connection$type == "rna")[[TRUE]] > 0) {
       rna_tracks <- list()
       epiRomics_track_connection_rna <-
-        epiRomics_track_connection[epiRomics_track_connection$type == "rna",]
+        epiRomics_track_connection[epiRomics_track_connection$type == "rna", ]
       range_max <-
-        maxCovFiles(epiRomics_track_connection_rna[, 1],
-                    epiRomics_gene_map_track)
+        maxCovFiles(
+          epiRomics_track_connection_rna[, 1],
+          epiRomics_gene_map_track
+        )
       max_cov <-
         plyr::round_any((range_max$X + (range_max$X * 0.1)), accuracy = 10, f = ceiling)
       for (i in 1:base::dim(epiRomics_track_connection_rna)[1]) {
