@@ -10,10 +10,18 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE,
-                      comment = "#>")
+                      comment = "#>",
+                       options(rmarkdown.html_vignette.check_title = FALSE))
 ```
 
 ```{r setup}
+# Install devtools
+install.packages("devtools")
+
+# Install epiRomics
+devtools::install_github(repo="Huising-Lab/epiRomics")
+
+# Load packages
 library(epiRomics)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(org.Hs.eg.db)
