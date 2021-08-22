@@ -33,7 +33,7 @@ epiRomics_region_tracks <-
     #    geneSymbol = TRUE, showId = TRUE)
     itrack <- Gviz::IdeogramTrack(genome = "mm10", chromosome = chr)
     epiRomics_track_connection_chromatin <-
-      epiRomics_track_connection[epiRomics_track_connection$type == "atac",]
+      epiRomics_track_connection[epiRomics_track_connection$type == "atac", ]
     range_max <-
       maxCovFiles(epiRomics_track_connection_chromatin[, 1], epiRomics_region)
     max_cov <-
@@ -61,7 +61,7 @@ epiRomics_region_tracks <-
     if (table(epiRomics_track_connection$type == "rna")[[TRUE]] > 0) {
       rna_tracks <- list()
       epiRomics_track_connection_rna <-
-        epiRomics_track_connection[epiRomics_track_connection$type == "rna",]
+        epiRomics_track_connection[epiRomics_track_connection$type == "rna", ]
       range_max <-
         maxCovFiles(epiRomics_track_connection_rna[, 1], epiRomics_region)
       max_cov <-
