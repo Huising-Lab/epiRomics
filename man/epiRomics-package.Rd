@@ -4,7 +4,7 @@
 \name{epiRomics-package}
 \alias{epiRomics}
 \alias{epiRomics-package}
-\title{epiRomics: epigenomic analysis package built for R (epiRomics)}
+\title{epiRomics: Epigenomic Analysis Package Built for R (epiRomics)}
 \description{
 A package designed to integrate various levels of epigenomic
     information, including, but not limited to ChIP and Histone
