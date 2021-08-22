@@ -11,7 +11,7 @@ epiRomics_chromatin_tracks <- function(epiRomics_gene_name, epiRomics_dB, epiRom
   epiRomics_gene_map <- GenomicFeatures::genes((base::eval(base::parse(text = epiRomics_dB@txdb))))
   epiRomics_gene_map_track <- epiRomics_gene_map[epiRomics_gene_map$gene_id == epiRomics_entrez_id, ]
   # Uncommented the below line to fix max width issue for certain genes, such as MafA
-  epiRomics_gene_map_track <- resize(epiRomics_gene_map_track, width = width(epiRomics_gene_map_track) + (4000 * 2), fix = "center")
+  epiRomics_gene_map_track <- GenomicRanges::resize(epiRomics_gene_map_track, width = BiocGenerics::width(epiRomics_gene_map_track) + (4000 * 2), fix = "center")
   chr <- base::as.character(BiocGenerics::unique(GenomeInfoDb::seqnames(epiRomics_gene_map_track)))
   gtrack <- Gviz::GenomeAxisTrack()
   txTr <- Gviz::GeneRegionTrack(base::eval(base::parse(text = epiRomics_dB@txdb)),
