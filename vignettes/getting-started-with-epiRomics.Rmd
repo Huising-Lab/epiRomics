@@ -58,7 +58,7 @@ example_epiRomics_Db_sheet <-
 
 ```{r data format and load}
 # Required columns: name, path, genome, format, and type
-# genome must be in proper format, e.g. mm10 or hg38 
+# genome must be in proper format, e.g. mm10 or hg38
 # type: histone or chip. chip is required for some downstream functions
 
 
