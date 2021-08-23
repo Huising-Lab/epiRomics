@@ -52,7 +52,10 @@ Suggests:
 VignetteBuilder: 
     knitr
 biocViews:
+Remotes:
+    GuangchuangYu/enrichplot
 Config/testthat/edition: 3
+ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
