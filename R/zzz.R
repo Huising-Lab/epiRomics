@@ -31,7 +31,7 @@
         "party",
         "plyr",
         "knitr",
-        "tinytex",
+      #  "tinytex",
         "rmarkdown"
       )
     for (i in to_install_cran) {
@@ -42,7 +42,7 @@
       }
     }
   
-    tinytex::install_tinytex()
+  #  tinytex::install_tinytex()
     
     to_install_bc <-
       c(
