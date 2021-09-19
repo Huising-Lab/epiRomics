@@ -30,8 +30,8 @@
         "data.table",
         "party",
         "plyr",
-        "installr",
         "knitr",
+        "tinytex",
         "rmarkdown"
       )
     for (i in to_install_cran) {
@@ -42,7 +42,7 @@
       }
     }
   
-    installr::install.pandoc()
+    tinytex::install_tinytex()
     
     to_install_bc <-
       c(
