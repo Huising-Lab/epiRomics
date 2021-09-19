@@ -44,8 +44,8 @@ Imports:
     org.Hs.eg.db (>= 3.13.0),
     TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
     knitr,
-    installr,
-    rmarkdown,
+    rmarkdown (>= 2.11),
+    tinytex,
     pkgdown
 Suggests: 
     covr,
