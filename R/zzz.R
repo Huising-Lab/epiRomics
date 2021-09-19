@@ -29,7 +29,10 @@
       c(
         "data.table",
         "party",
-        "plyr"
+        "plyr",
+        "installr",
+        "knitr",
+        "rmarkdown"
       )
     for (i in to_install_cran) {
       base::packageStartupMessage(paste("looking for ", i))
@@ -38,7 +41,9 @@
         utils::install.packages(i)
       }
     }
-
+  
+    install.pandoc()
+    
     to_install_bc <-
       c(
         "AnnotationDbi",
