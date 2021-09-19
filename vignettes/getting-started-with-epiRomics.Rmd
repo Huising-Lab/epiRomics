@@ -47,7 +47,7 @@ library(org.Hs.eg.db)
 # The human islet regulome database was retrieved (Miguel-Escalada, et al., 2019) and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.
 
 
-system.file("extdata", "example_epiRomics_Db_sheet.csv", package = "epiRomics")
+system.file("extdata", "example_epiRomics_Db_sheet_user_paths.csv", package = "epiRomics")
 
 # Lets load and take a look at how to properly format the datasets epiRomics uses to build its database.
 
