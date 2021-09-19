@@ -42,7 +42,7 @@
       }
     }
   
-    install.pandoc()
+    installr::install.pandoc()
     
     to_install_bc <-
       c(
