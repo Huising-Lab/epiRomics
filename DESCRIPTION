@@ -53,7 +53,7 @@ VignetteBuilder:
     knitr
 biocViews:
 Remotes:
-    GuangchuangYu/enrichplot
+    YuLab-SMU/enrichplot
 Config/testthat/edition: 3
 ByteCompile: true
 Encoding: UTF-8
