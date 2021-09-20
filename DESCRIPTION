@@ -40,7 +40,7 @@ Imports:
     plyr (>= 1.8.6),
     rtracklayer (>= 1.52.1),
     utils,
-    enrichplot (>= 1.12.2),
+    enrichplot,
     org.Hs.eg.db (>= 3.13.0),
     TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
     knitr,
