@@ -39,8 +39,7 @@ Imports:
     party (>= 1.3.3),
     plyr (>= 1.8.6),
     rtracklayer (>= 1.52.1),
-    utils,
-    enrichplot
+    utils
 Suggests: 
     covr,
     org.Hs.eg.db (>= 3.13.0),
@@ -48,6 +47,7 @@ Suggests:
     knitr,
     testthat (>= 3.0.0),
     rmarkdown,
+    enrichplot,
     pkgdown
 VignetteBuilder: 
     knitr

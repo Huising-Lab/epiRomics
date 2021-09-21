@@ -31,19 +31,17 @@
         "party",
         "plyr",
         "knitr",
-      #  "tinytex",
         "rmarkdown"
       )
     for (i in to_install_cran) {
       base::packageStartupMessage(paste("looking for ", i))
       if (!requireNamespace(i)) {
         base::packageStartupMessage(paste("     installing", i))
-        utils::install.packages(i)
+        utils::install.packages(i, repos = "http://cran.us.r-project.org")
       }
     }
   
-  #  tinytex::install_tinytex()
-    
+
     to_install_bc <-
       c(
         "AnnotationDbi",
@@ -62,7 +60,7 @@
       base::packageStartupMessage(paste("looking for ", i))
       if (!requireNamespace(i)) {
         base::packageStartupMessage(paste("     installing", i))
-        BiocManager::install(i, type = "source")
+        BiocManager::install(i, type = "source", ask=FALSE)
       }
     }
 
