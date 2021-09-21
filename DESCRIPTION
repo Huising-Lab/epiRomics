@@ -40,22 +40,22 @@ Imports:
     plyr (>= 1.8.6),
     rtracklayer (>= 1.52.1),
     utils,
-    enrichplot (>= 1.12.2),
-    org.Hs.eg.db (>= 3.13.0),
-    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
-    knitr,
-    rmarkdown,
-    pkgdown
+    enrichplot
 Suggests: 
     covr,
-    testthat (>= 3.0.0)
+    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
+    org.Hs.eg.db (>= 3.13.0),
+    knitr,
+    testthat (>= 3.0.0),
+    rmarkdown,
+    pkgdown
 VignetteBuilder: 
     knitr
 biocViews:
 Remotes:
-    YuLab-SMU/enrichplot
+    GuangchuangYu/enrichplot
 Config/testthat/edition: 3
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
