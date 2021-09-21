@@ -5,7 +5,6 @@
 .Rbuildignore
 epiRomics.Rproj
 
-docs
 *.gz
 *.bed
 *.bigwig
@@ -13,7 +12,6 @@ inst/extdata/DBA_Beta_Versus_Alpha.csv
 inst/extdata/example_epiRomics_BW_sheet_user_paths.csv
 inst/extdata/example_epiRomics_Db_sheet_user_paths.csv
 *.eps
-/doc/
-/Meta/
 *.timestamp
-Meta/vignette.rds
+Meta
+docs
