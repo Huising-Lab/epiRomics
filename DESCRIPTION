@@ -54,6 +54,7 @@ VignetteBuilder:
 biocViews:
 Remotes:
     GuangchuangYu/enrichplot
+    GuangchuangYu/ChipSeeker
 Config/testthat/edition: 3
 ByteCompile: true
 Encoding: UTF-8

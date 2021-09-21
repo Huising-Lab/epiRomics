@@ -1,4 +1,5 @@
 library(testthat)
 library(epiRomics)
-
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 test_check("epiRomics")
