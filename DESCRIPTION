@@ -43,8 +43,8 @@ Imports:
     enrichplot
 Suggests: 
     covr,
-    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
     org.Hs.eg.db (>= 3.13.0),
+    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.13.0),
     knitr,
     testthat (>= 3.0.0),
     rmarkdown,
