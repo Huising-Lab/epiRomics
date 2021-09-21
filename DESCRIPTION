@@ -53,7 +53,7 @@ VignetteBuilder:
     knitr
 biocViews:
 Remotes:
-    GuangchuangYu/enrichplot
+    GuangchuangYu/enrichplot,
     GuangchuangYu/ChipSeeker
 Config/testthat/edition: 3
 ByteCompile: true
