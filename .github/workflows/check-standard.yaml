@@ -59,6 +59,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt install build-essential
+          sudo apt-get install gcc-7 g++-7
+          sudo apt-get install gfortran-7
           while read -r cmd
           do
             eval sudo $cmd
