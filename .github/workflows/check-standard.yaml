@@ -58,16 +58,14 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo apt install build-essential
-          sudo apt-get install gcc-7 g++-7
-          sudo apt-get install gfortran-7
+          sudo apt-get install -y libglpk-dev libxml2 lixml2 libxml2-dev gfortran-7 gcc-7 g++-7 build-essential
           while read -r cmd
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
       - name: Install dependencies
         run: |
-          remotes::install_bioc("ChIPseeker")
+          utils::install.packages("igraph", type = "source")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
