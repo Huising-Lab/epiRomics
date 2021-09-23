@@ -198,6 +198,7 @@ epiRomics_track_connection <- read.csv(
 ```
 
 ```{r fig2, fig.width=10, fig.height=15}
+grDevices::dev.new(width=10, height=15)
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome_fantom,
   epiRomics_index = which(
@@ -233,6 +234,8 @@ which(names(
 ```
 
 ```{r fig3, fig.width=10, fig.height=15}
+grDevices::dev.new(width=10, height=15)
+
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome_regulome_active,
   epiRomics_index = which(
@@ -267,6 +270,7 @@ which(names(epiRomics_putative_enhanceosome_regulome_super@annotations) == 1)
 ```
 
 ```{r fig4, fig.width=10, fig.height=15}
+grDevices::dev.new(width=10, height=15)
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome_regulome_super,
   epiRomics_index = which(
@@ -288,6 +292,7 @@ epiRomics_putative_enhanceosome_ucnes@annotations
 ```
 
 ```{r fig5, fig.width=10, fig.height=15}
+grDevices::dev.new(width=10, height=15)
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome_ucnes,
   epiRomics_index = 9,
@@ -330,6 +335,7 @@ epiRomics_putative_enhanceosome_stringent <-
 ```
 
 ```{r fig6, fig.width=10, fig.height=15}
+grDevices::dev.new(width=10, height=15)
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome_stringent,
   epiRomics_index = 1,
@@ -356,7 +362,7 @@ beta_enhancer_regions <-
 
 ```{r fig7, fig.width=10, fig.height=15}
 # Now, lets visualize the top candidate region we found after connecting our differential chromatin analysis with the putative enhanceosomes
-
+grDevices::dev.new(width=10, height=15)
 epiRomics_track_layer_human(
   beta_enhancer_regions,
   epiRomics_index = 1,

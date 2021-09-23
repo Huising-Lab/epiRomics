@@ -28,7 +28,7 @@ Imports:
     annotatr (>= 1.18.1),
     BiocGenerics (>= 0.38.0),
     BiocManager (>= 1.30.16),
-    ChIPseeker (>= 1.28.3),
+    ChIPseeker (>= 1.10.0),
     data.table (>= 1.12.8),
     GenomeInfoDb (>= 1.28.1),
     GenomicFeatures (>= 1.44.1),
