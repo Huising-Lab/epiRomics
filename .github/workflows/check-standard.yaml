@@ -58,7 +58,8 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install -y libglpk-dev libxml2 lixml2 libxml2-dev gfortran-7 gcc-7 g++-7 build-essential
+          sudo apt-get update && sudo apt-get upgrade 
+          sudo apt-get install -y libglpk-dev libxml2 libxml2-dev gfortran-7 gcc-7 g++-7 build-essential
           while read -r cmd
           do
             eval sudo $cmd
