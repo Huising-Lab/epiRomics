@@ -5,7 +5,7 @@
 
 [![](https://img.shields.io/badge/Altmetric-13-green.svg)](https://www.altmetric.com/details/112068712)
 
-"[![R build status](https://github.com/Huising-Lab/epiRomics/workflows/R-CMD-check/badge.svg)](https://github.com/Huising-Lab/epiRomics/actions)"
+[![R build status](https://github.com/Huising-Lab/epiRomics/workflows/R-CMD-check/badge.svg)](https://github.com/Huising-Lab/epiRomics/actions)
 
 An R package designed to integrate and visualize various levels of epigenomic information, including but not limited to: ChIP, Histone, ATAC, and RNA sequencing. epiRomics is also designed for regulatory network analysis in order to identify enhancer and enhanceosome regions from these data. 
 
