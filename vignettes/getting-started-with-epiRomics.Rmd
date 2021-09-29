@@ -1,21 +1,20 @@
 ---
 title: "Getting Started with EpiRomics"
-#output: rmarkdown::html_vignette
-author: "Authors: Alex M. Mawla & Mark O. Huising. Copyright 2020 - Present."
+author: 'Authors: Alex M. Mawla & Mark O. Huising. Copyright 2020 - Present.'
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: yes
+    df_print: kable
   prettydoc::html_pretty:
-    toc: true
+    toc: yes
     theme: cayman
     highlight: github
-  pdf_document:
-    toc: true
-    df_print: kable
-vignette: >
- %\VignetteIndexEntry{Getting Started with EpiRomics}
- %\VignetteEngine{knitr::rmarkdown}
- %\VignetteEncoding{UTF-8}
- \usepackage[utf8]{inputenc}
+  html_document:
+    toc: yes
+    df_print: paged
+vignette: '%\VignetteIndexEntry{Getting Started with EpiRomics} %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc} %\VignetteEngine{knitr::rmarkdown}'
 ---
 
 ```{r, include = FALSE}
@@ -111,7 +110,7 @@ head(example_epiRomics_Db_sheet)
 
 # How to load and build the database
 
-```{r dataformatandload, tidy=TRUE, tidy.opts = list(width.cutoff = 70), fontsize=10}
+```{r dataformatandload, tidy=TRUE, tidy.opts = list(width.cutoff = 90), fontsize=9}
 
 ## epiRomics_build_dB constructs a database of class epiRomics with this data sheet
 

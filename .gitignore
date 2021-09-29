@@ -23,3 +23,11 @@ vignettes/getting-started-with-epiRomics_cache/html/__packages
 *.dcf
 *.woff
 *.jpg
+vignettes/getting-started-with-epiRomics_cache/latex/__packages
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig1-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig3-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig2-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig4-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig5-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig6-1.pdf
+vignettes/getting-started-with-epiRomics_files/figure-latex/fig7-1.pdf
