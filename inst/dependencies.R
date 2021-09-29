@@ -12,13 +12,14 @@ to_install_cran <-
     "party",
     "plyr",
     "knitr",
-    "rmarkdown"
+    "rmarkdown",
+    "igraph"
   )
 for (i in to_install_cran) {
   base::packageStartupMessage(paste("looking for ", i))
   if (!requireNamespace(i)) {
     base::packageStartupMessage(paste("     installing", i))
-    utils::install.packages(i, repos = "http://cran.us.r-project.org")
+    utils::install.packages(i, repos = "http://cran.us.r-project.org", type="source")
   }
 }
 
@@ -33,6 +34,8 @@ to_install_bc <-
     "Gviz",
     "IRanges",
     "rtracklayer",
+    "enrichplot",
+    "ChIPseeker",
     "org.Hs.eg.db",
     "TxDb.Hsapiens.UCSC.hg38.knownGene"
   )

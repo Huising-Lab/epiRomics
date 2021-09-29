@@ -15,3 +15,11 @@ inst/extdata/example_epiRomics_Db_sheet_user_paths.csv
 *.timestamp
 Meta
 docs
+vignettes/getting-started-with-epiRomics_cache/html/__packages
+*.RData
+*.rdb
+*.rdx
+*.png
+*.dcf
+*.woff
+*.jpg
