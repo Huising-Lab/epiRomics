@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">epiRomics</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -73,9 +69,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting Started with EpiRomics</h1>
-                        <h4 class="author">Authors: Alex M. Mawla &amp; Mark O. Huising. Copyright 2020 - Present.</h4>
+                        <h4 data-toc-skip class="author">Authors: Alex M. Mawla &amp; Mark O. Huising. Copyright 2020 - Present.</h4>
             
-            <h4 class="date">2021-10-07</h4>
+            <h4 data-toc-skip class="date">2021-12-06</h4>
       
       
       <div class="hidden name"><code>getting-started-with-epiRomics.Rmd</code></div>
@@ -89,31 +85,30 @@ pre code {
   white-space: pre-wrap;
 }
 </style>
-<div id="abstract" class="section level1">
-<h1 class="hasAnchor">
-<a href="#abstract" class="anchor"></a>Abstract</h1>
+<div class="section level1">
+<h1 id="abstract">Abstract<a class="anchor" aria-label="anchor" href="#abstract"></a>
+</h1>
 <p><strong>Summary</strong> epiRomics is an R package designed to integrate multi-omics data in order to identify and visualize enhancer regions alongside gene expression and other epigenomic modifications. Regulatory network analysis can be done using combinatory approaches to infer regions of significance such as enhancers, when combining ChIP and histone data. Downstream analysis can identify co-occurrence of these regions of interest with other user-supplied data, such as chromatin availability or gene expression. Finally, this package allows for results to be visualized at high resolution in a stand-alone browser.</p>
-<p><strong>Availability and Implementation</strong> epiRomics is released under Artistic-2.0 License. The source code and documents are freely available through Github (<a href="https://github.com/Huising-Lab/epiRomics" class="uri">https://github.com/Huising-Lab/epiRomics</a>).</p>
+<p><strong>Availability and Implementation</strong> epiRomics is released under Artistic-2.0 License. The source code and documents are freely available through Github (<a href="https://github.com/Huising-Lab/epiRomics" class="external-link uri">https://github.com/Huising-Lab/epiRomics</a>).</p>
 <p><strong>Contact</strong> ammawl@ucdavis.edu or mhuising@ucdavis.edu</p>
 <p><strong>Supplementary information</strong> Supplementary data, and methods are available online on <em>biorXiv</em> or <em>Github.</em></p>
 <p><strong>Competing Interest Statement</strong></p>
 <p>The authors have declared no competing interest.</p>
 </div>
-<div id="citation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h1>
+<div class="section level1">
+<h1 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h1>
 <p>If you use epiRomics in published research, please cite:</p>
 <p>Mawla, AM&amp; Huising, MO. <strong>epiRomics: a multi-omics R package to identify and visualize enhancers.</strong></p>
-<p>biorXiv 2021. doi:<a href="https://doi.org/10.1101/2021.08.19.456732" class="uri">https://doi.org/10.1101/2021.08.19.456732</a></p>
+<p>biorXiv 2021. doi:<a href="https://doi.org/10.1101/2021.08.19.456732" class="external-link uri">https://doi.org/10.1101/2021.08.19.456732</a></p>
 </div>
-<div id="loading-the-epiromics-package-and-dependencies-for-vignette" class="section level1">
-<h1 class="hasAnchor">
-<a href="#loading-the-epiromics-package-and-dependencies-for-vignette" class="anchor"></a>Loading the epiRomics package and dependencies for vignette</h1>
+<div class="section level1">
+<h1 id="loading-the-epiromics-package-and-dependencies-for-vignette">Loading the epiRomics package and dependencies for vignette<a class="anchor" aria-label="anchor" href="#loading-the-epiromics-package-and-dependencies-for-vignette"></a>
+</h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co">## loading packages</span>
+<code class="sourceCode R"><span class="co">## loading packages</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">epiRomics</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">epiRomics</span><span class="op">)</span>
 <span class="co">#&gt; epiRomics package loaded.</span>
 <span class="co">#&gt; Automatic dependency check and verification of sample data presence</span>
 <span class="co">#&gt; 'getOption("repos")' replaces Bioconductor standard repositories, see</span>
@@ -121,8 +116,8 @@ pre code {
 <span class="co">#&gt; </span>
 <span class="co">#&gt; replacement repositories:</span>
 <span class="co">#&gt;     CRAN: https://cloud.r-project.org</span>
-<span class="co">#&gt; Bioconductor version 3.13 (BiocManager 1.30.16), R 4.1.1 (2021-08-10)</span>
-<span class="co">#&gt; Old packages: 'rcmdcheck', 'lattice', 'mgcv', 'nlme', 'survival'</span>
+<span class="co">#&gt; Bioconductor version 3.14 (BiocManager 1.30.16), R 4.1.2 (2021-11-01)</span>
+<span class="co">#&gt; Old packages: 'enrichplot'</span>
 <span class="co">#&gt; looking for  data.table</span>
 <span class="co">#&gt; looking for  party</span>
 <span class="co">#&gt; Loading required namespace: party</span>
@@ -136,8 +131,6 @@ pre code {
 <span class="co">#&gt; Loading required namespace: AnnotationDbi</span>
 <span class="co">#&gt; looking for  annotatr</span>
 <span class="co">#&gt; Loading required namespace: annotatr</span>
-<span class="co">#&gt; Warning: replacing previous import 'AnnotationHub::hubUrl' by</span>
-<span class="co">#&gt; 'rtracklayer::hubUrl' when loading 'annotatr'</span>
 <span class="co">#&gt; looking for  BiocGenerics</span>
 <span class="co">#&gt; looking for  GenomicFeatures</span>
 <span class="co">#&gt; looking for  GenomicRanges</span>
@@ -157,17 +150,11 @@ pre code {
 <span class="co">#&gt; Loading required namespace: TxDb.Hsapiens.UCSC.hg38.knownGene</span>
 <span class="co">#&gt; You are ready to go. For feedback, please email: ammawla@ucdavis.edu</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: GenomicFeatures</span>
 <span class="co">#&gt; Loading required package: BiocGenerics</span>
-<span class="co">#&gt; Loading required package: parallel</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'BiocGenerics'</span>
-<span class="co">#&gt; The following objects are masked from 'package:parallel':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,</span>
-<span class="co">#&gt;     clusterExport, clusterMap, parApply, parCapply, parLapply,</span>
-<span class="co">#&gt;     parLapplyLB, parRapply, parSapply, parSapplyLB</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     IQR, mad, sd, var, xtabs</span>
@@ -197,11 +184,11 @@ pre code {
 <span class="co">#&gt;     'browseVignettes()'. To cite Bioconductor, see</span>
 <span class="co">#&gt;     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="brief-explanation-of-example-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#brief-explanation-of-example-data" class="anchor"></a>Brief explanation of example data</h1>
+<div class="section level1">
+<h1 id="brief-explanation-of-example-data">Brief explanation of example data<a class="anchor" aria-label="anchor" href="#brief-explanation-of-example-data"></a>
+</h1>
 <p>This package includes some example data to get you started, delineating human pancreatic islet enhancers between alpha and beta cells.</p>
 <p>Human pancreatic islet alpha and beta ATAC- and companion RNA- Seq data were retrieved from GEO accession GSE76268 (Ackermann, et al., 2016).</p>
 <p>ATAC samples were processed using the ENCODE-DCC ATAC sequencing pipeline, aligning to the hg38 (Harrow, et al., 2012) build of the human genome (Consortium, 2012; Davis, et al., 2018).</p>
@@ -213,52 +200,46 @@ pre code {
 <p>The FANTOM5 human enhancer database (Lizio, et al., 2015) was retrieved, and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.</p>
 <p>Human ultra-conserved non-coding elements (UCNEs) were retrieved form the UCNE database (Dimitrieva and Bucher, 2012), and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.</p>
 <p>The human islet regulome database was retrieved (Miguel-Escalada, et al., 2019) and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.</p>
+</div>
+<div class="section level1">
+<h1 id="how-to-load-and-build-the-database">How to load and build the database<a class="anchor" aria-label="anchor" href="#how-to-load-and-build-the-database"></a>
+</h1>
 <p>Lets load and take a look at how to properly format the datasets epiRomics uses to build the initial database.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
+<span class="va">example_epiRomics_Db_sheet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span>
+  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>
+    <span class="st">"extdata"</span>,
+    <span class="st">"example_epiRomics_Db_sheet_user_paths.csv"</span>,
+    package <span class="op">=</span> <span class="st">"epiRomics"</span>
+  <span class="op">)</span>
+<span class="op">)</span>
+
+
 <span class="co">## Required columns are: name, path, genome, format, and type</span>
 
 <span class="co">## The genome must also be in proper format, e.g. mm10 or hg38</span>
 
-<span class="co">## Type of data can be histone, methyl, SNP, or ChIP. ChIP is</span>
-<span class="co">## required for some downstream functions to work appropriately.</span>
+<span class="co">## Type of data can be histone, methyl, SNP, or ChIP. </span>
+<span class="co">## ChIP is required for some downstream functions to work appropriately.</span>
 
-<span class="va">example_epiRomics_Db_sheet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_epiRomics_Db_sheet_user_paths.csv"</span>,
-    package <span class="op">=</span> <span class="st">"epiRomics"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">example_epiRomics_Db_sheet</span><span class="op">)</span>
-<span class="co">#&gt;      name</span>
-<span class="co">#&gt; 1 h3k27ac</span>
-<span class="co">#&gt; 2 h3k4me1</span>
-<span class="co">#&gt; 3   foxa2</span>
-<span class="co">#&gt; 4    mafb</span>
-<span class="co">#&gt; 5  nkx2_2</span>
-<span class="co">#&gt; 6  nxk6_1</span>
-<span class="co">#&gt;                                                                          path</span>
-<span class="co">#&gt; 1 /Users/runner/work/_temp/Library/epiRomics/extdata/Histone/H3k27ac_hg38.bed</span>
-<span class="co">#&gt; 2 /Users/runner/work/_temp/Library/epiRomics/extdata/Histone/H3K4me1_hg38.bed</span>
-<span class="co">#&gt; 3      /Users/runner/work/_temp/Library/epiRomics/extdata/ChIP/FOXA2_hg38.bed</span>
-<span class="co">#&gt; 4       /Users/runner/work/_temp/Library/epiRomics/extdata/ChIP/MAFB_hg38.bed</span>
-<span class="co">#&gt; 5     /Users/runner/work/_temp/Library/epiRomics/extdata/ChIP/NKX2_2_hg38.bed</span>
-<span class="co">#&gt; 6     /Users/runner/work/_temp/Library/epiRomics/extdata/ChIP/NKX6_1_hg38.bed</span>
-<span class="co">#&gt;   genome format    type</span>
-<span class="co">#&gt; 1   hg38    bed histone</span>
-<span class="co">#&gt; 2   hg38    bed histone</span>
-<span class="co">#&gt; 3   hg38    bed    chip</span>
-<span class="co">#&gt; 4   hg38    bed    chip</span>
-<span class="co">#&gt; 5   hg38    bed    chip</span>
-<span class="co">#&gt; 6   hg38    bed    chip</span></code></pre></div>
-</div>
-<div id="how-to-load-and-build-the-database" class="section level1">
-<h1 class="hasAnchor">
-<a href="#how-to-load-and-build-the-database" class="anchor"></a>How to load and build the database</h1>
+<span class="co">## Not run</span>
+<span class="co">#head(example_epiRomics_Db_sheet)</span></code></pre></div>
+<p>epiRomics_build_dB constructs a database of class epiRomics with this data sheet</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="co">## epiRomics_build_dB constructs a database of class epiRomics with this data sheet</span>
-
-<span class="va">epiRomics_dB</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_build_dB.html">epiRomics_build_dB</a></span><span class="op">(</span>epiRomics_db_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_epiRomics_Db_sheet_user_paths.csv"</span>,
-    package <span class="op">=</span> <span class="st">"epiRomics"</span><span class="op">)</span>, txdb_organism <span class="op">=</span> <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene"</span>,
-    epiRomics_genome <span class="op">=</span> <span class="st">"hg38"</span>, epiRomics_organism <span class="op">=</span> <span class="st">"org.Hs.eg.db"</span><span class="op">)</span>
+<span class="va">epiRomics_dB</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_build_dB.html">epiRomics_build_dB</a></span><span class="op">(</span>
+  epiRomics_db_file <span class="op">=</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>
+      <span class="st">"extdata"</span>,
+      <span class="st">"example_epiRomics_Db_sheet_user_paths.csv"</span>,
+      package <span class="op">=</span> <span class="st">"epiRomics"</span>
+    <span class="op">)</span>,
+  txdb_organism <span class="op">=</span>
+    <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene"</span>,
+  epiRomics_genome <span class="op">=</span> <span class="st">"hg38"</span>,
+  epiRomics_organism <span class="op">=</span> <span class="st">"org.Hs.eg.db"</span>
+<span class="op">)</span>
 <span class="co">#&gt; 'getOption("repos")' replaces Bioconductor standard repositories, see</span>
 <span class="co">#&gt; '?repositories' for details</span>
 <span class="co">#&gt; </span>
@@ -331,7 +312,7 @@ pre code {
 <span class="co">#&gt; replacement repositories:</span>
 <span class="co">#&gt;     CRAN: https://cloud.r-project.org</span>
 <span class="co">#&gt; Building enhancers...</span>
-<span class="co">#&gt; snapshotDate(): 2021-05-18</span>
+<span class="co">#&gt; snapshotDate(): 2021-10-20</span>
 <span class="co">#&gt; downloading 1 resources</span>
 <span class="co">#&gt; retrieving 1 resource</span>
 <span class="co">#&gt; loading from cache</span>
@@ -357,27 +338,27 @@ pre code {
 <span class="co">#&gt; Building CpG shores...</span>
 <span class="co">#&gt; Building CpG shelves...</span>
 <span class="co">#&gt; Building inter-CpG-islands...</span>
-<span class="co">#&gt; snapshotDate(): 2021-05-18</span>
+<span class="co">#&gt; snapshotDate(): 2021-10-20</span>
 <span class="co">#&gt; Building lncRNA transcripts...</span>
 <span class="co">#&gt; downloading 1 resources</span>
 <span class="co">#&gt; retrieving 1 resource</span>
 <span class="co">#&gt; loading from cache</span></code></pre></div>
 </div>
-<div id="delineating-active-enhancers-using-h3k4me1-and-h3k27ac-marks-as-a-proxy" class="section level1">
-<h1 class="hasAnchor">
-<a href="#delineating-active-enhancers-using-h3k4me1-and-h3k27ac-marks-as-a-proxy" class="anchor"></a>Delineating active enhancers using H3k4me1 and H3k27ac marks as a proxy</h1>
+<div class="section level1">
+<h1 id="delineating-active-enhancers-using-h3k4me1-and-h3k27ac-marks-as-a-proxy">Delineating active enhancers using H3k4me1 and H3k27ac marks as a proxy<a class="anchor" aria-label="anchor" href="#delineating-active-enhancers-using-h3k4me1-and-h3k27ac-marks-as-a-proxy"></a>
+</h1>
+<p>There is a lot of flexibility for data exploration here. In this example, we search for putative enhancers using two histone marks known to co-occur at enhancer regions - h3k4me1 &amp; h3k27ac</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Identifying active, putative enhancers</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhancers</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhancers.html">epiRomics_enhancers</a></span><span class="op">(</span>
+    <span class="va">epiRomics_dB</span>,
+    epiRomics_histone_mark_1 <span class="op">=</span>
+      <span class="st">"h3k4me1"</span>,
+    epiRomics_histone_mark_2 <span class="op">=</span> <span class="st">"h3k27ac"</span>
+  <span class="op">)</span>
 
-<span class="co"># 3 There is a lot of flexibility for data exploration here. In this</span>
-<span class="co"># example, we search for putative enhancers using two histone marks</span>
-<span class="co"># known to co-occur at enhancer regions - h3k4me1 &amp; h3k27ac</span>
-
-<span class="va">epiRomics_putative_enhancers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhancers.html">epiRomics_enhancers</a></span><span class="op">(</span><span class="va">epiRomics_dB</span>, epiRomics_histone_mark_1 <span class="op">=</span> <span class="st">"h3k4me1"</span>,
-    epiRomics_histone_mark_2 <span class="op">=</span> <span class="st">"h3k27ac"</span><span class="op">)</span>
-
-<span class="co">## Taking a look, we see a list of 19,692 putative enhancers demarked</span>
-<span class="co">## by H3k4me1 &amp; H3k27ac</span>
+<span class="co">## Taking a look, we see a  list of 19,692 putative enhancers </span>
 
 <span class="va">epiRomics_putative_enhancers</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 19692 ranges and 0 metadata columns:</span>
@@ -395,24 +376,22 @@ pre code {
 <span class="co">#&gt;   [19691]     chrY 19066496-19066508      *</span>
 <span class="co">#&gt;   [19692]     chrY 19075542-19075899      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 </div>
-<div id="cross-referencing-enhancer-calls-to-other-databases" class="section level1">
-<h1 class="hasAnchor">
-<a href="#cross-referencing-enhancer-calls-to-other-databases" class="anchor"></a>Cross-referencing enhancer calls to other databases</h1>
-<div id="fantom-enhancer-database" class="section level2">
-<h2 class="hasAnchor">
-<a href="#fantom-enhancer-database" class="anchor"></a>FANTOM Enhancer Database</h2>
+<div class="section level1">
+<h1 id="cross-referencing-enhancer-calls-to-other-databases">Cross-referencing enhancer calls to other databases<a class="anchor" aria-label="anchor" href="#cross-referencing-enhancer-calls-to-other-databases"></a>
+</h1>
+<div class="section level2">
+<h2 id="fantom-enhancer-database">FANTOM Enhancer Database<a class="anchor" aria-label="anchor" href="#fantom-enhancer-database"></a>
+</h2>
+<p>Now we have a list of regions as possible candidates for enhancers, but where do we go from here? One way to increase confidence of these calls is to cross this list against an enhancer database, for instance, FANTOM.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Now we have a list of regions as possible candidates for</span>
-<span class="co">## enhancers, but where do we go from here? One way to increase</span>
-<span class="co">## confidence of these calls is to cross this list against an</span>
-<span class="co">## enhancer database, for instance, FANTOM.</span>
+<code class="sourceCode R"><span class="co">## NOTE: This option may not be available for all organisms.</span>
 
-<span class="co">## NOTE: This option may not be available for all organisms.</span>
-
-<span class="va">epiRomics_putative_enhancers_filtered_fantom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
-    <span class="va">epiRomics_dB</span>, epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_fantom"</span><span class="op">)</span>
+<span class="va">epiRomics_putative_enhancers_filtered_fantom</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>, <span class="va">epiRomics_dB</span>,
+                             epiRomics_type <span class="op">=</span>
+                               <span class="st">"hg38_custom_fantom"</span><span class="op">)</span>
 
 <span class="co">## Taking a look, we see a reduced number of 2,749 candidate regions</span>
 
@@ -432,17 +411,18 @@ pre code {
 <span class="co">#&gt;   [2748]     chrX 154517139-154517596      *</span>
 <span class="co">#&gt;   [2749]     chrX 154734550-154734738      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 </div>
-<div id="human-pancreatic-islet-regulome-enhancer-database" class="section level2">
-<h2 class="hasAnchor">
-<a href="#human-pancreatic-islet-regulome-enhancer-database" class="anchor"></a>Human Pancreatic Islet Regulome Enhancer Database</h2>
+<div class="section level2">
+<h2 id="human-pancreatic-islet-regulome-enhancer-database">Human Pancreatic Islet Regulome Enhancer Database<a class="anchor" aria-label="anchor" href="#human-pancreatic-islet-regulome-enhancer-database"></a>
+</h2>
+<p>We can also filter putative enhancer calls against active enhancers from the human islet regulome database</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## We can also filter putative enhancer calls against active</span>
-<span class="co">## enhancers from the human islet regulome database</span>
-
-<span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
-    <span class="va">epiRomics_dB</span>, epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_regulome_active"</span><span class="op">)</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
+                             <span class="va">epiRomics_dB</span>,
+                             epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_regulome_active"</span><span class="op">)</span>
 
 
 <span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span><span class="op">@</span><span class="va">annotations</span>
@@ -461,17 +441,17 @@ pre code {
 <span class="co">#&gt;   [6024]     chrX 153985442-153985689      *</span>
 <span class="co">#&gt;   [6025]     chrX 154091801-154091996      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 </div>
-<div id="human-pancreatic-islet-regulome-super-enhancer-database" class="section level2">
-<h2 class="hasAnchor">
-<a href="#human-pancreatic-islet-regulome-super-enhancer-database" class="anchor"></a>Human Pancreatic Islet Regulome Super-Enhancer Database</h2>
+<div class="section level2">
+<h2 id="human-pancreatic-islet-regulome-super-enhancer-database">Human Pancreatic Islet Regulome Super-Enhancer Database<a class="anchor" aria-label="anchor" href="#human-pancreatic-islet-regulome-super-enhancer-database"></a>
+</h2>
+<p>We can also filter putative enhancer calls against super enhancers from human islet regulome database</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## We can also filter putative enhancer calls against super enhancers</span>
-<span class="co">## from human islet regulome database</span>
-
-<span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
-    <span class="va">epiRomics_dB</span>, epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_regulome_super"</span><span class="op">)</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
+                             <span class="va">epiRomics_dB</span>, epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_regulome_super"</span><span class="op">)</span>
 
 <span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 2401 ranges and 0 metadata columns:</span>
@@ -489,18 +469,18 @@ pre code {
 <span class="co">#&gt;   [2400]     chrX 39813348-39813627      *</span>
 <span class="co">#&gt;   [2401]     chrX 39814304-39814607      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 </div>
-<div id="human-ultra-conserved-non-coding-elements-database" class="section level2">
-<h2 class="hasAnchor">
-<a href="#human-ultra-conserved-non-coding-elements-database" class="anchor"></a>Human Ultra-Conserved Non-Coding Elements Database</h2>
+<div class="section level2">
+<h2 id="human-ultra-conserved-non-coding-elements-database">Human Ultra-Conserved Non-Coding Elements Database<a class="anchor" aria-label="anchor" href="#human-ultra-conserved-non-coding-elements-database"></a>
+</h2>
+<p>We can also filter putative enhancer calls against Ultra-Conserved Non-Coding Elements</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## We can also filter putative enhancer calls against Ultra-Conserved</span>
-<span class="co">## Non-Coding Elements</span>
-
-<span class="va">epiRomics_putative_enhancers_filtered_ucnes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
-    <span class="va">epiRomics_dB</span>, epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_ucnes"</span><span class="op">)</span>
-
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhancers_filtered_ucnes</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>,
+                             <span class="va">epiRomics_dB</span>,
+                             epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_ucnes"</span><span class="op">)</span>
 
 <span class="va">epiRomics_putative_enhancers_filtered_ucnes</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 11 ranges and 0 metadata columns:</span>
@@ -518,28 +498,28 @@ pre code {
 <span class="co">#&gt;   [10]    chr15   53447393-53447809      *</span>
 <span class="co">#&gt;   [11]    chr21   16534340-16534665      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 </div>
 </div>
-<div id="screening-for-high-transcription-factor-co-binding-sites" class="section level1">
-<h1 class="hasAnchor">
-<a href="#screening-for-high-transcription-factor-co-binding-sites" class="anchor"></a>Screening for high transcription factor co-binding sites</h1>
+<div class="section level1">
+<h1 id="screening-for-high-transcription-factor-co-binding-sites">Screening for high transcription factor co-binding sites<a class="anchor" aria-label="anchor" href="#screening-for-high-transcription-factor-co-binding-sites"></a>
+</h1>
 <p>Biology has established that enhancers can be quite redundant, and not all play an active role in regulating a cell’s activity. How can we utilize other epigenomic data in order to identify true enhanceosome regions? One way is to cross this list against all ChIP data of the cell type. A true enhanceosome region should have made it through our filtering thus far, and contain several binding sites for known TFs. Co-binding is expected, and the list is sorted by the highest number of ChIP hits within the region.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">epiRomics_putative_enhanceosome_fantom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_fantom</span>,
-    <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-10-07 22:00:11 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-10-07 22:00:12 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-10-07 22:00:13 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-10-07 22:00:13 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-10-07 22:00:44</span>
+<span class="va">epiRomics_putative_enhanceosome_fantom</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_fantom</span>,
+                         <span class="va">epiRomics_dB</span><span class="op">)</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 00:47:16 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 00:47:17 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 00:47:17 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 00:47:17 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 00:47:52</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-10-07 22:00:44 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-10-07 22:00:44</span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 00:47:52 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 00:47:52</span>
 
-<span class="co">## Taking a look, we see the top candidates meet the criteria we list</span>
-<span class="co">## as expected</span>
+<span class="co">## Taking a look, we see the top candidates meet the criteria we list as expected</span>
 
 <span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 2749 ranges and 19 metadata columns:</span>
@@ -596,12 +576,14 @@ pre code {
 <span class="co">#&gt;   2747         -1067 ENSG00000196924        FLNA              filamin A</span>
 <span class="co">#&gt;   2748          -897 ENSG00000071889       FAM3A FAM3 metabolism regu..</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span>
-
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span>
 
 <span class="co">## Evaluate calls on chromosome 1</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> <span class="op">==</span>
-    <span class="st">"chr1"</span>, <span class="op">]</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span>
+  <span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span>
+  <span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> 
+    <span class="op">==</span> <span class="st">"chr1"</span>,<span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;     seqnames     start       end width strand foxa2 mafb nkx2_2 nxk6_1 pdx1</span>
 <span class="co">#&gt; 183     chr1 154418514 154419684  1171      *     2    2      1      2    1</span>
 <span class="co">#&gt; 34      chr1  10685395  10688670  3276      *     1    0      1      1    2</span>
@@ -639,39 +621,48 @@ pre code {
 <span class="co">#&gt; 256                        NUAK family kinase 2</span>
 
 <span class="co">## Find Index</span>
-<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">183</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">183</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1</span></code></pre></div>
 </div>
-<div id="transcription-factor-decision-trees" class="section level1">
-<h1 class="hasAnchor">
-<a href="#transcription-factor-decision-trees" class="anchor"></a>Transcription factor decision trees</h1>
+<div class="section level1">
+<h1 id="transcription-factor-decision-trees">Transcription factor decision trees<a class="anchor" aria-label="anchor" href="#transcription-factor-decision-trees"></a>
+</h1>
 <p>ChIP dataset repositories are quite sizeable for many organisms and cell types, with the expectation to only grow larger. Many different TFs binding to a putative enhancer region may not be that meaningful in the context of your biological question. A further step would be to ask whether there are co-TFs that pop up together, and whether this pattern varies across the functional annotation of the genome, i.e. does the combination of two TFs on enhanceosomes change on the gene body compared to distal intergenic regions?</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"> 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/epiRomics_predictors.html">epiRomics_predictors</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig1-1.png" width="90%" style="display: block; margin: auto;"></p>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/epiRomics_predictors.html">epiRomics_predictors</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig1-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div id="intersecting-and-visualizing-atac--and-rna-seq-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#intersecting-and-visualizing-atac--and-rna-seq-data" class="anchor"></a>Intersecting and visualizing ATAC- and RNA-Seq data</h1>
+<div class="section level1">
+<h1 id="intersecting-and-visualizing-atac--and-rna-seq-data">Intersecting and visualizing ATAC- and RNA-Seq data<a class="anchor" aria-label="anchor" href="#intersecting-and-visualizing-atac--and-rna-seq-data"></a>
+</h1>
 <p>What if you wanted to visualize co-binding on your FANTOM filtered putative enhancer region? And do you have additional data you want to include for visualization, such as ATAC and RNA Seq? Lets take a look at one of the top hits</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co">## Read in ATAC Seq and RNA Seq track bigwigs</span>
+<code class="sourceCode R"><span class="co">## Read in ATAC Seq and RNA Seq track bigwigs</span>
 
-<span class="co">## NOTE: These bigwigs are subsetted to chromosome 1. Indices not</span>
-<span class="co">## falling on chromosome 1 will return an error.</span>
+<span class="co">## NOTE: These bigwigs are subsetted to chromosome 1. </span>
+<span class="co">## Indices not falling on chromosome 1 will return an error.</span>
 
-<span class="va">epiRomics_track_connection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_epiRomics_BW_sheet_user_paths.csv"</span>,
-    package <span class="op">=</span> <span class="st">"epiRomics"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">epiRomics_track_connection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>
+    <span class="st">"extdata"</span>,
+    <span class="st">"example_epiRomics_BW_sheet_user_paths.csv"</span>,
+    package <span class="op">=</span> <span class="st">"epiRomics"</span>
+  <span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">epiRomics_putative_enhanceosome_fantom</span>,
-  epiRomics_index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">183</span>
-  <span class="op">)</span>,
+  epiRomics_index <span class="op">=</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span>
+      <span class="op">==</span> <span class="fl">183</span>
+    <span class="op">)</span>,
   epiRomics_dB <span class="op">=</span> <span class="va">epiRomics_dB</span>,
-  epiRomics_track_connection <span class="op">=</span> <span class="va">epiRomics_track_connection</span>
+  epiRomics_track_connection <span class="op">=</span>
+    <span class="va">epiRomics_track_connection</span>
 <span class="op">)</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 103.678</span>
@@ -681,22 +672,21 @@ pre code {
 <span class="co">#&gt; [1] 33.2945</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 50.4959</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig2-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig2-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>What about a region that overlapped with active enhancers from the human islet regulome database?</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## What about a region that overlapped with active enhancers from the</span>
-<span class="co">## human islet regulome database?</span>
-
-<span class="va">epiRomics_putative_enhanceosome_regulome_active</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span>,
-    <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-10-07 22:02:23 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-10-07 22:02:23 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-10-07 22:02:24 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-10-07 22:02:24 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-10-07 22:02:29</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhanceosome_regulome_active</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span>,
+                         <span class="va">epiRomics_dB</span><span class="op">)</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 00:49:35 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 00:49:35 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 00:49:36 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 00:49:36 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 00:49:42</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-10-07 22:02:29 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-10-07 22:02:29</span>
-
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 00:49:42 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 00:49:42</span>
 
 <span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 6025 ranges and 19 metadata columns:</span>
@@ -753,11 +743,14 @@ pre code {
 <span class="co">#&gt;   6007          4728 ENSG00000157514     TSC22D3 TSC22 domain family ..</span>
 <span class="co">#&gt;   6020         24279 ENSG00000102181      CD99L2   CD99 molecule like 2</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span>
 
 <span class="co">## Evaluate calls on chromosome 1</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> <span class="op">==</span>
-    <span class="st">"chr1"</span>, <span class="op">]</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span>
+  <span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span>
+<span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> 
+  <span class="op">==</span> <span class="st">"chr1"</span>,<span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;     seqnames     start       end width strand foxa2 mafb nkx2_2 nxk6_1 pdx1</span>
 <span class="co">#&gt; 456     chr1 154418514 154419684  1171      *     2    2      1      2    1</span>
 <span class="co">#&gt; 82      chr1  10685395  10688670  3276      *     1    0      1      1    2</span>
@@ -775,35 +768,35 @@ pre code {
 <span class="co">#&gt;     geneStart   geneEnd geneLength geneStrand    geneId      transcriptId</span>
 <span class="co">#&gt; 456 154429343 154449979      20637          1      3570 ENST00000476006.5</span>
 <span class="co">#&gt; 82   10660737  10693912      33176          2     54897 ENST00000478728.2</span>
-<span class="co">#&gt; 46    7736408   7767856      31449          1     23261 ENST00000495233.5</span>
-<span class="co">#&gt; 47    7736408   7767856      31449          1     23261 ENST00000495233.5</span>
+<span class="co">#&gt; 46    7441096   7441554        459          2 101928836 ENST00000440032.1</span>
+<span class="co">#&gt; 47    7441096   7441554        459          2 101928836 ENST00000440032.1</span>
 <span class="co">#&gt; 49    8201518   8215207      13690          1 102724539 ENST00000670361.1</span>
 <span class="co">#&gt; 50    8201518   8215207      13690          1 102724539 ENST00000670361.1</span>
-<span class="co">#&gt;     distanceToTSS         ENSEMBL    SYMBOL</span>
-<span class="co">#&gt; 456         -9659 ENSG00000160712      IL6R</span>
-<span class="co">#&gt; 82           5242 ENSG00000130940     CASZ1</span>
-<span class="co">#&gt; 46        -161929 ENSG00000171735    CAMTA1</span>
-<span class="co">#&gt; 47        -161314 ENSG00000171735    CAMTA1</span>
-<span class="co">#&gt; 49         -31829 ENSG00000227634 LINC01714</span>
-<span class="co">#&gt; 50         -30661 ENSG00000227634 LINC01714</span>
-<span class="co">#&gt;                                         GENENAME</span>
-<span class="co">#&gt; 456                       interleukin 6 receptor</span>
-<span class="co">#&gt; 82                          castor zinc finger 1</span>
-<span class="co">#&gt; 46  calmodulin binding transcription activator 1</span>
-<span class="co">#&gt; 47  calmodulin binding transcription activator 1</span>
-<span class="co">#&gt; 49   long intergenic non-protein coding RNA 1714</span>
-<span class="co">#&gt; 50   long intergenic non-protein coding RNA 1714</span>
+<span class="co">#&gt;     distanceToTSS         ENSEMBL     SYMBOL</span>
+<span class="co">#&gt; 456         -9659 ENSG00000160712       IL6R</span>
+<span class="co">#&gt; 82           5242 ENSG00000130940      CASZ1</span>
+<span class="co">#&gt; 46        -132538            &lt;NA&gt; CAMTA1-AS1</span>
+<span class="co">#&gt; 47        -133086            &lt;NA&gt; CAMTA1-AS1</span>
+<span class="co">#&gt; 49         -31829 ENSG00000227634  LINC01714</span>
+<span class="co">#&gt; 50         -30661 ENSG00000227634  LINC01714</span>
+<span class="co">#&gt;                                        GENENAME</span>
+<span class="co">#&gt; 456                      interleukin 6 receptor</span>
+<span class="co">#&gt; 82                         castor zinc finger 1</span>
+<span class="co">#&gt; 46                       CAMTA1 antisense RNA 1</span>
+<span class="co">#&gt; 47                       CAMTA1 antisense RNA 1</span>
+<span class="co">#&gt; 49  long intergenic non-protein coding RNA 1714</span>
+<span class="co">#&gt; 50  long intergenic non-protein coding RNA 1714</span>
 
 <span class="co">## Find Index</span>
-<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span>
-    <span class="fl">82</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">82</span><span class="op">)</span>
 <span class="co">#&gt; [1] 7</span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">epiRomics_putative_enhanceosome_regulome_active</span>,
-  epiRomics_index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span>
+  epiRomics_index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span>
       <span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span>
     <span class="op">)</span> <span class="op">==</span> <span class="fl">82</span>
   <span class="op">)</span>,
@@ -818,22 +811,21 @@ pre code {
 <span class="co">#&gt; [1] 5.30505</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 2.40628</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig3-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig3-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>What about a region that overlapped with super enhancers from the human islet regulome database?</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## What about a region that overlapped with super enhancers from the</span>
-<span class="co">## human islet regulome database?</span>
-
-<span class="va">epiRomics_putative_enhanceosome_regulome_super</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span>,
-    <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-10-07 22:03:49 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-10-07 22:03:49 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-10-07 22:03:50 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-10-07 22:03:50 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-10-07 22:03:55</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhanceosome_regulome_super</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span>,
+                         <span class="va">epiRomics_dB</span><span class="op">)</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 00:51:06 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 00:51:06 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 00:51:07 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 00:51:07 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 00:51:13</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-10-07 22:03:55 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-10-07 22:03:55</span>
-
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 00:51:13 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 00:51:13</span>
 
 <span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 2401 ranges and 19 metadata columns:</span>
@@ -890,12 +882,13 @@ pre code {
 <span class="co">#&gt;   2398          2088 ENSG00000284520    MIRLET7B        microRNA let-7b</span>
 <span class="co">#&gt;   2399          2640 ENSG00000284520    MIRLET7B        microRNA let-7b</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span>
-
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span>
 
 <span class="co">## Evaluate calls on chromosome 1</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> <span class="op">==</span>
-    <span class="st">"chr1"</span>, <span class="op">]</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span>
+  <span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span>
+    <span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span><span class="op">$</span><span class="va">seqnames</span> <span class="op">==</span> <span class="st">"chr1"</span>,<span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;     seqnames     start       end width strand foxa2 mafb nkx2_2 nxk6_1 pdx1</span>
 <span class="co">#&gt; 166     chr1 154418514 154419684  1171      *     2    2      1      2    1</span>
 <span class="co">#&gt; 16      chr1  10685395  10688670  3276      *     1    0      1      1    2</span>
@@ -913,34 +906,35 @@ pre code {
 <span class="co">#&gt;     geneStart   geneEnd geneLength geneStrand    geneId      transcriptId</span>
 <span class="co">#&gt; 166 154429343 154449979      20637          1      3570 ENST00000476006.5</span>
 <span class="co">#&gt; 16   10660737  10693912      33176          2     54897 ENST00000478728.2</span>
-<span class="co">#&gt; 1     7736408   7767856      31449          1     23261 ENST00000495233.5</span>
-<span class="co">#&gt; 2     7736408   7767856      31449          1     23261 ENST00000495233.5</span>
+<span class="co">#&gt; 1     7441096   7441554        459          2 101928836 ENST00000440032.1</span>
+<span class="co">#&gt; 2     7441096   7441554        459          2 101928836 ENST00000440032.1</span>
 <span class="co">#&gt; 3     8201518   8215207      13690          1 102724539 ENST00000670361.1</span>
 <span class="co">#&gt; 4     8201518   8215207      13690          1 102724539 ENST00000670361.1</span>
-<span class="co">#&gt;     distanceToTSS         ENSEMBL    SYMBOL</span>
-<span class="co">#&gt; 166         -9659 ENSG00000160712      IL6R</span>
-<span class="co">#&gt; 16           5242 ENSG00000130940     CASZ1</span>
-<span class="co">#&gt; 1         -161929 ENSG00000171735    CAMTA1</span>
-<span class="co">#&gt; 2         -161314 ENSG00000171735    CAMTA1</span>
-<span class="co">#&gt; 3          -31829 ENSG00000227634 LINC01714</span>
-<span class="co">#&gt; 4          -30661 ENSG00000227634 LINC01714</span>
-<span class="co">#&gt;                                         GENENAME</span>
-<span class="co">#&gt; 166                       interleukin 6 receptor</span>
-<span class="co">#&gt; 16                          castor zinc finger 1</span>
-<span class="co">#&gt; 1   calmodulin binding transcription activator 1</span>
-<span class="co">#&gt; 2   calmodulin binding transcription activator 1</span>
-<span class="co">#&gt; 3    long intergenic non-protein coding RNA 1714</span>
-<span class="co">#&gt; 4    long intergenic non-protein coding RNA 1714</span>
+<span class="co">#&gt;     distanceToTSS         ENSEMBL     SYMBOL</span>
+<span class="co">#&gt; 166         -9659 ENSG00000160712       IL6R</span>
+<span class="co">#&gt; 16           5242 ENSG00000130940      CASZ1</span>
+<span class="co">#&gt; 1         -132538            &lt;NA&gt; CAMTA1-AS1</span>
+<span class="co">#&gt; 2         -133086            &lt;NA&gt; CAMTA1-AS1</span>
+<span class="co">#&gt; 3          -31829 ENSG00000227634  LINC01714</span>
+<span class="co">#&gt; 4          -30661 ENSG00000227634  LINC01714</span>
+<span class="co">#&gt;                                        GENENAME</span>
+<span class="co">#&gt; 166                      interleukin 6 receptor</span>
+<span class="co">#&gt; 16                         castor zinc finger 1</span>
+<span class="co">#&gt; 1                        CAMTA1 antisense RNA 1</span>
+<span class="co">#&gt; 2                        CAMTA1 antisense RNA 1</span>
+<span class="co">#&gt; 3   long intergenic non-protein coding RNA 1714</span>
+<span class="co">#&gt; 4   long intergenic non-protein coding RNA 1714</span>
 
 <span class="co">## Find Index</span>
-<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span>
-    <span class="fl">1</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt; [1] 14</span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">epiRomics_putative_enhanceosome_regulome_super</span>,
-  epiRomics_index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>
+  epiRomics_index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>
   <span class="op">)</span>,
   epiRomics_dB <span class="op">=</span> <span class="va">epiRomics_dB</span>,
   epiRomics_track_connection <span class="op">=</span> <span class="va">epiRomics_track_connection</span>
@@ -953,22 +947,19 @@ pre code {
 <span class="co">#&gt; [1] 11.3213</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 22.1498</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig4-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig4-1.png" width="100%" style="display: block; margin: auto;"> Or, about a region that overlapped with ultra-conserved non coding elements?</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Or, about a region that overlapped with ultra-conserved non coding</span>
-<span class="co">## elements?</span>
-
-<span class="va">epiRomics_putative_enhanceosome_ucnes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_ucnes</span>,
-    <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-10-07 22:05:20 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-10-07 22:05:20 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-10-07 22:05:21 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-10-07 22:05:21 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-10-07 22:05:27</span>
+<code class="sourceCode R">
+<span class="va">epiRomics_putative_enhanceosome_ucnes</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_ucnes</span>, <span class="va">epiRomics_dB</span><span class="op">)</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 00:52:40 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 00:52:40 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 00:52:40 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 00:52:40 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 00:52:46</span>
 <span class="co">#&gt; 'select()' returned 1:1 mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-10-07 22:05:27 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-10-07 22:05:27</span>
-
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 00:52:46 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 00:52:46</span>
 
 <span class="va">epiRomics_putative_enhanceosome_ucnes</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 11 ranges and 19 metadata columns:</span>
@@ -992,7 +983,7 @@ pre code {
 <span class="co">#&gt;    6         0         0         1         2       Promoter (&lt;=1kb)         3</span>
 <span class="co">#&gt;    2         0         0         1         1 Intron (ENST00000420..         1</span>
 <span class="co">#&gt;    3         0         0         1         1 Intron (ENST00000420..         1</span>
-<span class="co">#&gt;    8         0         0         1         1 Intron (ENST00000335..        11</span>
+<span class="co">#&gt;    8         0         0         1         1       Promoter (2-3kb)        11</span>
 <span class="co">#&gt;    9         0         0         0         1       Promoter (&lt;=1kb)        15</span>
 <span class="co">#&gt;   11         0         0         1         1       Promoter (&lt;=1kb)        21</span>
 <span class="co">#&gt;    4         0         0         0         0 Intron (ENST00000236..         1</span>
@@ -1005,29 +996,30 @@ pre code {
 <span class="co">#&gt;    6  70959237  71132099     172863          2       27086 ENST00000650188.1</span>
 <span class="co">#&gt;    2 164772912 164807571      34660          1        5087 ENST00000558837.5</span>
 <span class="co">#&gt;    3 164772912 164807571      34660          1        5087 ENST00000558837.5</span>
-<span class="co">#&gt;    8 114180766 114247296      66531          1        7704 ENST00000545851.5</span>
+<span class="co">#&gt;    8 114159791 114161166       1376          2   101928875 ENST00000669692.1</span>
 <span class="co">#&gt;    9  36894784  36904067       9284          2        4212 ENST00000559408.1</span>
 <span class="co">#&gt;   11  16534952  16607137      72186          1      388815 ENST00000654245.1</span>
 <span class="co">#&gt;    4 200043810 200058424      14615          1        2494 ENST00000367357.3</span>
-<span class="co">#&gt;    5 213832591 213841041       8451          2   100505832 ENST00000609394.5</span>
-<span class="co">#&gt;   10  53513742  53541080      27339          2      256764 ENST00000614174.4</span>
-<span class="co">#&gt;      distanceToTSS         ENSEMBL      SYMBOL               GENENAME</span>
-<span class="co">#&gt;          &lt;numeric&gt;     &lt;character&gt; &lt;character&gt;            &lt;character&gt;</span>
-<span class="co">#&gt;    7         -5161 ENSG00000148143      ZNF462 zinc finger protein ..</span>
-<span class="co">#&gt;    1          4239 ENSG00000185630        PBX1         PBX homeobox 1</span>
-<span class="co">#&gt;    6             0 ENSG00000114861       FOXP1        forkhead box P1</span>
-<span class="co">#&gt;    2        -60616 ENSG00000185630        PBX1         PBX homeobox 1</span>
-<span class="co">#&gt;    3        -59841 ENSG00000185630        PBX1         PBX homeobox 1</span>
-<span class="co">#&gt;    8        -15906 ENSG00000109906      ZBTB16 zinc finger and BTB ..</span>
-<span class="co">#&gt;    9             0 ENSG00000134138       MEIS2        Meis homeobox 2</span>
-<span class="co">#&gt;   11          -287 ENSG00000215386    MIR99AHG mir-99a-let-7c clust..</span>
-<span class="co">#&gt;    4         35375 ENSG00000116833       NR5A2 nuclear receptor sub..</span>
-<span class="co">#&gt;    5        254656 ENSG00000230461   PROX1-AS1  PROX1 antisense RNA 1</span>
-<span class="co">#&gt;   10         93271 ENSG00000166415       WDR72    WD repeat domain 72</span>
+<span class="co">#&gt;    5 213492288 213579267      86980          1   105372912 ENST00000417161.2</span>
+<span class="co">#&gt;   10  53419865  53453487      33623          1   105370826 ENST00000662193.1</span>
+<span class="co">#&gt;      distanceToTSS         ENSEMBL       SYMBOL               GENENAME</span>
+<span class="co">#&gt;          &lt;numeric&gt;     &lt;character&gt;  &lt;character&gt;            &lt;character&gt;</span>
+<span class="co">#&gt;    7         -5161 ENSG00000148143       ZNF462 zinc finger protein ..</span>
+<span class="co">#&gt;    1          4239 ENSG00000185630         PBX1         PBX homeobox 1</span>
+<span class="co">#&gt;    6             0 ENSG00000114861        FOXP1        forkhead box P1</span>
+<span class="co">#&gt;    2        -60616 ENSG00000185630         PBX1         PBX homeobox 1</span>
+<span class="co">#&gt;    3        -59841 ENSG00000185630         PBX1         PBX homeobox 1</span>
+<span class="co">#&gt;    8         -2259            &lt;NA&gt; LOC101928875 uncharacterized LOC1..</span>
+<span class="co">#&gt;    9             0 ENSG00000134138        MEIS2        Meis homeobox 2</span>
+<span class="co">#&gt;   11          -287 ENSG00000215386     MIR99AHG mir-99a-let-7c clust..</span>
+<span class="co">#&gt;    4         35375 ENSG00000116833        NR5A2 nuclear receptor sub..</span>
+<span class="co">#&gt;    5         93406            &lt;NA&gt; LOC105372912 uncharacterized LOC1..</span>
+<span class="co">#&gt;   10         27528            &lt;NA&gt; LOC105370826 uncharacterized LOC1..</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span></code></pre></div>
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">epiRomics_putative_enhanceosome_ucnes</span>,
   epiRomics_index <span class="op">=</span> <span class="fl">9</span>,
   epiRomics_dB <span class="op">=</span> <span class="va">epiRomics_dB</span>,
@@ -1041,18 +1033,17 @@ pre code {
 <span class="co">#&gt; [1] 3.55117</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 3.80884</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig5-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig5-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>How about applying multiple filters to further increase the confidence of calls?</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## How about applying multiple filters to further increase the confidence of calls?</span>
-
+<code class="sourceCode R">
 <span class="va">epiRomics_putative_enhancers_filtered_stringent</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span>
     <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span>
       <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span>
         <span class="fu"><a href="../reference/epiRomics_enhancers_filter.html">epiRomics_enhancers_filter</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers</span>, <span class="va">epiRomics_dB</span>,
-          epiRomics_type <span class="op">=</span>
-            <span class="st">"hg38_custom_fantom"</span>
-        <span class="op">)</span>,
+                                   epiRomics_type <span class="op">=</span>
+                                     <span class="st">"hg38_custom_fantom"</span><span class="op">)</span>,
         <span class="va">epiRomics_dB</span>,
         epiRomics_type <span class="op">=</span> <span class="st">"hg38_custom_regulome_active"</span>
       <span class="op">)</span>,
@@ -1064,7 +1055,11 @@ pre code {
   <span class="op">)</span>
 
 
-<span class="co">## Here, we see a highly conservative list of putative enhancer calls that overlap with four different functional annotations, suggesting the lowest hanging fruit for downstream bench-lab validation. NOTE: The UCNE database filter caused the greatest reduction in enhancer calls.</span>
+<span class="co">## Here, we see a highly conservative list of putative enhancer calls that overlap with four</span>
+<span class="co">## different functional annotations, suggesting the lowest hanging fruit for downstream </span>
+<span class="co">## bench-lab validation. </span>
+<span class="co">## NOTE: The UCNE database filter caused the greatest reduction in enhancer calls.</span>
+
 <span class="va">epiRomics_putative_enhancers_filtered_stringent</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 2 ranges and 0 metadata columns:</span>
 <span class="co">#&gt;       seqnames              ranges strand</span>
@@ -1072,24 +1067,22 @@ pre code {
 <span class="co">#&gt;   [1]     chr1 164711914-164712296      *</span>
 <span class="co">#&gt;   [2]     chr1 164712350-164713071      *</span>
 <span class="co">#&gt;   -------</span>
-<span class="co">#&gt;   seqinfo: 595 sequences (1 circular) from hg38 genome</span>
-
+<span class="co">#&gt;   seqinfo: 640 sequences (1 circular) from hg38 genome</span>
 
 <span class="va">epiRomics_putative_enhanceosome_stringent</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span>
-    <span class="va">epiRomics_putative_enhancers_filtered_stringent</span>,
-    <span class="va">epiRomics_dB</span>
-  <span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-10-07 22:06:50 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-10-07 22:06:50 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-10-07 22:06:50 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-10-07 22:06:50 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-10-07 22:06:55</span>
+  <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_stringent</span>,
+                         <span class="va">epiRomics_dB</span><span class="op">)</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 00:54:09 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 00:54:09 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 00:54:10 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 00:54:10 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 00:54:15</span>
 <span class="co">#&gt; 'select()' returned 1:1 mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-10-07 22:06:55 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-10-07 22:06:55</span></code></pre></div>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 00:54:15 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 00:54:15</span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">epiRomics_putative_enhanceosome_stringent</span>,
   epiRomics_index <span class="op">=</span> <span class="fl">1</span>,
   epiRomics_dB <span class="op">=</span> <span class="va">epiRomics_dB</span>,
@@ -1103,26 +1096,27 @@ pre code {
 <span class="co">#&gt; [1] 9.31751</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 15.8259</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig6-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig6-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>How can we use these putative enhanceosome regions to infer biology between cell states? In this example, we will integrate ATAC-Seq data differential testing showing differences in chromatin accessibility between alpha and beta cells</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## How can we use these putative enhanceosome regions to infer</span>
-<span class="co">## biology between cell states? In this example, we will integrate</span>
-<span class="co">## ATAC-Seq data differential testing showing differences in</span>
-<span class="co">## chromatin accessibility between alpha and beta cells</span>
+<code class="sourceCode R"><span class="co">## Read differentially binding data generated with DiffBind.</span>
+<span class="co">## DE comparing human alpha and beta cell chromatin.</span>
 
-<span class="co">## Read differentially binding data generated with DiffBind comparing</span>
-<span class="co">## human alpha and beta cell chromatin</span>
-<span class="va">b.v.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DBA_Beta_Versus_Alpha.csv"</span>, package <span class="op">=</span> <span class="st">"epiRomics"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">b.v.a</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DBA_Beta_Versus_Alpha.csv"</span>, package <span class="op">=</span> <span class="st">"epiRomics"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">b.v.a</span> <span class="op">&lt;-</span> <span class="fu">GRanges</span><span class="op">(</span><span class="va">b.v.a</span><span class="op">)</span>
 
 <span class="co"># Filter for beta enriched chromatin regions</span>
+
 <span class="va">beta.enriched</span> <span class="op">&lt;-</span> <span class="va">b.v.a</span><span class="op">[</span><span class="va">b.v.a</span><span class="op">$</span><span class="va">Fold</span> <span class="op">&gt;=</span> <span class="fl">1</span>, <span class="op">]</span>
 
 <span class="co"># Connect to our putative enhanceosomes</span>
-<span class="va">beta_enhancer_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/epiRomics_regions_of_interest.html">epiRomics_regions_of_interest</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span>,
-    <span class="va">beta.enriched</span><span class="op">)</span></code></pre></div>
+
+<span class="va">beta_enhancer_regions</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="../reference/epiRomics_regions_of_interest.html">epiRomics_regions_of_interest</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhanceosome_fantom</span>, <span class="va">beta.enriched</span><span class="op">)</span></code></pre></div>
+<p>Now, lets visualize the top candidate region we found after connecting our differential chromatin analysis with the putative enhanceosomes</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Now, lets visualize the top candidate region we found after connecting our differential chromatin analysis with the putative enhanceosomes</span>
+<code class="sourceCode R">
 <span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
   <span class="va">beta_enhancer_regions</span>,
   epiRomics_index <span class="op">=</span> <span class="fl">1</span>,
@@ -1137,17 +1131,18 @@ pre code {
 <span class="co">#&gt; [1] 2.38379</span>
 <span class="co">#&gt; [1] "not empty"</span>
 <span class="co">#&gt; [1] 1.29041</span></code></pre></div>
-<p><img src="getting-started-with-epiRomics_files/figure-html/fig7-1.png" width="90%" style="display: block; margin: auto;"></p>
+<p><img src="getting-started-with-epiRomics_files/figure-html/fig7-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
-<div id="session-information" class="section level1">
-<h1 class="hasAnchor">
-<a href="#session-information" class="anchor"></a>Session Information</h1>
-<p>Here is the output of <code><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo()</a></code> on the system on which this document was compiled:</p>
+<div class="section level1">
+<h1 id="session-information">Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h1>
+<p>Here is the output of <code><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo()</a></code> on the system on which this document was compiled:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; R version 4.1.1 (2021-08-10)</span>
+<code class="sourceCode R">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.7</span>
+<span class="co">#&gt; Running under: macOS Big Sur 10.16</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
 <span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib</span>
@@ -1157,21 +1152,21 @@ pre code {
 <span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] stats4    parallel  stats     graphics  grDevices utils     datasets </span>
-<span class="co">#&gt; [8] methods   base     </span>
+<span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
+<span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] rtracklayer_1.52.1                      </span>
-<span class="co">#&gt;  [2] org.Hs.eg.db_3.13.0                     </span>
-<span class="co">#&gt;  [3] TxDb.Hsapiens.UCSC.hg38.knownGene_3.13.0</span>
-<span class="co">#&gt;  [4] GenomicFeatures_1.44.2                  </span>
-<span class="co">#&gt;  [5] AnnotationDbi_1.54.1                    </span>
-<span class="co">#&gt;  [6] Biobase_2.52.0                          </span>
-<span class="co">#&gt;  [7] GenomicRanges_1.44.0                    </span>
-<span class="co">#&gt;  [8] GenomeInfoDb_1.28.4                     </span>
-<span class="co">#&gt;  [9] IRanges_2.26.0                          </span>
-<span class="co">#&gt; [10] S4Vectors_0.30.2                        </span>
-<span class="co">#&gt; [11] BiocGenerics_0.38.0                     </span>
+<span class="co">#&gt;  [1] rtracklayer_1.54.0                      </span>
+<span class="co">#&gt;  [2] org.Hs.eg.db_3.14.0                     </span>
+<span class="co">#&gt;  [3] TxDb.Hsapiens.UCSC.hg38.knownGene_3.14.0</span>
+<span class="co">#&gt;  [4] GenomicFeatures_1.46.1                  </span>
+<span class="co">#&gt;  [5] AnnotationDbi_1.56.2                    </span>
+<span class="co">#&gt;  [6] Biobase_2.54.0                          </span>
+<span class="co">#&gt;  [7] GenomicRanges_1.46.1                    </span>
+<span class="co">#&gt;  [8] GenomeInfoDb_1.30.0                     </span>
+<span class="co">#&gt;  [9] IRanges_2.28.0                          </span>
+<span class="co">#&gt; [10] S4Vectors_0.32.3                        </span>
+<span class="co">#&gt; [11] BiocGenerics_0.40.0                     </span>
 <span class="co">#&gt; [12] epiRomics_0.1.3                         </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
@@ -1179,47 +1174,47 @@ pre code {
 <span class="co">#&gt;   [2] tidyselect_1.1.1                       </span>
 <span class="co">#&gt;   [3] RSQLite_2.2.8                          </span>
 <span class="co">#&gt;   [4] htmlwidgets_1.5.4                      </span>
-<span class="co">#&gt;   [5] grid_4.1.1                             </span>
-<span class="co">#&gt;   [6] BiocParallel_1.26.2                    </span>
+<span class="co">#&gt;   [5] grid_4.1.2                             </span>
+<span class="co">#&gt;   [6] BiocParallel_1.28.2                    </span>
 <span class="co">#&gt;   [7] scatterpie_0.1.7                       </span>
 <span class="co">#&gt;   [8] munsell_0.5.0                          </span>
 <span class="co">#&gt;   [9] codetools_0.2-18                       </span>
-<span class="co">#&gt;  [10] ragg_1.1.3                             </span>
-<span class="co">#&gt;  [11] withr_2.4.2                            </span>
+<span class="co">#&gt;  [10] ragg_1.2.0                             </span>
+<span class="co">#&gt;  [11] withr_2.4.3                            </span>
 <span class="co">#&gt;  [12] colorspace_2.0-2                       </span>
-<span class="co">#&gt;  [13] GOSemSim_2.18.1                        </span>
+<span class="co">#&gt;  [13] GOSemSim_2.20.0                        </span>
 <span class="co">#&gt;  [14] filelock_1.0.2                         </span>
 <span class="co">#&gt;  [15] highr_0.9                              </span>
 <span class="co">#&gt;  [16] knitr_1.36                             </span>
 <span class="co">#&gt;  [17] rstudioapi_0.13                        </span>
-<span class="co">#&gt;  [18] DOSE_3.18.3                            </span>
-<span class="co">#&gt;  [19] MatrixGenerics_1.4.3                   </span>
-<span class="co">#&gt;  [20] GenomeInfoDbData_1.2.6                 </span>
+<span class="co">#&gt;  [18] DOSE_3.20.1                            </span>
+<span class="co">#&gt;  [19] MatrixGenerics_1.6.0                   </span>
+<span class="co">#&gt;  [20] GenomeInfoDbData_1.2.7                 </span>
 <span class="co">#&gt;  [21] polyclip_1.10-0                        </span>
 <span class="co">#&gt;  [22] bit64_4.0.5                            </span>
 <span class="co">#&gt;  [23] farver_2.1.0                           </span>
 <span class="co">#&gt;  [24] rprojroot_2.0.2                        </span>
-<span class="co">#&gt;  [25] treeio_1.16.2                          </span>
+<span class="co">#&gt;  [25] treeio_1.18.1                          </span>
 <span class="co">#&gt;  [26] vctrs_0.3.8                            </span>
-<span class="co">#&gt;  [27] generics_0.1.0                         </span>
+<span class="co">#&gt;  [27] generics_0.1.1                         </span>
 <span class="co">#&gt;  [28] TH.data_1.1-0                          </span>
-<span class="co">#&gt;  [29] xfun_0.26                              </span>
-<span class="co">#&gt;  [30] biovizBase_1.40.0                      </span>
-<span class="co">#&gt;  [31] BiocFileCache_2.0.0                    </span>
+<span class="co">#&gt;  [29] xfun_0.28                              </span>
+<span class="co">#&gt;  [30] biovizBase_1.42.0                      </span>
+<span class="co">#&gt;  [31] BiocFileCache_2.2.0                    </span>
 <span class="co">#&gt;  [32] party_1.3-9                            </span>
-<span class="co">#&gt;  [33] regioneR_1.24.0                        </span>
+<span class="co">#&gt;  [33] regioneR_1.26.0                        </span>
 <span class="co">#&gt;  [34] R6_2.5.1                               </span>
-<span class="co">#&gt;  [35] graphlayouts_0.7.1                     </span>
-<span class="co">#&gt;  [36] AnnotationFilter_1.16.0                </span>
+<span class="co">#&gt;  [35] graphlayouts_0.7.2                     </span>
+<span class="co">#&gt;  [36] AnnotationFilter_1.18.0                </span>
 <span class="co">#&gt;  [37] gridGraphics_0.5-1                     </span>
 <span class="co">#&gt;  [38] bitops_1.0-7                           </span>
 <span class="co">#&gt;  [39] cachem_1.0.6                           </span>
-<span class="co">#&gt;  [40] fgsea_1.18.0                           </span>
-<span class="co">#&gt;  [41] DelayedArray_0.18.0                    </span>
+<span class="co">#&gt;  [40] fgsea_1.20.0                           </span>
+<span class="co">#&gt;  [41] DelayedArray_0.20.0                    </span>
 <span class="co">#&gt;  [42] assertthat_0.2.1                       </span>
-<span class="co">#&gt;  [43] vroom_1.5.5                            </span>
+<span class="co">#&gt;  [43] vroom_1.5.7                            </span>
 <span class="co">#&gt;  [44] promises_1.2.0.1                       </span>
-<span class="co">#&gt;  [45] BiocIO_1.2.0                           </span>
+<span class="co">#&gt;  [45] BiocIO_1.4.0                           </span>
 <span class="co">#&gt;  [46] scales_1.1.1                           </span>
 <span class="co">#&gt;  [47] multcomp_1.4-17                        </span>
 <span class="co">#&gt;  [48] ggraph_2.0.5                           </span>
@@ -1228,21 +1223,21 @@ pre code {
 <span class="co">#&gt;  [51] gtable_0.3.0                           </span>
 <span class="co">#&gt;  [52] tidygraph_1.2.0                        </span>
 <span class="co">#&gt;  [53] sandwich_3.0-1                         </span>
-<span class="co">#&gt;  [54] ensembldb_2.16.4                       </span>
-<span class="co">#&gt;  [55] rlang_0.4.11                           </span>
-<span class="co">#&gt;  [56] systemfonts_1.0.2                      </span>
-<span class="co">#&gt;  [57] splines_4.1.1                          </span>
+<span class="co">#&gt;  [54] ensembldb_2.18.2                       </span>
+<span class="co">#&gt;  [55] rlang_0.4.12                           </span>
+<span class="co">#&gt;  [56] systemfonts_1.0.3                      </span>
+<span class="co">#&gt;  [57] splines_4.1.2                          </span>
 <span class="co">#&gt;  [58] lazyeval_0.2.2                         </span>
 <span class="co">#&gt;  [59] dichromat_2.0-0                        </span>
 <span class="co">#&gt;  [60] checkmate_2.0.0                        </span>
 <span class="co">#&gt;  [61] BiocManager_1.30.16                    </span>
 <span class="co">#&gt;  [62] yaml_2.2.1                             </span>
 <span class="co">#&gt;  [63] reshape2_1.4.4                         </span>
-<span class="co">#&gt;  [64] backports_1.2.1                        </span>
+<span class="co">#&gt;  [64] backports_1.4.0                        </span>
 <span class="co">#&gt;  [65] httpuv_1.6.3                           </span>
-<span class="co">#&gt;  [66] qvalue_2.24.0                          </span>
+<span class="co">#&gt;  [66] qvalue_2.26.0                          </span>
 <span class="co">#&gt;  [67] Hmisc_4.6-0                            </span>
-<span class="co">#&gt;  [68] tools_4.1.1                            </span>
+<span class="co">#&gt;  [68] tools_4.1.2                            </span>
 <span class="co">#&gt;  [69] ggplotify_0.1.0                        </span>
 <span class="co">#&gt;  [70] ggplot2_3.3.5                          </span>
 <span class="co">#&gt;  [71] gplots_3.1.1                           </span>
@@ -1253,22 +1248,22 @@ pre code {
 <span class="co">#&gt;  [76] plyr_1.8.6                             </span>
 <span class="co">#&gt;  [77] base64enc_0.1-3                        </span>
 <span class="co">#&gt;  [78] progress_1.2.2                         </span>
-<span class="co">#&gt;  [79] zlibbioc_1.38.0                        </span>
+<span class="co">#&gt;  [79] zlibbioc_1.40.0                        </span>
 <span class="co">#&gt;  [80] purrr_0.3.4                            </span>
 <span class="co">#&gt;  [81] RCurl_1.98-1.5                         </span>
 <span class="co">#&gt;  [82] prettyunits_1.1.1                      </span>
 <span class="co">#&gt;  [83] rpart_4.1-15                           </span>
-<span class="co">#&gt;  [84] viridis_0.6.1                          </span>
+<span class="co">#&gt;  [84] viridis_0.6.2                          </span>
 <span class="co">#&gt;  [85] zoo_1.8-9                              </span>
-<span class="co">#&gt;  [86] SummarizedExperiment_1.22.0            </span>
+<span class="co">#&gt;  [86] SummarizedExperiment_1.24.0            </span>
 <span class="co">#&gt;  [87] ggrepel_0.9.1                          </span>
 <span class="co">#&gt;  [88] cluster_2.1.2                          </span>
-<span class="co">#&gt;  [89] fs_1.5.0                               </span>
+<span class="co">#&gt;  [89] fs_1.5.1                               </span>
 <span class="co">#&gt;  [90] magrittr_2.0.1                         </span>
 <span class="co">#&gt;  [91] data.table_1.14.2                      </span>
 <span class="co">#&gt;  [92] DO.db_2.9                              </span>
-<span class="co">#&gt;  [93] mvtnorm_1.1-2                          </span>
-<span class="co">#&gt;  [94] ProtGenerics_1.24.0                    </span>
+<span class="co">#&gt;  [93] mvtnorm_1.1-3                          </span>
+<span class="co">#&gt;  [94] ProtGenerics_1.26.0                    </span>
 <span class="co">#&gt;  [95] matrixStats_0.61.0                     </span>
 <span class="co">#&gt;  [96] patchwork_1.1.1                        </span>
 <span class="co">#&gt;  [97] hms_1.1.1                              </span>
@@ -1278,22 +1273,22 @@ pre code {
 <span class="co">#&gt; [101] XML_3.99-0.8                           </span>
 <span class="co">#&gt; [102] jpeg_0.1-9                             </span>
 <span class="co">#&gt; [103] gridExtra_2.3                          </span>
-<span class="co">#&gt; [104] compiler_4.1.1                         </span>
-<span class="co">#&gt; [105] biomaRt_2.48.3                         </span>
-<span class="co">#&gt; [106] tibble_3.1.5                           </span>
+<span class="co">#&gt; [104] compiler_4.1.2                         </span>
+<span class="co">#&gt; [105] biomaRt_2.50.1                         </span>
+<span class="co">#&gt; [106] tibble_3.1.6                           </span>
 <span class="co">#&gt; [107] KernSmooth_2.23-20                     </span>
 <span class="co">#&gt; [108] shadowtext_0.0.9                       </span>
-<span class="co">#&gt; [109] crayon_1.4.1                           </span>
+<span class="co">#&gt; [109] crayon_1.4.2                           </span>
 <span class="co">#&gt; [110] htmltools_0.5.2                        </span>
 <span class="co">#&gt; [111] ggfun_0.0.4                            </span>
 <span class="co">#&gt; [112] later_1.3.0                            </span>
-<span class="co">#&gt; [113] tzdb_0.1.2                             </span>
+<span class="co">#&gt; [113] tzdb_0.2.0                             </span>
 <span class="co">#&gt; [114] Formula_1.2-4                          </span>
 <span class="co">#&gt; [115] aplot_0.1.1                            </span>
 <span class="co">#&gt; [116] tidyr_1.1.4                            </span>
 <span class="co">#&gt; [117] libcoin_1.0-9                          </span>
 <span class="co">#&gt; [118] DBI_1.1.1                              </span>
-<span class="co">#&gt; [119] ChIPseeker_1.29.1.991                  </span>
+<span class="co">#&gt; [119] ChIPseeker_1.31.2                      </span>
 <span class="co">#&gt; [120] tweenr_1.0.2                           </span>
 <span class="co">#&gt; [121] formatR_1.11                           </span>
 <span class="co">#&gt; [122] dbplyr_2.1.1                           </span>
@@ -1301,68 +1296,69 @@ pre code {
 <span class="co">#&gt; [124] rappdirs_0.3.3                         </span>
 <span class="co">#&gt; [125] boot_1.3-28                            </span>
 <span class="co">#&gt; [126] Matrix_1.3-4                           </span>
-<span class="co">#&gt; [127] readr_2.0.2                            </span>
-<span class="co">#&gt; [128] Gviz_1.36.2                            </span>
-<span class="co">#&gt; [129] igraph_1.2.6                           </span>
-<span class="co">#&gt; [130] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2</span>
-<span class="co">#&gt; [131] pkgconfig_2.0.3                        </span>
-<span class="co">#&gt; [132] pkgdown_1.6.1                          </span>
-<span class="co">#&gt; [133] GenomicAlignments_1.28.0               </span>
-<span class="co">#&gt; [134] coin_1.4-1                             </span>
-<span class="co">#&gt; [135] foreign_0.8-81                         </span>
-<span class="co">#&gt; [136] xml2_1.3.2                             </span>
-<span class="co">#&gt; [137] ggtree_3.0.4                           </span>
-<span class="co">#&gt; [138] bslib_0.3.1                            </span>
-<span class="co">#&gt; [139] XVector_0.32.0                         </span>
-<span class="co">#&gt; [140] yulab.utils_0.0.2                      </span>
-<span class="co">#&gt; [141] stringr_1.4.0                          </span>
-<span class="co">#&gt; [142] VariantAnnotation_1.38.0               </span>
-<span class="co">#&gt; [143] digest_0.6.28                          </span>
-<span class="co">#&gt; [144] strucchange_1.5-2                      </span>
-<span class="co">#&gt; [145] Biostrings_2.60.2                      </span>
-<span class="co">#&gt; [146] fastmatch_1.1-3                        </span>
-<span class="co">#&gt; [147] rmarkdown_2.11                         </span>
-<span class="co">#&gt; [148] tidytree_0.3.5                         </span>
-<span class="co">#&gt; [149] htmlTable_2.2.1                        </span>
-<span class="co">#&gt; [150] annotatr_1.18.1                        </span>
-<span class="co">#&gt; [151] restfulr_0.0.13                        </span>
-<span class="co">#&gt; [152] curl_4.3.2                             </span>
-<span class="co">#&gt; [153] gtools_3.9.2                           </span>
-<span class="co">#&gt; [154] shiny_1.7.1                            </span>
-<span class="co">#&gt; [155] Rsamtools_2.8.0                        </span>
-<span class="co">#&gt; [156] modeltools_0.2-23                      </span>
-<span class="co">#&gt; [157] rjson_0.2.20                           </span>
-<span class="co">#&gt; [158] nlme_3.1-152                           </span>
-<span class="co">#&gt; [159] lifecycle_1.0.1                        </span>
-<span class="co">#&gt; [160] jsonlite_1.7.2                         </span>
-<span class="co">#&gt; [161] desc_1.4.0                             </span>
-<span class="co">#&gt; [162] viridisLite_0.4.0                      </span>
-<span class="co">#&gt; [163] BSgenome_1.60.0                        </span>
-<span class="co">#&gt; [164] fansi_0.5.0                            </span>
-<span class="co">#&gt; [165] pillar_1.6.3                           </span>
-<span class="co">#&gt; [166] lattice_0.20-44                        </span>
-<span class="co">#&gt; [167] plotrix_3.8-2                          </span>
-<span class="co">#&gt; [168] KEGGREST_1.32.0                        </span>
-<span class="co">#&gt; [169] fastmap_1.1.0                          </span>
-<span class="co">#&gt; [170] httr_1.4.2                             </span>
-<span class="co">#&gt; [171] survival_3.2-11                        </span>
-<span class="co">#&gt; [172] GO.db_3.13.0                           </span>
-<span class="co">#&gt; [173] interactiveDisplayBase_1.30.0          </span>
-<span class="co">#&gt; [174] glue_1.4.2                             </span>
-<span class="co">#&gt; [175] png_0.1-7                              </span>
-<span class="co">#&gt; [176] BiocVersion_3.13.1                     </span>
-<span class="co">#&gt; [177] bit_4.0.4                              </span>
-<span class="co">#&gt; [178] ggforce_0.3.3                          </span>
-<span class="co">#&gt; [179] stringi_1.7.5                          </span>
-<span class="co">#&gt; [180] sass_0.4.0                             </span>
-<span class="co">#&gt; [181] blob_1.2.2                             </span>
-<span class="co">#&gt; [182] textshaping_0.3.5                      </span>
-<span class="co">#&gt; [183] AnnotationHub_3.0.1                    </span>
-<span class="co">#&gt; [184] caTools_1.18.2                         </span>
-<span class="co">#&gt; [185] latticeExtra_0.6-29                    </span>
-<span class="co">#&gt; [186] memoise_2.0.0                          </span>
-<span class="co">#&gt; [187] dplyr_1.0.7                            </span>
-<span class="co">#&gt; [188] ape_5.5</span></code></pre></div>
+<span class="co">#&gt; [127] readr_2.1.1                            </span>
+<span class="co">#&gt; [128] parallel_4.1.2                         </span>
+<span class="co">#&gt; [129] Gviz_1.38.0                            </span>
+<span class="co">#&gt; [130] igraph_1.2.9                           </span>
+<span class="co">#&gt; [131] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2</span>
+<span class="co">#&gt; [132] pkgconfig_2.0.3                        </span>
+<span class="co">#&gt; [133] pkgdown_2.0.1                          </span>
+<span class="co">#&gt; [134] GenomicAlignments_1.30.0               </span>
+<span class="co">#&gt; [135] coin_1.4-2                             </span>
+<span class="co">#&gt; [136] foreign_0.8-81                         </span>
+<span class="co">#&gt; [137] xml2_1.3.3                             </span>
+<span class="co">#&gt; [138] ggtree_3.2.1                           </span>
+<span class="co">#&gt; [139] bslib_0.3.1                            </span>
+<span class="co">#&gt; [140] XVector_0.34.0                         </span>
+<span class="co">#&gt; [141] yulab.utils_0.0.4                      </span>
+<span class="co">#&gt; [142] stringr_1.4.0                          </span>
+<span class="co">#&gt; [143] VariantAnnotation_1.40.0               </span>
+<span class="co">#&gt; [144] digest_0.6.29                          </span>
+<span class="co">#&gt; [145] strucchange_1.5-2                      </span>
+<span class="co">#&gt; [146] Biostrings_2.62.0                      </span>
+<span class="co">#&gt; [147] fastmatch_1.1-3                        </span>
+<span class="co">#&gt; [148] rmarkdown_2.11                         </span>
+<span class="co">#&gt; [149] tidytree_0.3.6                         </span>
+<span class="co">#&gt; [150] htmlTable_2.3.0                        </span>
+<span class="co">#&gt; [151] annotatr_1.20.0                        </span>
+<span class="co">#&gt; [152] restfulr_0.0.13                        </span>
+<span class="co">#&gt; [153] curl_4.3.2                             </span>
+<span class="co">#&gt; [154] gtools_3.9.2                           </span>
+<span class="co">#&gt; [155] shiny_1.7.1                            </span>
+<span class="co">#&gt; [156] Rsamtools_2.10.0                       </span>
+<span class="co">#&gt; [157] modeltools_0.2-23                      </span>
+<span class="co">#&gt; [158] rjson_0.2.20                           </span>
+<span class="co">#&gt; [159] nlme_3.1-153                           </span>
+<span class="co">#&gt; [160] lifecycle_1.0.1                        </span>
+<span class="co">#&gt; [161] jsonlite_1.7.2                         </span>
+<span class="co">#&gt; [162] desc_1.4.0                             </span>
+<span class="co">#&gt; [163] viridisLite_0.4.0                      </span>
+<span class="co">#&gt; [164] BSgenome_1.62.0                        </span>
+<span class="co">#&gt; [165] fansi_0.5.0                            </span>
+<span class="co">#&gt; [166] pillar_1.6.4                           </span>
+<span class="co">#&gt; [167] lattice_0.20-45                        </span>
+<span class="co">#&gt; [168] plotrix_3.8-2                          </span>
+<span class="co">#&gt; [169] KEGGREST_1.34.0                        </span>
+<span class="co">#&gt; [170] fastmap_1.1.0                          </span>
+<span class="co">#&gt; [171] httr_1.4.2                             </span>
+<span class="co">#&gt; [172] survival_3.2-13                        </span>
+<span class="co">#&gt; [173] GO.db_3.14.0                           </span>
+<span class="co">#&gt; [174] interactiveDisplayBase_1.32.0          </span>
+<span class="co">#&gt; [175] glue_1.5.1                             </span>
+<span class="co">#&gt; [176] png_0.1-7                              </span>
+<span class="co">#&gt; [177] BiocVersion_3.14.0                     </span>
+<span class="co">#&gt; [178] bit_4.0.4                              </span>
+<span class="co">#&gt; [179] ggforce_0.3.3                          </span>
+<span class="co">#&gt; [180] stringi_1.7.6                          </span>
+<span class="co">#&gt; [181] sass_0.4.0                             </span>
+<span class="co">#&gt; [182] blob_1.2.2                             </span>
+<span class="co">#&gt; [183] textshaping_0.3.6                      </span>
+<span class="co">#&gt; [184] AnnotationHub_3.2.0                    </span>
+<span class="co">#&gt; [185] caTools_1.18.2                         </span>
+<span class="co">#&gt; [186] latticeExtra_0.6-29                    </span>
+<span class="co">#&gt; [187] memoise_2.0.1                          </span>
+<span class="co">#&gt; [188] dplyr_1.0.7                            </span>
+<span class="co">#&gt; [189] ape_5.5</span></code></pre></div>
 </div>
   </div>
 
@@ -1377,11 +1373,13 @@ pre code {
 
 
       <footer><div class="copyright">
-  <p>Developed by Alex M. Mawla.</p>
+  <p></p>
+<p>Developed by Alex M. Mawla.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -1389,6 +1387,8 @@ pre code {
 
   
 
+
+  
 
   </body>
 </html>
