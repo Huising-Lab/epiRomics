@@ -11,7 +11,7 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 
 **Resources**:
 
-[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/getting-started-with-epromics.pdf)
+[Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/getting-started-with-epiromics.pdf)
 
 [epiRomics Reference Manual](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics_0.1.3.pdf)
 
