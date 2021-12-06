@@ -25,7 +25,7 @@ Depends:
     R (>= 4.0.0)
 biocViews:
 Imports:
-    AnnotationDbi (>= 1.54.1),
+    AnnotationDbi (>= 1.55.1),
     annotatr (>= 1.18.1),
     BiocGenerics (>= 0.38.0),
     BiocManager (>= 1.30.16),

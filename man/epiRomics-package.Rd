@@ -6,15 +6,7 @@
 \alias{epiRomics-package}
 \title{epiRomics: Epigenomic Analysis Package Built for R (epiRomics)}
 \description{
-A package designed to integrate various levels of epigenomic
-    information, including, but not limited to ChIP and Histone
-    next-generation sequencing. Regulatory network analysis can be done by
-    using combinatory approaches to infer regions of significance, such as
-    enhancers. Downstream analysis can identify co-occurance of epigenomic
-    data located at regions of interest. Finally, this package allows for
-    various results to be visualized.  This package is currently in
-    development. Please contact <ammawla@ucdavis.edu> for suggestions,
-    feedback, or bug reporting.
+A package designed to integrate various levels of epigenomic information, including, but not limited to ChIP and Histone next-generation sequencing. Regulatory network analysis can be done by using combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis can identify co-occurance of epigenomic data located at regions of interest. Finally, this package allows for various results to be visualized. This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 }
 \author{
 \strong{Maintainer}: Alex M. Mawla \email{ammawla@ucdavis.edu}
