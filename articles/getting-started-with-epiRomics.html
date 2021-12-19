@@ -71,7 +71,7 @@
       <h1 data-toc-skip>Getting Started with EpiRomics</h1>
                         <h4 data-toc-skip class="author">Authors: Alex M. Mawla &amp; Mark O. Huising. Copyright 2020 - Present.</h4>
             
-            <h4 data-toc-skip class="date">2021-12-06</h4>
+            <h4 data-toc-skip class="date">2021-12-19</h4>
       
       
       <div class="hidden name"><code>getting-started-with-epiRomics.Rmd</code></div>
@@ -117,7 +117,7 @@ pre code {
 <span class="co">#&gt; replacement repositories:</span>
 <span class="co">#&gt;     CRAN: https://cloud.r-project.org</span>
 <span class="co">#&gt; Bioconductor version 3.14 (BiocManager 1.30.16), R 4.1.2 (2021-11-01)</span>
-<span class="co">#&gt; Old packages: 'enrichplot'</span>
+<span class="co">#&gt; Old packages: 'enrichplot', 'Matrix'</span>
 <span class="co">#&gt; looking for  data.table</span>
 <span class="co">#&gt; looking for  party</span>
 <span class="co">#&gt; Loading required namespace: party</span>
@@ -510,14 +510,14 @@ pre code {
 <span class="va">epiRomics_putative_enhanceosome_fantom</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_fantom</span>,
                          <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 02:35:52 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 02:35:53 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 02:35:54 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 02:35:54 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 02:36:36</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-19 23:03:21 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-19 23:03:23 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-19 23:03:23 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-19 23:03:23 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-19 23:03:56</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 02:36:36 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 02:36:36</span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-19 23:03:57 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-19 23:03:57</span>
 
 <span class="co">## Taking a look, we see the top candidates meet the criteria we list as expected</span>
 
@@ -679,14 +679,14 @@ pre code {
 <span class="va">epiRomics_putative_enhanceosome_regulome_active</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_active</span>,
                          <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 02:38:32 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 02:38:32 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 02:38:33 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 02:38:33 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 02:38:39</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-19 23:05:37 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-19 23:05:37 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-19 23:05:38 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-19 23:05:38 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-19 23:05:44</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 02:38:39 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 02:38:39</span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-19 23:05:44 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-19 23:05:44</span>
 
 <span class="va">epiRomics_putative_enhanceosome_regulome_active</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 6025 ranges and 19 metadata columns:</span>
@@ -818,14 +818,14 @@ pre code {
 <span class="va">epiRomics_putative_enhanceosome_regulome_super</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_regulome_super</span>,
                          <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 02:40:08 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 02:40:08 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 02:40:08 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 02:40:08 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 02:40:14</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-19 23:07:06 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-19 23:07:06 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-19 23:07:06 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-19 23:07:06 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-19 23:07:12</span>
 <span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 02:40:14 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 02:40:14</span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-19 23:07:12 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-19 23:07:12</span>
 
 <span class="va">epiRomics_putative_enhanceosome_regulome_super</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 2401 ranges and 19 metadata columns:</span>
@@ -952,14 +952,14 @@ pre code {
 <code class="sourceCode R">
 <span class="va">epiRomics_putative_enhanceosome_ucnes</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_ucnes</span>, <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 02:41:50 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 02:41:50 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 02:41:51 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 02:41:51 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 02:41:57</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-19 23:08:39 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-19 23:08:39 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-19 23:08:40 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-19 23:08:40 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-19 23:08:46</span>
 <span class="co">#&gt; 'select()' returned 1:1 mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 02:41:57 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 02:41:57</span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-19 23:08:46 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-19 23:08:46</span>
 
 <span class="va">epiRomics_putative_enhanceosome_ucnes</span><span class="op">@</span><span class="va">annotations</span>
 <span class="co">#&gt; GRanges object with 11 ranges and 19 metadata columns:</span>
@@ -1072,14 +1072,14 @@ pre code {
 <span class="va">epiRomics_putative_enhanceosome_stringent</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/epiRomics_enhanceosome.html">epiRomics_enhanceosome</a></span><span class="op">(</span><span class="va">epiRomics_putative_enhancers_filtered_stringent</span>,
                          <span class="va">epiRomics_dB</span><span class="op">)</span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-06 02:43:28 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-06 02:43:28 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-06 02:43:29 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-06 02:43:29 </span>
-<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-06 02:43:35</span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2021-12-19 23:10:11 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2021-12-19 23:10:11 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2021-12-19 23:10:12 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2021-12-19 23:10:12 </span>
+<span class="co">#&gt; &gt;&gt; adding gene annotation...          2021-12-19 23:10:18</span>
 <span class="co">#&gt; 'select()' returned 1:1 mapping between keys and columns</span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-06 02:43:35 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2021-12-06 02:43:35</span></code></pre></div>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2021-12-19 23:10:18 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2021-12-19 23:10:18</span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="../reference/epiRomics_track_layer_human.html">epiRomics_track_layer_human</a></span><span class="op">(</span>
@@ -1172,20 +1172,20 @@ pre code {
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.2                             </span>
 <span class="co">#&gt;   [2] tidyselect_1.1.1                       </span>
-<span class="co">#&gt;   [3] RSQLite_2.2.8                          </span>
+<span class="co">#&gt;   [3] RSQLite_2.2.9                          </span>
 <span class="co">#&gt;   [4] htmlwidgets_1.5.4                      </span>
 <span class="co">#&gt;   [5] grid_4.1.2                             </span>
-<span class="co">#&gt;   [6] BiocParallel_1.28.2                    </span>
+<span class="co">#&gt;   [6] BiocParallel_1.28.3                    </span>
 <span class="co">#&gt;   [7] scatterpie_0.1.7                       </span>
 <span class="co">#&gt;   [8] munsell_0.5.0                          </span>
 <span class="co">#&gt;   [9] codetools_0.2-18                       </span>
-<span class="co">#&gt;  [10] ragg_1.2.0                             </span>
+<span class="co">#&gt;  [10] ragg_1.2.1                             </span>
 <span class="co">#&gt;  [11] withr_2.4.3                            </span>
 <span class="co">#&gt;  [12] colorspace_2.0-2                       </span>
 <span class="co">#&gt;  [13] GOSemSim_2.20.0                        </span>
 <span class="co">#&gt;  [14] filelock_1.0.2                         </span>
 <span class="co">#&gt;  [15] highr_0.9                              </span>
-<span class="co">#&gt;  [16] knitr_1.36                             </span>
+<span class="co">#&gt;  [16] knitr_1.37                             </span>
 <span class="co">#&gt;  [17] rstudioapi_0.13                        </span>
 <span class="co">#&gt;  [18] DOSE_3.20.1                            </span>
 <span class="co">#&gt;  [19] MatrixGenerics_1.6.0                   </span>
@@ -1198,7 +1198,7 @@ pre code {
 <span class="co">#&gt;  [26] vctrs_0.3.8                            </span>
 <span class="co">#&gt;  [27] generics_0.1.1                         </span>
 <span class="co">#&gt;  [28] TH.data_1.1-0                          </span>
-<span class="co">#&gt;  [29] xfun_0.28                              </span>
+<span class="co">#&gt;  [29] xfun_0.29                              </span>
 <span class="co">#&gt;  [30] biovizBase_1.42.0                      </span>
 <span class="co">#&gt;  [31] BiocFileCache_2.2.0                    </span>
 <span class="co">#&gt;  [32] party_1.3-9                            </span>
@@ -1233,8 +1233,8 @@ pre code {
 <span class="co">#&gt;  [61] BiocManager_1.30.16                    </span>
 <span class="co">#&gt;  [62] yaml_2.2.1                             </span>
 <span class="co">#&gt;  [63] reshape2_1.4.4                         </span>
-<span class="co">#&gt;  [64] backports_1.4.0                        </span>
-<span class="co">#&gt;  [65] httpuv_1.6.3                           </span>
+<span class="co">#&gt;  [64] backports_1.4.1                        </span>
+<span class="co">#&gt;  [65] httpuv_1.6.4                           </span>
 <span class="co">#&gt;  [66] qvalue_2.26.0                          </span>
 <span class="co">#&gt;  [67] Hmisc_4.6-0                            </span>
 <span class="co">#&gt;  [68] tools_4.1.2                            </span>
@@ -1258,7 +1258,7 @@ pre code {
 <span class="co">#&gt;  [86] SummarizedExperiment_1.24.0            </span>
 <span class="co">#&gt;  [87] ggrepel_0.9.1                          </span>
 <span class="co">#&gt;  [88] cluster_2.1.2                          </span>
-<span class="co">#&gt;  [89] fs_1.5.1                               </span>
+<span class="co">#&gt;  [89] fs_1.5.2                               </span>
 <span class="co">#&gt;  [90] magrittr_2.0.1                         </span>
 <span class="co">#&gt;  [91] data.table_1.14.2                      </span>
 <span class="co">#&gt;  [92] DO.db_2.9                              </span>
@@ -1288,7 +1288,7 @@ pre code {
 <span class="co">#&gt; [116] tidyr_1.1.4                            </span>
 <span class="co">#&gt; [117] libcoin_1.0-9                          </span>
 <span class="co">#&gt; [118] DBI_1.1.1                              </span>
-<span class="co">#&gt; [119] ChIPseeker_1.31.2                      </span>
+<span class="co">#&gt; [119] ChIPseeker_1.31.3.900                  </span>
 <span class="co">#&gt; [120] tweenr_1.0.2                           </span>
 <span class="co">#&gt; [121] formatR_1.11                           </span>
 <span class="co">#&gt; [122] dbplyr_2.1.1                           </span>
@@ -1299,7 +1299,7 @@ pre code {
 <span class="co">#&gt; [127] readr_2.1.1                            </span>
 <span class="co">#&gt; [128] parallel_4.1.2                         </span>
 <span class="co">#&gt; [129] Gviz_1.38.0                            </span>
-<span class="co">#&gt; [130] igraph_1.2.9                           </span>
+<span class="co">#&gt; [130] igraph_1.2.10                          </span>
 <span class="co">#&gt; [131] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2</span>
 <span class="co">#&gt; [132] pkgconfig_2.0.3                        </span>
 <span class="co">#&gt; [133] pkgdown_2.0.1                          </span>
@@ -1344,7 +1344,7 @@ pre code {
 <span class="co">#&gt; [172] survival_3.2-13                        </span>
 <span class="co">#&gt; [173] GO.db_3.14.0                           </span>
 <span class="co">#&gt; [174] interactiveDisplayBase_1.32.0          </span>
-<span class="co">#&gt; [175] glue_1.5.1                             </span>
+<span class="co">#&gt; [175] glue_1.6.0                             </span>
 <span class="co">#&gt; [176] png_0.1-7                              </span>
 <span class="co">#&gt; [177] BiocVersion_3.14.0                     </span>
 <span class="co">#&gt; [178] bit_4.0.4                              </span>
