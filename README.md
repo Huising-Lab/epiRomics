@@ -9,7 +9,7 @@ This package is currently in development. Please contact <ammawla@ucdavis.edu> f
 **Paper:** [**epiRomics: a multi-omics R package to identify and visualize enhancers.**](https://www.biorxiv.org/content/10.1101/2021.08.19.456732v1)
 
 
-**Resources**:
+**Resources**: 
 
 [Getting Started with EpiRomics Walkthrough](https://github.com/Huising-Lab/epiRomics/blob/main/vignettes/getting-started-with-epiromics.pdf)
 
