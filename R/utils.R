@@ -10,7 +10,7 @@
 #'
 #' @noRd
 maxCovBw <- function(bw, gr) {
-  ovlp <- IRanges::subsetByOverlaps(rtracklayer::import(bw), gr)
+  ovlp <- IRanges::subsetByOverlaps(rtracklayer::import(bw, format="BigWig", selection=BigWigSelection(gr)), gr)
   if (length(ovlp) > 0) {
     print("not empty")
     max_cov <- max(ovlp$score)
