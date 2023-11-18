@@ -10,7 +10,7 @@
 epiRomics_track_layer <- function(epiRomics_putative_enhanceosome, epiRomics_index, epiRomics_dB, epiRomics_track_connection, epiRomics_keep_epitracks = TRUE) {
   epiRomics_class_save <- epiRomics_putative_enhanceosome
   epiRomics_putative_enhanceosome <- epiRomics_putative_enhanceosome@annotations[epiRomics_index, ]
-  Gviz::GeneRegionTrack(eval(parse(text = epiRomics_class_save@txdb)))
+  #Gviz::GeneRegionTrack(eval(parse(text = epiRomics_class_save@txdb)))
   chr <- base::as.character(BiocGenerics::unique(GenomeInfoDb::seqnames(epiRomics_putative_enhanceosome)))
   gtrack <- Gviz::GenomeAxisTrack()
   txTr <- Gviz::GeneRegionTrack(base::eval(base::parse(text = epiRomics_class_save@txdb)),

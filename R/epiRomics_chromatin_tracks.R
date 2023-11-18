@@ -9,7 +9,6 @@ epiRomics_chromatin_tracks <-
   function(epiRomics_gene_name,
            epiRomics_dB,
            epiRomics_track_connection) {
-    Gviz::GeneRegionTrack(eval(parse(text = epiRomics_dB@txdb)))
     epiRomics_entrez_id <-
       base::as.vector(AnnotationDbi::mapIds(
         base::eval(base::parse(text = epiRomics_dB@organism)),
@@ -21,6 +20,7 @@ epiRomics_chromatin_tracks <-
       GenomicFeatures::genes((base::eval(base::parse(text = epiRomics_dB@txdb))))
     epiRomics_gene_map_track <-
       epiRomics_gene_map[epiRomics_gene_map$gene_id == epiRomics_entrez_id, ]
+    #Gviz::GeneRegionTrack(eval(parse(text = epiRomics_dB@txdb)), start = epiRomics_gene_map_track@ranges@start, end = data.frame(epiRomics_gene_map_track@ranges)$end, chromosome = epiRomics_gene_map_track@seqnames@values)
     # Uncommented the below line to fix max width issue for certain genes, such as MafA
     epiRomics_gene_map_track <-
       GenomicRanges::resize(
@@ -46,6 +46,7 @@ epiRomics_chromatin_tracks <-
     itrack <- Gviz::IdeogramTrack(genome = "mm10", chromosome = chr)
     epiRomics_track_connection_chromatin <-
       epiRomics_track_connection[epiRomics_track_connection$type == "atac", ]
+    
     range_max <-
       maxCovFiles(
         epiRomics_track_connection_chromatin[, 1],
