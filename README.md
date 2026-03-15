@@ -99,7 +99,7 @@ epiRomics_track_layer(
 
 ## Documentation
 
-- **Vignette (HTML)**: [Getting Started with epiRomics](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.html) <br> 
+- **Vignette (HTML)**: [Getting Started with epiRomics](https://htmlpreview.github.io/?https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.html) <br>
 - **Vignette (PDF)**: [Getting Started with epiRomics](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.pdf)<br>
 - **Reference Manual**: [Package Documentation](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics-manual.pdf)<br>
 - **Help**: `help(package = 'epiRomics', help_type = 'html')`
