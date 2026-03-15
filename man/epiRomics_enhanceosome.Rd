@@ -12,8 +12,18 @@ epiRomics_enhanceosome(epiRomics_putative_enhancers, epiRomics_dB)
 \item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
 }
 \value{
-Variable of class epiRomics further exploring candidate enhanceosome regions using co-ChIP hits
+Variable of class epiRomics with enhanceosome annotations
 }
 \description{
 Identifies putative enhanceosome regions by cross-referencing candidate enhancer regions against co-TF enrichment
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_enhanceosome(db, db), error = function(e) message(e$message))
+\donttest{
+enhanceosome <- epiRomics_enhanceosome(epiRomics_putative_enhancers, epiRomics_dB)
+}
 }

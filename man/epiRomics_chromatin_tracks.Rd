@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_chromatin_tracks.R
 \name{epiRomics_chromatin_tracks}
 \alias{epiRomics_chromatin_tracks}
-\title{Visualizes chromatin availability}
+\title{Gviz-based gene-centered chromatin visualization (deprecated)}
 \usage{
 epiRomics_chromatin_tracks(
   epiRomics_gene_name,
@@ -21,5 +21,27 @@ epiRomics_chromatin_tracks(
 GViz plot
 }
 \description{
-Visualizes chromatin availability
+`r lifecycle::badge("deprecated")`
+
+This Gviz-based function has been superseded by
+\code{\link{epiRomics_track_layer_gene}}, which uses base R graphics
+for ~20x faster rendering (~2 seconds vs ~40+ seconds).
+
+Generates a multi-track genomic visualization centered on a gene, showing
+ATAC-seq and RNA-seq signal tracks. Genome is automatically detected from
+the database object.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_chromatin_tracks("INS", db,
+  data.frame(file = character(), name = character(),
+    color = character(), type = character())),
+  error = function(e) message(e$message))
+\donttest{
+# Use epiRomics_track_layer_gene() instead:
+epiRomics_track_layer_gene("Ins1", epiRomics_dB, epiRomics_track_connection)
+}
 }
