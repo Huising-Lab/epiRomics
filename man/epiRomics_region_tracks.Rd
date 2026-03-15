@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_region_tracks.R
 \name{epiRomics_region_tracks}
 \alias{epiRomics_region_tracks}
-\title{Visualizes chromatin availability at custom regions}
+\title{Gviz-based custom region visualization (deprecated)}
 \usage{
 epiRomics_region_tracks(
   epiRomics_region,
@@ -18,8 +18,33 @@ epiRomics_region_tracks(
 \item{epiRomics_track_connection}{data frame containing bigwig track locations and their names}
 }
 \value{
-GViz plot
+Gviz plot
 }
 \description{
-Visualizes chromatin availability at custom regions
+`r lifecycle::badge("deprecated")`
+
+This Gviz-based function has been superseded by
+\code{\link{epiRomics_track_layer}}, which uses base R graphics
+for ~20x faster rendering (~2 seconds vs ~40+ seconds).
+For gene-centered views, use \code{\link{epiRomics_track_layer_gene}}
+or \code{\link{epiRomics_quick_view}}.
+
+Generates a multi-track genomic visualization for a custom genomic region,
+showing gene models, ATAC-seq and RNA-seq signal tracks. Genome is
+automatically detected from the database object.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_region_tracks(GenomicRanges::GRanges(), db,
+  data.frame(file = character(), name = character(),
+    color = character(), type = character())),
+  error = function(e) message(e$message))
+\donttest{
+# Use epiRomics_track_layer() or epiRomics_quick_view() instead:
+epiRomics_quick_view(region = list(chr = "chr11", start = 2159779,
+  end = 2161209), bw_paths = c(Signal = "track.bw"))
+}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_enhancers.R
 \name{epiRomics_enhancers}
 \alias{epiRomics_enhancers}
-\title{Identifies putative enhancer regions utilizing select histone marks}
+\title{Identifies putative enhancer regions (deprecated)}
 \usage{
 epiRomics_enhancers(
   epiRomics_dB,
@@ -18,8 +18,23 @@ epiRomics_enhancers(
 \item{epiRomics_histone_mark_2}{name of second histone mark, must match name in epiROmics_dB@meta default set to h3k27ac}
 }
 \value{
-Variable of class epiRomics further exploring candidate enhancer regions identified after histone integration
+Variable of class epiRomics
 }
 \description{
-Identifies putative enhancer regions utilizing select histone marks
+`r lifecycle::badge("deprecated")`
+
+`epiRomics_enhancers()` was renamed to [epiRomics_enhancers_co_marks()] for
+clarity. This wrapper is kept for backward compatibility.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_enhancers(db),
+  error = function(e) message(e$message))
+\donttest{
+# Use epiRomics_enhancers_co_marks() instead
+result <- epiRomics_enhancers_co_marks(epiRomics_dB)
+}
 }

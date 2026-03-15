@@ -6,10 +6,23 @@
 \alias{epiRomics-package}
 \title{epiRomics: Epigenomic Analysis Package Built for R (epiRomics)}
 \description{
-A package designed to integrate various levels of epigenomic information, including, but not limited to ChIP and Histone next-generation sequencing. Regulatory network analysis can be done by using combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis can identify co-occurance of epigenomic data located at regions of interest. Finally, this package allows for various results to be visualized. This package is currently in development. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
+Integrates various levels of epigenomic information, including ChIP-seq, histone modification, ATAC-seq, and RNA-seq data. Regulatory network analysis uses combinatory approaches to infer regions of significance, such as enhancers. Downstream analysis identifies co-occurrence of epigenomic data at regions of interest. Visualization functions display multi-track genomic views with signal overlays. Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/Huising-Lab/epiRomics}
+  \item Report bugs at \url{https://github.com/Huising-Lab/epiRomics/issues}
+}
+
 }
 \author{
-\strong{Maintainer}: Alex M. Mawla \email{ammawla@ucdavis.edu}
+\strong{Maintainer}: Alex M. Mawla \email{ammawla@ucdavis.edu} (\href{https://orcid.org/0000-0003-0907-464X}{ORCID})
+
+Authors:
+\itemize{
+  \item Mark O. Huising \email{mhuising@ucdavis.edu} (\href{https://orcid.org/0000-0002-6594-2205}{ORCID})
+}
 
 Other contributors:
 \itemize{
@@ -17,4 +30,3 @@ Other contributors:
 }
 
 }
-\keyword{internal}

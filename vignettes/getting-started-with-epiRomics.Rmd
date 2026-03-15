@@ -1,448 +1,672 @@
 ---
-title: "Getting Started with EpiRomics"
-author: 'Authors: Alex M. Mawla & Mark O. Huising. Copyright 2020 - Present.'
+title: "Getting Started with epiRomics"
+author: "Alex M. Mawla & Mark O. Huising"
 date: "`r Sys.Date()`"
 output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    df_print: default
+    theme: cosmo
+    highlight: tango
   pdf_document:
     toc: yes
     df_print: default
-  prettydoc::html_pretty:
-    toc: yes
-    theme: cayman
-    highlight: github
-  html_document:
-    toc: yes
-    df_print: default
-vignette: '%\VignetteIndexEntry{Getting Started with EpiRomics} %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc} %\VignetteEngine{knitr::rmarkdown}'
+    latex_engine: pdflatex
+    keep_tex: no
+vignette: |
+  %\VignetteIndexEntry{Getting Started with epiRomics}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE, width = 70)
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  cache=TRUE,
-  options(rmarkdown.html_vignette.check_title = FALSE, 
-  tidy.opts = list(width.cutoff = 55), tidy = TRUE)
+  comment  = "#>",
+  eval     = TRUE,
+  cache    = FALSE,
+  fig.width  = 12,
+  fig.height = 8,
+  out.width  = "100%",
+  tidy       = FALSE
+)
+
+## ---- Locate example data ----
+## Priority 1: installed package extdata (full install or R CMD check)
+extdata_dir <- system.file("extdata", package = "epiRomics")
+has_data <- nzchar(extdata_dir) &&
+  file.exists(file.path(extdata_dir, "example_epiRomics_Db_sheet.csv")) &&
+  dir.exists(file.path(extdata_dir, "BigWigs"))
+
+## Priority 2: development source tree (rendering from package root)
+if (!has_data) {
+  dev_path <- normalizePath(file.path("..", "inst", "extdata"),
+                            mustWork = FALSE)
+  if (dir.exists(dev_path) &&
+      file.exists(file.path(dev_path, "example_epiRomics_Db_sheet.csv")) &&
+      dir.exists(file.path(dev_path, "BigWigs"))) {
+    extdata_dir <- dev_path
+    has_data <- TRUE
+  }
+}
+
+## Priority 3: BiocFileCache (lightweight GitHub install + cached data)
+if (!has_data) {
+  has_data <- epiRomics::epiRomics_has_cache()
+  if (has_data) extdata_dir <- epiRomics::epiRomics_cache_path()
+}
+
+## Priority 4: interactive download as last resort
+if (!has_data && interactive()) {
+  message("Downloading epiRomics example data (~1.3 GB, one-time)...")
+  tryCatch(
+    { epiRomics::epiRomics_cache_data(); has_data <- TRUE
+      extdata_dir <- epiRomics::epiRomics_cache_path() },
+    error = function(e) message("Download failed: ", e$message,
+                                "\nRun epiRomics_cache_data() to retry.")
+  )
+}
+
+if (!has_data) extdata_dir <- NULL
+
+## BigWig plots require the signal files
+has_bigwigs <- has_data && file.exists(
+  file.path(extdata_dir, "BigWigs",
+            "Kaestner_Alpha.atac.signal.subset.multi_chr.bigwig")
 )
 ```
 
-```{css, echo=FALSE}
+```{css, echo = FALSE}
 pre code {
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+.note-box {
+  background-color: #f0f7ff;
+  border-left: 4px solid #3c78d8;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 4px;
 }
 ```
 
 # Abstract
 
-**Summary** epiRomics is an R package designed to integrate multi-omics data in order to identify and visualize enhancer regions alongside gene expression and other epigenomic modifications. Regulatory network analysis can be done using combinatory approaches to infer regions of significance such as enhancers, when combining ChIP and histone data. Downstream analysis can identify co-occurrence of these regions of interest with other user-supplied data, such as chromatin availability or gene expression. Finally, this package allows for results to be visualized at high resolution in a stand-alone browser.
+**Summary** epiRomics is an R package designed to integrate multi-omics
+data in order to identify and visualize enhancer regions alongside gene
+expression and other epigenomic modifications. Regulatory network
+analysis can be done using combinatory approaches to infer regions of
+significance such as enhancers, when combining ChIP and histone data.
+Downstream analysis can identify co-occurrence of these regions of
+interest with other user-supplied data, such as chromatin availability or
+gene expression. Finally, this package allows for results to be
+visualized at high resolution in a stand-alone browser.
 
-**Availability and Implementation** epiRomics is released under Artistic-2.0 License. The source code and documents are freely available through Github (<https://github.com/Huising-Lab/epiRomics>).
+**Availability and Implementation** epiRomics is released under the
+Artistic-2.0 License. The source code and documents are freely available
+through GitHub (<https://github.com/Huising-Lab/epiRomics>).
 
-**Contact** ammawl\@ucdavis.edu or mhuising\@ucdavis.edu
+**Contact** ammawla@ucdavis.edu or mhuising@ucdavis.edu
 
-**Supplementary information** Supplementary data, and methods are available online on *biorXiv* or *Github.*
+**Supplementary information** Supplementary data and methods are
+available online on *bioRxiv* or *GitHub*.
 
-**Competing Interest Statement**
-
-The authors have declared no competing interest.
+**Competing Interest Statement** The authors have declared no competing
+interest.
 
 # Citation
 
 If you use epiRomics in published research, please cite:
 
-Mawla, AM& Huising, MO. **epiRomics: a multi-omics R package to identify and visualize enhancers.**
+Mawla AM, van der Meulen T, Huising MO. **Chromatin accessibility
+differences between alpha, beta, and delta cells identifies common and
+cell type-specific enhancers.** BMC Genomics. 2023;24:202.
+<https://doi.org/10.1186/s12864-023-09293-6>
 
-biorXiv 2021. doi:<https://doi.org/10.1101/2021.08.19.456732>
+Mawla AM & Huising MO. **epiRomics: a multi-omics R package to identify
+and visualize enhancers.** bioRxiv. 2021.
+<https://doi.org/10.1101/2021.08.19.456732>
 
-# Loading the epiRomics package and dependencies for vignette
+# Shiny epiRomics Showcase
 
-```{r setup, tidy=TRUE}
-## loading packages
+Explore epiRomics results interactively through our companion Shiny web
+application:
 
+**[Shiny epiRomics](https://huisinglab.com/epiRomics_2021/index.html)** ---
+Interactive browser for pancreatic islet enhancer and enhanceosome analysis
+results.
+
+# Example Data Setup {#data-setup}
+
+::: {.note-box}
+**Note:** epiRomics example data (~1.3 GB) is hosted remotely and
+must be downloaded once before running this vignette with live output.
+If the data is not yet cached, code chunks below will display the
+source code without execution.
+
+```r
+## Run this once to download and cache example data
+epiRomics_cache_data()
+```
+:::
+
+```{r data-status, echo = FALSE, results = "asis"}
+if (has_data) {
+  cat("**Data status:** Example data is available.",
+      "All code chunks will execute with live output.\n")
+} else {
+  cat(paste0(
+    "**Data status:** Example data is **not** cached. ",
+    "Code chunks are shown but not executed.\n\n",
+    "Run `epiRomics::epiRomics_cache_data()` in an R session to ",
+    "download the data, then rebuild this vignette.\n"
+  ))
+}
+```
+
+# Loading the epiRomics package
+
+```{r load-library, eval = has_data}
 library(epiRomics)
-
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-
 library(org.Hs.eg.db)
 ```
 
 # Brief explanation of example data
 
-This package includes some example data to get you started, delineating human pancreatic islet enhancers between alpha and beta cells.
+This package includes example data delineating human pancreatic islet
+enhancers between alpha and beta cells.
 
-Human pancreatic islet alpha and beta ATAC- and companion RNA- Seq data were retrieved from GEO accession GSE76268 (Ackermann, et al., 2016).
+Human pancreatic islet alpha and beta ATAC- and companion RNA-Seq data
+were retrieved from GEO accession GSE76268 (Ackermann et al., 2016).
 
-ATAC samples were processed using the ENCODE-DCC ATAC sequencing pipeline, aligning to the hg38 (Harrow, et al., 2012) build of the human genome (Consortium, 2012; Davis, et al., 2018).
+ATAC samples were processed using the ENCODE-DCC ATAC sequencing
+pipeline, aligning to the hg38 build of the human genome (Harrow et
+al., 2012; Consortium, 2012; Davis et al., 2018).
 
-Peak calls generated through the pipeline using MACS2 (Zhang, et al., 2008) were analyzed downstream through the BioConductor package DiffBind (Ross-Innes, et al., 2012) in order to identify differentially enriched chromatin regions between the two cell types.
+Peak calls generated through the pipeline using MACS2 (Zhang et al.,
+2008) were analyzed downstream through the Bioconductor package DiffBind
+(Ross-Innes et al., 2012) to identify differentially enriched chromatin
+regions between the two cell types.
 
-RNA samples were quality controlled using the tool fastp (Chen, et al., 2018), and aligned using STAR (Dobin, et al., 2013) to the hg38 build of the human genome. Wiggle files produced by the STAR aligner were then merged by cell type using UCSC command line tools.
+RNA samples were quality controlled using fastp (Chen et al., 2018), and
+aligned using STAR (Dobin et al., 2013) to hg38. Wiggle files produced
+by the STAR aligner were merged by cell type using UCSC command line
+tools.
 
-Bigwigs merged by cell type were subsetted to chromosome 1 using UCSC command line tools (Kent, et al., 2010).
+BigWig files were subsetted using UCSC command line tools (Kent et al.,
+2010).
 
-ChIP-sequencing peak calls generated using MACS2 for human pancreatic islet transcription factors Foxa2, MafB, Nkx2.2, Nkx6.1, and Pdx1 were retrieved from the EMBL-EBI repository database E-MTAB-1919 (Pasquali, et al., 2014). All peak calls were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool (Kent, et al., 2002).
+ChIP-seq peak calls for human pancreatic islet transcription factors
+Foxa2, MafB, Nkx2.2, Nkx6.1, and Pdx1 were retrieved from EMBL-EBI
+E-MTAB-1919 (Pasquali et al., 2014).
 
-Histone-sequencing peak calls generated using MACS2 for histones H3k27ac and H3k4me1 were retrieved from GEO accession GSE16256 (Bernstein, et al., 2010), and for histone H2A.Z from the EMBL-EBI repository database E-MTAB-1919 (Pasquali, et al., 2014). All peak calls were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.
+Histone modification peak calls for H3K27ac, H3K4me1, H3K27me3,
+H3K9me3, H3K4me3, H3K36me3 were retrieved from GEO GSE16256 (Bernstein
+et al., 2010), and H2A.Z from EMBL-EBI E-MTAB-1919 (Pasquali et al.,
+2014).
 
-The FANTOM5 human enhancer database (Lizio, et al., 2015) was retrieved, and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.
+All peak calls retrieved as hg19 were lifted over to hg38 using the
+UCSC liftOver (Kent et al., 2002).
 
-Human ultra-conserved non-coding elements (UCNEs) were retrieved form the UCNE database (Dimitrieva and Bucher, 2012), and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.
+The FANTOM5 human enhancer database (Lizio et al., 2015), ultra-conserved
+non-coding elements from the UCNE database (Dimitrieva and Bucher, 2012),
+and the human islet regulome (Miguel-Escalada et al., 2019) were also
+retrieved and lifted to hg38.
 
-The human islet regulome database was retrieved (Miguel-Escalada, et al., 2019) and all regions were lifted over to the hg38 genome build using the UCSC genome browser liftOver tool.
+# Building the database
 
+The database sheet CSV defines the input annotations. Each row specifies
+a BED file with its name, relative path, genome build, format, and type.
 
-# How to load and build the database
+Required columns: **name**, **path**, **genome**, **format**, **type**.
+Genome must be in proper format (e.g., `mm10` or `hg38`).
+Type can be: `histone`, `methyl`, `SNP`, `chip`, or `functional`.
 
-Lets load and take a look at how to properly format the datasets epiRomics uses to build the initial database.
-
-```{r exampledatacheck, tidy=FALSE,   tidy.opts = list(width.cutoff = 70), fontsize=10}
-
+```{r show-db-sheet, eval = has_data}
 example_epiRomics_Db_sheet <- read.csv(
-  file = system.file(
-    "extdata",
-    "example_epiRomics_Db_sheet_user_paths.csv",
-    package = "epiRomics"
-  )
-)
-
-
-## Required columns are: name, path, genome, format, and type
-
-## The genome must also be in proper format, e.g. mm10 or hg38
-
-## Type of data can be histone, methyl, SNP, or ChIP. 
-## ChIP is required for some downstream functions to work appropriately.
-
-## Not run
-#head(example_epiRomics_Db_sheet)
+  file.path(extdata_dir,
+    "example_epiRomics_Db_sheet.csv"))
+head(example_epiRomics_Db_sheet, 5)
 ```
 
-epiRomics_build_dB constructs a database of class epiRomics with this data sheet
-```{r dataformatandload, tidy=FALSE, tidy.opts = list(width.cutoff = 90), fontsize=9}
+`epiRomics_build_dB()` constructs the S4 database from the data sheet.
+The CSV uses relative paths; the `data_dir` parameter resolves them
+against the cache directory automatically.
 
+```{r build-db, eval = has_data, message = TRUE, warning = FALSE}
 epiRomics_dB <- epiRomics_build_dB(
-  epiRomics_db_file =
-    system.file(
-      "extdata",
-      "example_epiRomics_Db_sheet_user_paths.csv",
-      package = "epiRomics"
-    ),
-  txdb_organism =
-    "TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene",
+  epiRomics_db_file = file.path(extdata_dir,
+    "example_epiRomics_Db_sheet.csv"),
+  txdb_organism = paste0(
+    "TxDb.Hsapiens.UCSC.hg38.knownGene::",
+    "TxDb.Hsapiens.UCSC.hg38.knownGene"),
   epiRomics_genome = "hg38",
-  epiRomics_organism = "org.Hs.eg.db"
-)
+  epiRomics_organism = "org.Hs.eg.db",
+  data_dir = extdata_dir)
 ```
 
-# Delineating active enhancers using H3k4me1 and H3k27ac marks as a proxy
+# Quick visualization with epiRomics_quick_view
 
-There is a lot of flexibility for data exploration here. In this example, we search for putative enhancers using two histone marks known to co-occur at enhancer regions - h3k4me1 & h3k27ac
+Before running the full enhancer pipeline, epiRomics provides a
+zero-configuration entry point for the ultra-fast visualization of any gene locus
+with BigWig signal tracks. No database setup is required---just pass a gene
+symbol and BigWig file paths.
 
-```{r putativeenhancers, tidy=FALSE,  tidy.opts = list(width.cutoff = 70), fontsize=10}
+```{r setup-bigwigs, eval = has_data}
+## Load BigWig track connection sheet and resolve paths
+epiRomics_track_connection <- read.csv(
+  file.path(extdata_dir,
+    "example_epiRomics_BW_sheet.csv"))
+epiRomics_track_connection$path <- file.path(
+  extdata_dir,
+  epiRomics_track_connection$path)
 
+## Reorder: Beta first, then Alpha
+beta_idx <- grep("Beta", epiRomics_track_connection$name)
+alpha_idx <- grep("Alpha", epiRomics_track_connection$name)
+epiRomics_track_connection <- epiRomics_track_connection[
+  c(beta_idx, alpha_idx), ]
+
+## Named vector of BigWig paths and colors
+bw_paths <- setNames(
+  epiRomics_track_connection$path,
+  epiRomics_track_connection$name)
+bw_colors <- epiRomics_track_connection$color
+```
+
+The `mirror = TRUE` option displays ATAC and RNA signals in a mirrored
+layout for direct comparison between cell types.
+
+## Beta cell genes
+
+### INS
+
+```{r fig-qv-ins, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("INS",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+### PDX1
+
+```{r fig-qv-pdx1, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("PDX1",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+### MAFA
+
+```{r fig-qv-mafa, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("MAFA",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+## Alpha cell genes
+
+### GCG
+
+```{r fig-qv-gcg, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("GCG",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+
+
+### MAFB
+
+```{r fig-qv-mafb, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("MAFB",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+## Both Alpha and Beta Cell Genes
+
+### UCN3
+
+```{r fig-qv-ucn3, fig.width = 10, fig.height = 8, fig.align = "center", eval = has_bigwigs, warning = FALSE, message = FALSE}
+epiRomics_quick_view("UCN3",
+  bw_paths = bw_paths,
+  colors = bw_colors,
+  mirror = TRUE,
+  genome = "hg38")
+```
+
+# Identifying putative enhancers
+
+There is a lot of flexibility for data exploration here. In this
+example, we search for putative enhancers using two histone marks known
+to co-occur at enhancer regions: H3K4me1 and H3K27ac.
+
+```{r putative-enhancers, eval = has_data}
 epiRomics_putative_enhancers <-
-  epiRomics_enhancers(
+  epiRomics_enhancers_co_marks(
     epiRomics_dB,
-    epiRomics_histone_mark_1 =
-      "h3k4me1",
-    epiRomics_histone_mark_2 = "h3k27ac"
-  )
+    epiRomics_histone_mark_1 = "h3k4me1",
+    epiRomics_histone_mark_2 = "h3k27ac")
 
-## Taking a look, we see a  list of 19,692 putative enhancers 
+## First 5 putative enhancers
+head(as.data.frame(
+  epiRomics_putative_enhancers@annotations), 5)
 
-epiRomics_putative_enhancers@annotations
 ```
 
-# Cross-referencing enhancer calls to other databases
+# Cross-referencing enhancer calls to databases
 
 ## FANTOM Enhancer Database
-Now we have a list of regions as possible candidates for enhancers, but where do we go from here? One way to increase confidence of these calls is to cross this list against an enhancer database, for instance, FANTOM. 
-```{r putativeenhancersfiltering, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-## NOTE: This option may not be available for all organisms.
 
+Cross-referencing putative enhancers against the FANTOM5 enhancer
+database increases confidence in the calls.
+
+```{r filter-fantom, eval = has_data}
 epiRomics_putative_enhancers_filtered_fantom <-
-  epiRomics_enhancers_filter(epiRomics_putative_enhancers, epiRomics_dB,
-                             epiRomics_type =
-                               "hg38_custom_fantom")
-
-## Taking a look, we see a reduced number of 2,749 candidate regions
-
-epiRomics_putative_enhancers_filtered_fantom@annotations
-```
-
-## Human Pancreatic Islet Regulome Enhancer Database
-We can also filter putative enhancer calls against active enhancers from the human islet regulome database
-```{r putativeenhancersfilteringactiveregulome, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhancers_filtered_regulome_active <-
-  epiRomics_enhancers_filter(epiRomics_putative_enhancers,
-                             epiRomics_dB,
-                             epiRomics_type = "hg38_custom_regulome_active")
-
-
-epiRomics_putative_enhancers_filtered_regulome_active@annotations
-```
-
-## Human Pancreatic Islet Regulome Super-Enhancer Database
-We can also filter putative enhancer calls against super enhancers from human islet regulome database
-```{r putativeenhancersfilteringsuperregulome, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhancers_filtered_regulome_super <-
-  epiRomics_enhancers_filter(epiRomics_putative_enhancers,
-                             epiRomics_dB, epiRomics_type = "hg38_custom_regulome_super")
-
-epiRomics_putative_enhancers_filtered_regulome_super@annotations
-```
-
-## Human Ultra-Conserved Non-Coding Elements Database
-We can also filter putative enhancer calls against Ultra-Conserved Non-Coding Elements
-```{r putativeenhancersfilteringucnes, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhancers_filtered_ucnes <-
-  epiRomics_enhancers_filter(epiRomics_putative_enhancers,
-                             epiRomics_dB,
-                             epiRomics_type = "hg38_custom_ucnes")
-
-epiRomics_putative_enhancers_filtered_ucnes@annotations
-```
-
-# Screening for high transcription factor co-binding sites
-
-Biology has established that enhancers can be quite redundant, and not all play an active role in regulating a cell's activity. How can we utilize other epigenomic data in order to identify true enhanceosome regions? One way is to cross this list against all ChIP data of the cell type. A true enhanceosome region should have made it through our filtering thus far, and contain several binding sites for known TFs. Co-binding is expected, and the list is sorted by the highest number of ChIP hits within the region.
-
-```{r putativeenhancerstoenhanceosome, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhanceosome_fantom <-
-  epiRomics_enhanceosome(epiRomics_putative_enhancers_filtered_fantom,
-                         epiRomics_dB)
-
-## Taking a look, we see the top candidates meet the criteria we list as expected
-
-epiRomics_putative_enhanceosome_fantom@annotations
-
-## Evaluate calls on chromosome 1
-
-head(as.data.frame(
-  epiRomics_putative_enhanceosome_fantom@annotations
-  )[as.data.frame(epiRomics_putative_enhanceosome_fantom@annotations)$seqnames 
-    == "chr1",])
-
-## Find Index
-
-which(names(epiRomics_putative_enhanceosome_fantom@annotations) == 183)
-```
-
-# Transcription factor decision trees
-
-ChIP dataset repositories are quite sizeable for many organisms and cell types, with the expectation to only grow larger. Many different TFs binding to a putative enhancer region may not be that meaningful in the context of your biological question. A further step would be to ask whether there are co-TFs that pop up together, and whether this pattern varies across the functional annotation of the genome, i.e. does the combination of two TFs on enhanceosomes change on the gene body compared to distal intergenic regions?
-
-```{r fig1, fig.width=12, fig.height=10,  out.width="100%", fig.align="center", tidy.opts = list(width.cutoff = 70), fontsize=10}
- 
-plot(epiRomics_predictors(epiRomics_putative_enhanceosome_fantom))
-```
-
-# Intersecting and visualizing ATAC- and RNA-Seq data
-
-What if you wanted to visualize co-binding on your FANTOM filtered putative enhancer region? And do you have additional data you want to include for visualization, such as ATAC and RNA Seq? Lets take a look at one of the top hits
-
-```{r data, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-## Read in ATAC Seq and RNA Seq track bigwigs
-
-## NOTE: These bigwigs are subsetted to chromosome 1. 
-## Indices not falling on chromosome 1 will return an error.
-
-epiRomics_track_connection <- read.csv(
-  system.file(
-    "extdata",
-    "example_epiRomics_BW_sheet_user_paths.csv",
-    package = "epiRomics"
-  )
-)
-```
-
-```{r fig2, fig.width=12, fig.height=20, out.width="100%", fig.align="center", cache=TRUE,tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_track_layer_human(
-  epiRomics_putative_enhanceosome_fantom,
-  epiRomics_index =
-    which(
-      names(epiRomics_putative_enhanceosome_fantom@annotations)
-      == 183
-    ),
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection =
-    epiRomics_track_connection
-)
-
-```
-
-What about a region that overlapped with active enhancers from the human islet regulome database?
-```{r dataregulomeactivevisual, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhanceosome_regulome_active <-
-  epiRomics_enhanceosome(epiRomics_putative_enhancers_filtered_regulome_active,
-                         epiRomics_dB)
-
-epiRomics_putative_enhanceosome_regulome_active@annotations
-
-## Evaluate calls on chromosome 1
-
-head(as.data.frame(
-  epiRomics_putative_enhanceosome_regulome_active@annotations
-)[as.data.frame(epiRomics_putative_enhanceosome_regulome_active@annotations)$seqnames 
-  == "chr1",])
-
-## Find Index
-
-which(names(epiRomics_putative_enhanceosome_regulome_active@annotations) == 82)
-```
-
-```{r fig3, fig.width=12, fig.height=20, out.width="100%", fig.align="center",cache=TRUE, tidy.opts = list(width.cutoff = 70), tidy=FALSE,fontsize=10}
-
-epiRomics_track_layer_human(
-  epiRomics_putative_enhanceosome_regulome_active,
-  epiRomics_index = which(
-    names(
-      epiRomics_putative_enhanceosome_regulome_active@annotations
-    ) == 82
-  ),
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = epiRomics_track_connection
-)
-```
-
-What about a region that overlapped with super enhancers from the human islet regulome database?
-```{r dataregulomesupervisual, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhanceosome_regulome_super <-
-  epiRomics_enhanceosome(epiRomics_putative_enhancers_filtered_regulome_super,
-                         epiRomics_dB)
-
-epiRomics_putative_enhanceosome_regulome_super@annotations
-
-## Evaluate calls on chromosome 1
-
-head(as.data.frame(
-  epiRomics_putative_enhanceosome_regulome_super@annotations)[as.data.frame(
-    epiRomics_putative_enhanceosome_regulome_super@annotations)$seqnames == "chr1",])
-
-## Find Index
-
-which(names(epiRomics_putative_enhanceosome_regulome_super@annotations) == 1)
-```
-
-```{r fig4, fig.width=12, fig.height=20,  out.width="100%", fig.align="center", cache=TRUE, tidy.opts = list(width.cutoff = 70), tidy=FALSE, fontsize=10}
-
-epiRomics_track_layer_human(
-  epiRomics_putative_enhanceosome_regulome_super,
-  epiRomics_index = which(
-    names(epiRomics_putative_enhanceosome_regulome_super@annotations) == 1
-  ),
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = epiRomics_track_connection
-)
-```
-Or, about a region that overlapped with ultra-conserved non coding elements?
-```{r dataucnes, tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
-epiRomics_putative_enhanceosome_ucnes <-
-  epiRomics_enhanceosome(epiRomics_putative_enhancers_filtered_ucnes, epiRomics_dB)
-
-epiRomics_putative_enhanceosome_ucnes@annotations
-```
-
-```{r fig5, fig.width=12, fig.height=20,  out.width="100%", fig.align="center",cache=TRUE, tidy.opts = list(width.cutoff = 70), fontsize=10, TIDY=FALSE}
-
-epiRomics_track_layer_human(
-  epiRomics_putative_enhanceosome_ucnes,
-  epiRomics_index = 9,
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = epiRomics_track_connection
-)
-```
-
-How about applying multiple filters to further increase the confidence of calls?
-```{r stringentfiltering, tidy.opts = list(width.cutoff = 70), tidy=FALSE, fontsize=10}
-
-epiRomics_putative_enhancers_filtered_stringent <-
   epiRomics_enhancers_filter(
-    epiRomics_enhancers_filter(
-      epiRomics_enhancers_filter(
-        epiRomics_enhancers_filter(epiRomics_putative_enhancers, epiRomics_dB,
-                                   epiRomics_type =
-                                     "hg38_custom_fantom"),
-        epiRomics_dB,
-        epiRomics_type = "hg38_custom_regulome_active"
-      ),
-      epiRomics_dB,
-      epiRomics_type = "hg38_custom_regulome_super"
-    ),
+    epiRomics_putative_enhancers,
     epiRomics_dB,
-    epiRomics_type = "hg38_custom_ucnes"
-  )
+    epiRomics_type = "hg38_custom_fantom")
 
-
-## Here, we see a highly conservative list of putative enhancer calls that overlap with four
-## different functional annotations, suggesting the lowest hanging fruit for downstream 
-## bench-lab validation. 
-## NOTE: The UCNE database filter caused the greatest reduction in enhancer calls.
-
-epiRomics_putative_enhancers_filtered_stringent@annotations
-
-epiRomics_putative_enhanceosome_stringent <-
-  epiRomics_enhanceosome(epiRomics_putative_enhancers_filtered_stringent,
-                         epiRomics_dB)
+head(as.data.frame(
+  epiRomics_putative_enhancers_filtered_fantom@annotations), 5)
 ```
 
-```{r fig6, fig.width=12, fig.height=20, out.width="100%", fig.align="center",cache=TRUE, tidy.opts = list(width.cutoff = 70), fontsize=10, tidy=FALSE}
+## Human Islet Regulome Active Enhancers
 
-epiRomics_track_layer_human(
-  epiRomics_putative_enhanceosome_stringent,
-  epiRomics_index = 1,
+```{r filter-regulome-active, eval = has_data}
+epiRomics_putative_enhancers_filtered_regulome_active <-
+  epiRomics_enhancers_filter(
+    epiRomics_putative_enhancers,
+    epiRomics_dB,
+    epiRomics_type = "hg38_custom_regulome_active")
+
+head(as.data.frame(
+  epiRomics_putative_enhancers_filtered_regulome_active@annotations), 5)
+```
+
+## Human Islet Regulome Super Enhancers
+
+```{r filter-regulome-super, eval = has_data}
+epiRomics_putative_enhancers_filtered_regulome_super <-
+  epiRomics_enhancers_filter(
+    epiRomics_putative_enhancers,
+    epiRomics_dB,
+    epiRomics_type = "hg38_custom_regulome_super")
+
+head(as.data.frame(
+  epiRomics_putative_enhancers_filtered_regulome_super@annotations), 5)
+```
+
+## Ultra-Conserved Non-Coding Elements (UCNEs)
+
+```{r filter-ucnes, eval = has_data}
+epiRomics_putative_enhancers_filtered_ucnes <-
+  epiRomics_enhancers_filter(
+    epiRomics_putative_enhancers,
+    epiRomics_dB,
+    epiRomics_type = "hg38_custom_ucnes")
+
+head(as.data.frame(
+  epiRomics_putative_enhancers_filtered_ucnes@annotations), 5)
+```
+
+# Screening for high TF co-binding sites (enhanceosomes)
+
+Enhancers can be redundant and not all play an active regulatory role.
+By intersecting putative enhancer calls with all available ChIP-seq data,
+we identify enhanceosome regions with high transcription factor
+co-binding. Results are sorted by co-binding count.
+
+```{r enhanceosome-fantom, eval = has_data}
+epiRomics_putative_enhanceosome_fantom <-
+  epiRomics_enhanceosome(
+    epiRomics_putative_enhancers_filtered_fantom,
+    epiRomics_dB)
+
+head(as.data.frame(
+  epiRomics_putative_enhanceosome_fantom@annotations), 5)
+
+## Evaluate calls on chromosome 1
+fantom_df <- as.data.frame(
+  epiRomics_putative_enhanceosome_fantom@annotations)
+head(fantom_df[fantom_df$seqnames == "chr1", ], 5)
+
+## Total enhanceosome regions
+length(epiRomics_putative_enhanceosome_fantom@annotations)
+```
+
+# Transcription factor co-binding analysis
+
+`epiRomics_tf_cobinding()` uses Fisher's exact test to identify
+statistically significant TF co-binding pairs within enhanceosome
+regions, reporting odds ratios and pointwise mutual information (PMI).
+
+```{r cobinding, eval = has_data}
+tf_cobinding <- epiRomics_tf_cobinding(
+  epiRomics_putative_enhanceosome_fantom,
+  epiRomics_dB)
+
+tf_cobinding$pairwise
+```
+
+# Visualizing enhanceosome regions with signal tracks
+
+```{r fig-fantom-track, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer(
+  epiRomics_putative_enhanceosome_fantom,
+  epiRomics_index = which(names(
+    epiRomics_putative_enhanceosome_fantom@annotations) == "14"),
   epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = epiRomics_track_connection
-)
+  epiRomics_track_connection = epiRomics_track_connection)
 ```
 
-How can we use these putative enhanceosome regions to infer biology between cell states? 
-In this example, we will integrate ATAC-Seq data differential testing showing differences in chromatin accessibility between alpha and beta cells
+## Regulome active-filtered enhanceosomes
 
-```{r integratechromatindata,  tidy=FALSE, tidy.opts = list(width.cutoff = 70), fontsize=10}
-## Read differentially binding data generated with DiffBind.
-## DE comparing human alpha and beta cell chromatin.
+```{r enhanceosome-regulome-active, eval = has_data}
+epiRomics_putative_enhanceosome_regulome_active <-
+  epiRomics_enhanceosome(
+    epiRomics_putative_enhancers_filtered_regulome_active,
+    epiRomics_dB)
 
-b.v.a <-
-  read.csv(system.file("extdata", "DBA_Beta_Versus_Alpha.csv", package = "epiRomics"))
+head(as.data.frame(
+  epiRomics_putative_enhanceosome_regulome_active@annotations), 5)
+
+reg_active_df <- as.data.frame(
+  epiRomics_putative_enhanceosome_regulome_active@annotations)
+head(reg_active_df[reg_active_df$seqnames == "chr1", ], 5)
+
+length(
+  epiRomics_putative_enhanceosome_regulome_active@annotations)
+```
+
+```{r fig-regulome-active-track, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer(
+  epiRomics_putative_enhanceosome_regulome_active,
+  epiRomics_index = which(names(
+    epiRomics_putative_enhanceosome_regulome_active@annotations) == "21"),
+  epiRomics_dB = epiRomics_dB,
+  epiRomics_track_connection = epiRomics_track_connection)
+```
+
+## Regulome super-enhancer filtered enhanceosomes
+
+```{r enhanceosome-regulome-super, eval = has_data}
+epiRomics_putative_enhanceosome_regulome_super <-
+  epiRomics_enhanceosome(
+    epiRomics_putative_enhancers_filtered_regulome_super,
+    epiRomics_dB)
+
+head(as.data.frame(
+  epiRomics_putative_enhanceosome_regulome_super@annotations), 5)
+
+reg_super_df <- as.data.frame(
+  epiRomics_putative_enhanceosome_regulome_super@annotations)
+head(reg_super_df[reg_super_df$seqnames == "chr1", ], 5)
+
+length(
+  epiRomics_putative_enhanceosome_regulome_super@annotations)
+```
+
+```{r fig-regulome-super-track, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer(
+  epiRomics_putative_enhanceosome_regulome_super,
+  epiRomics_index = which(names(
+    epiRomics_putative_enhanceosome_regulome_super@annotations) == "13"),
+  epiRomics_dB = epiRomics_dB,
+  epiRomics_track_connection = epiRomics_track_connection)
+```
+
+## UCNE-filtered enhanceosomes
+
+```{r enhanceosome-ucnes, eval = has_data}
+epiRomics_putative_enhanceosome_ucnes <-
+  epiRomics_enhanceosome(
+    epiRomics_putative_enhancers_filtered_ucnes,
+    epiRomics_dB)
+
+head(as.data.frame(
+  epiRomics_putative_enhanceosome_ucnes@annotations), 5)
+
+## Evaluate calls on chromosome 1
+ucne_df <- as.data.frame(
+  epiRomics_putative_enhanceosome_ucnes@annotations)
+head(ucne_df[ucne_df$seqnames == "chr1", ], 5)
+
+## Total enhanceosome regions
+length(epiRomics_putative_enhanceosome_ucnes@annotations)
+```
+
+```{r fig-ucne-track, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer(
+  epiRomics_putative_enhanceosome_ucnes,
+  epiRomics_index = 4,
+  epiRomics_dB = epiRomics_dB,
+  epiRomics_track_connection = epiRomics_track_connection)
+```
+
+
+# Integrating differential chromatin accessibility
+
+How can we use putative enhanceosome regions to infer biology between
+cell states? Here we integrate DiffBind ATAC-seq data showing
+differential chromatin accessibility between alpha and beta cells.
+
+```{r integrate-chromatin, eval = has_data}
+b.v.a <- read.csv(
+  file.path(extdata_dir,
+    "DBA_Beta_Versus_Alpha.csv"))
 b.v.a <- GRanges(b.v.a)
 
-# Filter for beta enriched chromatin regions
+## Filter for beta-enriched chromatin regions
+beta.enriched <- b.v.a[b.v.a$Fold >= 1 & b.v.a$Conc>=3, ]
 
-beta.enriched <- b.v.a[b.v.a$Fold >= 1, ]
-
-# Connect to our putative enhanceosomes
-
+## Connect to putative enhanceosomes
 beta_enhancer_regions <-
-  epiRomics_regions_of_interest(epiRomics_putative_enhanceosome_fantom, beta.enriched)
+  epiRomics_regions_of_interest(
+    epiRomics_putative_enhanceosome_fantom,
+    beta.enriched)
+
+head(as.data.frame(
+  beta_enhancer_regions@annotations), 5)
 ```
 
-Now, lets visualize the top candidate region we found after connecting our differential chromatin analysis with the putative enhanceosomes
-
-```{r fig7, fig.width=12, fig.height=20, tidy=FALSE, out.width="100%", fig.align="center",cache=TRUE}
-
-epiRomics_track_layer_human(
+```{r fig-beta-track, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer(
   beta_enhancer_regions,
-  epiRomics_index = 1,
+  epiRomics_index = which(names(
+    beta_enhancer_regions@annotations) == "305"),
   epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = epiRomics_track_connection
-)
+  epiRomics_track_connection = epiRomics_track_connection)
 ```
+
+# Gene-centered visualization
+
+`epiRomics_track_layer_gene()` provides a gene-focused view combining
+all database tracks (histone marks, ChIP, annotations) with BigWig
+signal---no enhanceosome pipeline required.
+
+```{r fig-gene-ins, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer_gene("INS",
+  epiRomics_dB,
+  epiRomics_track_connection)
+```
+
+```{r fig-gene-gcg, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer_gene("GCG",
+  epiRomics_dB,
+  epiRomics_track_connection)
+```
+
+```{r fig-gene-pdx1, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+## Wider padding captures distal regulatory elements
+epiRomics_track_layer_gene("PDX1",
+  epiRomics_dB,
+  epiRomics_track_connection,
+  padding = 5000)
+```
+
+# Chromatin state classification
+
+`epiRomics_chromatin_states()` classifies genomic regions by their
+histone mark combinations into six biologically meaningful states:
+active, bivalent, poised, primed, repressed, and unmarked. Classification
+follows ChromHMM/Roadmap Epigenomics conventions (Ernst & Kellis 2012;
+Kundaje et al. 2015), with TSS proximity refinement.
+
+
+```{r chromatin-states, eval = has_data}
+chromatin_states <-
+  epiRomics_chromatin_states(epiRomics_dB)
+
+table(chromatin_states$chromatin_state)
+table(chromatin_states$genomic_context)
+
+
+pdx1_states <- chromatin_states[
+  chromatin_states$seqnames == "chr13" &
+    chromatin_states$start >= 27900000 &
+    chromatin_states$end   <= 28000000, ]
+head(pdx1_states, 10)
+```
+
+### Visualize the PDX1 locus with chromatin state tracks overlaid:
+
+```{r fig-chromatin-pdx1, fig.width = 14, fig.height = 12, fig.align = "center", eval = has_bigwigs, message=FALSE}
+epiRomics_track_layer_gene("PDX1",
+  epiRomics_dB,
+  epiRomics_track_connection,
+  chromatin_states = chromatin_states,
+  show_chromatin = TRUE,
+  show_enhancer_highlight = TRUE,
+  padding = 5000)
+```
+
 
 # Session Information
 
-Here is the output of `sessionInfo()` on the system on which this document was compiled:
-
-```{r sessioninfo, tidy.opts = list(width.cutoff = 70), fontsize=10}
-
+```{r sessioninfo}
 sessionInfo()
 ```
