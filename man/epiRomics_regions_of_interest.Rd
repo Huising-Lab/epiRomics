@@ -2,21 +2,72 @@
 % Please edit documentation in R/epiRomics_regions_of_interest.R
 \name{epiRomics_regions_of_interest}
 \alias{epiRomics_regions_of_interest}
-\title{Evaluates whether regions of interest derived from external experiments, such as ATAC-Seq, correspond with enhanceosome regions}
+\title{Define regions of interest and filter enhanceosome by overlap}
 \usage{
 epiRomics_regions_of_interest(
   epiRomics_putative_enhanceosome,
-  epiRomics_test_regions
+  epiRomics_test_regions = NULL,
+  input_type = c("granges", "bed", "genelist", "combined"),
+  bed_path = NULL,
+  gene_list = NULL
 )
 }
 \arguments{
-\item{epiRomics_putative_enhanceosome}{epiRomics class database containing putative enhanceosome calls}
+\item{epiRomics_putative_enhanceosome}{epiRomics class database containing
+putative enhanceosome calls. Must have non-empty \code{@annotations}.}
 
-\item{epiRomics_test_regions}{GRanges containing regions of interest}
+\item{epiRomics_test_regions}{GRanges or NULL. Direct GRanges regions of
+interest (original interface). If provided, \code{input_type} is ignored
+and this is used directly for overlap. Default NULL.}
+
+\item{input_type}{Character. How to construct test regions when
+\code{epiRomics_test_regions} is NULL. One of:
+\describe{
+  \item{\code{"granges"}}{Use \code{epiRomics_test_regions} directly
+    (default, backward-compatible).}
+  \item{\code{"bed"}}{Import regions from a BED file via
+    \code{bed_path}.}
+  \item{\code{"genelist"}}{Select enhanceosome regions whose SYMBOL
+    column matches genes in \code{gene_list}.}
+  \item{\code{"combined"}}{Union of all provided evidence sources
+    (GRanges, BED, genelist).}
+}}
+
+\item{bed_path}{Character or NULL. Path to a BED file for
+\code{input_type = "bed"} or \code{"combined"}.}
+
+\item{gene_list}{Character vector or NULL. Gene symbols for
+\code{input_type = "genelist"} or \code{"combined"}.}
 }
 \value{
-Variable of class epiRomics with enhanceosome regions overlapping with regions of interest
+Variable of class epiRomics with enhanceosome regions overlapping
+  with regions of interest.
 }
 \description{
-Evaluates whether regions of interest derived from external experiments, such as ATAC-Seq, correspond with enhanceosome regions
+Evaluates whether regions of interest derived from external experiments
+(ATAC-seq, DBA, gene lists, BED files) correspond with enhanceosome regions.
+Supports multiple input types for flexible region definition.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_regions_of_interest(db), error = function(e) message(e$message))
+\donttest{
+# Original GRanges interface (backward-compatible)
+roi <- epiRomics_regions_of_interest(dB, test_gr)
+
+# BED file input
+roi <- epiRomics_regions_of_interest(dB, input_type = "bed",
+  bed_path = "peaks.bed")
+
+# Gene list input
+roi <- epiRomics_regions_of_interest(dB, input_type = "genelist",
+  gene_list = c("INS", "GCG", "SST"))
+
+# Combined: union of BED + genelist
+roi <- epiRomics_regions_of_interest(dB, input_type = "combined",
+  bed_path = "peaks.bed", gene_list = c("INS", "GCG"))
+}
 }

@@ -1,33 +1,46 @@
-.Rproj.user
+# R build artifacts
+*.tar.gz
+*.Rcheck/
+*.Rcheck
+Meta/
+inst/doc/
+doc/
+
+# Compiled code
+src/*.o
+src/*.so
+src/*.dll
+
+# R session files
 .Rhistory
+.Rapp.history
 .RData
 .Ruserdata
-.Rbuildignore
-epiRomics.Rproj
 
-*.gz
-*.bed
-*.bigwig
-inst/extdata/DBA_Beta_Versus_Alpha.csv
-inst/extdata/example_epiRomics_BW_sheet_user_paths.csv
-inst/extdata/example_epiRomics_Db_sheet_user_paths.csv
+# IDE / project files
+.Rproj.user
+
+# Vignette build artifacts
+vignettes/*_cache/
+vignettes/*_files/
+vignettes/preamble.tex
+
+# Data files (downloaded via BiocFileCache)
+inst/extdata/*
+
+# Test artifacts
+tests/testthat/expected_outputs/
+tests/testthat/Rplots.pdf
+tests/testthat/test-regression.R
+
+# Generated files
 *.eps
 *.timestamp
-Meta
-docs
-vignettes/getting-started-with-epiRomics_cache/html/__packages
-*.RData
 *.rdb
 *.rdx
-*.png
-*.dcf
-*.woff
-*.jpg
-vignettes/getting-started-with-epiRomics_cache/latex/__packages
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig1-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig3-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig2-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig4-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig5-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig6-1.pdf
-vignettes/getting-started-with-epiRomics_files/figure-latex/fig7-1.pdf
+
+# BiocCheck output
+epiRomics.BiocCheck/
+
+# pkgdown site (built by GitHub Actions)
+docs/

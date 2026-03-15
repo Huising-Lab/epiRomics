@@ -1,0 +1,35 @@
+# IDE and project files
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.Rhistory$
+
+# GitHub and CI (not part of R package)
+^\.github$
+^codecov\.yml$
+^CODE_OF_CONDUCT\.md$
+
+# pkgdown (built by GitHub Actions)
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+
+# Build artifacts
+^Meta$
+^doc$
+^epiRomics\.BiocCheck$
+^epiRomics\.Rcheck$
+
+# Vignette cache
+^vignettes/.*_cache$
+
+# Data files (downloaded via BiocFileCache, not shipped)
+^inst/extdata$
+
+# Test artifacts (not needed in tarball)
+^tests/testthat/test-regression\.R$
+^tests/testthat/expected_outputs$
+^tests/testthat/Rplots\.pdf$
+
+# LICENSE file (R knows Artistic-2.0 natively)
+^LICENSE$
+EOF

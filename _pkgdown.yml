@@ -1,0 +1,35 @@
+url: https://Huising-Lab.github.io/epiRomics/
+
+template:
+  params:
+    bootswatch: cosmo
+
+reference:
+  - title: "Core Functions"
+    desc: "Main epiRomics functions for database building and analysis"
+  - title: "Analysis Functions"
+    desc: "Functions for enhancer prediction and analysis"
+  - title: "Visualization Functions"
+    desc: "Functions for creating genomic tracks and visualizations"
+  - title: "Utility Functions"
+    desc: "Helper functions and utilities"
+
+articles:
+  - getting-started-with-epiRomics
+
+navbar:
+  structure:
+    left: ["intro", "reference", "articles", "news"]
+    right: ["github"]
+  components:
+    articles:
+      text: "Vignettes"
+      icon: fa-book-open
+      href: articles/
+    news:
+      text: "News"
+      icon: fa-newspaper
+      href: news/
+    github:
+      icon: fa-github fa-lg
+      href: https://github.com/Huising-Lab/epiRomics
