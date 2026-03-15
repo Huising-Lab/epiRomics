@@ -23,3 +23,13 @@ Variable of class epiRomics with filtered candidate enhancer regions
 \description{
 Filters putative enhancers called by epiRomics_enhancers by crossing against curated FANTOM data
 }
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_enhancers_filter(db, db), error = function(e) message(e$message))
+\donttest{
+filtered <- epiRomics_enhancers_filter(epiRomics_putative_enhancers, epiRomics_dB)
+}
+}

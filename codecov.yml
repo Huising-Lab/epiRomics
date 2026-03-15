@@ -1,5 +1,6 @@
 codecov:
-  token: 343b7418-40f9-476b-acad-1fff73687813
+  # Token is now stored in GitHub secrets as CODECOV_TOKEN
+  # token: 343b7418-40f9-476b-acad-1fff73687813
   
 comment: false
 

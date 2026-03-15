@@ -1,49 +1,47 @@
-# No Remotes ----
-# Attachments ----
+# epiRomics dependency installer
+# This script ensures all dependencies are available.
+
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   utils::install.packages("BiocManager")
 }
-BiocManager::install()
+BiocManager::install(update = FALSE, ask = FALSE)
 
-
-to_install_cran <-
-  c(
-    "data.table",
-    "party",
-    "plyr",
-    "knitr",
-    "rmarkdown",
-    "igraph"
-  )
+# CRAN packages
+to_install_cran <- c(
+  "data.table",
+  "digest",
+  "igraph"
+)
 for (i in to_install_cran) {
-  base::packageStartupMessage(paste("looking for ", i))
-  if (!requireNamespace(i)) {
-    base::packageStartupMessage(paste("     installing", i))
-    utils::install.packages(i, repos = "http://cran.us.r-project.org", type="source")
+  message(paste("Checking for", i))
+  if (!requireNamespace(i, quietly = TRUE)) {
+    message(paste("  Installing", i))
+    utils::install.packages(i, repos = "https://cran.r-project.org")
   }
 }
 
-
-to_install_bc <-
-  c(
-    "AnnotationDbi",
-    "annotatr",
-    "BiocGenerics",
-    "GenomicFeatures",
-    "GenomicRanges",
-    "Gviz",
-    "IRanges",
-    "rtracklayer",
-    "enrichplot",
-    "ChIPseeker",
-    "org.Hs.eg.db",
-    "TxDb.Hsapiens.UCSC.hg38.knownGene"
-  )
+# Bioconductor packages
+to_install_bc <- c(
+  "AnnotationDbi",
+  "annotatr",
+  "BiocGenerics",
+  "ChIPseeker",
+  "GenomeInfoDb",
+  "GenomicFeatures",
+  "GenomicRanges",
+  "Gviz",
+  "IRanges",
+  "rtracklayer",
+  "org.Hs.eg.db",
+  "org.Mm.eg.db",
+  "TxDb.Hsapiens.UCSC.hg38.knownGene",
+  "TxDb.Mmusculus.UCSC.mm10.knownGene"
+)
 
 for (i in to_install_bc) {
-  base::packageStartupMessage(paste("looking for ", i))
-  if (!requireNamespace(i)) {
-    base::packageStartupMessage(paste("     installing", i))
-    BiocManager::install(i, type = "source", ask=FALSE)
+  message(paste("Checking for", i))
+  if (!requireNamespace(i, quietly = TRUE)) {
+    message(paste("  Installing", i))
+    BiocManager::install(i, ask = FALSE)
   }
 }

@@ -5,20 +5,26 @@
 \alias{epiRomicsS4-class}
 \alias{epiRomicsS4}
 \title{An S4 class to manage epiRomics databases and downstream results}
+\value{
+An S4 class definition for epiRomicsS4
+}
 \description{
 An S4 class to manage epiRomics databases and downstream results
 }
 \section{Slots}{
 
 \describe{
-\item{\code{annotations}}{GRanges}
+\item{\code{annotations}}{GRanges object containing genomic annotations}
 
-\item{\code{meta}}{data.frame}
+\item{\code{meta}}{data.frame containing metadata about loaded data sources}
 
-\item{\code{txdb}}{txdb string name}
+\item{\code{txdb}}{character string of TxDb package::object name}
 
-\item{\code{organism}}{org.db string name}
+\item{\code{organism}}{character string of org.db package name}
 
-\item{\code{genome}}{genome name, e.g. 'mm10' or 'hg38'}
+\item{\code{genome}}{character string of genome assembly name (e.g., 'mm10', 'hg38')}
 }}
 
+\examples{
+showClass("epiRomicsS4")
+}
