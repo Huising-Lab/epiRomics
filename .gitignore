@@ -5,7 +5,6 @@
 Meta/
 inst/doc/
 
-
 # Compiled code
 src/*.o
 src/*.so
@@ -51,5 +50,9 @@ inst/_install_data.R
 # OS files
 .DS_Store
 
-# pkgdown site (built by GitHub Actions)
+# pkgdown
+_pkgdown.yml
 docs/
+
+# Jekyll
+_config.yml
