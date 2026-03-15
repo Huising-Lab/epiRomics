@@ -41,5 +41,7 @@ tests/testthat/test-regression.R
 # BiocCheck output
 epiRomics.BiocCheck/
 
-# pkgdown site (built by GitHub Actions)
+# pkgdown
+_pkgdown.yml
 docs/
+
