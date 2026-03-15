@@ -4,7 +4,6 @@
 *.Rcheck
 Meta/
 inst/doc/
-doc/
 
 # Compiled code
 src/*.o
