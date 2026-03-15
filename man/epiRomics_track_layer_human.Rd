@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_track_layer_human.R
 \name{epiRomics_track_layer_human}
 \alias{epiRomics_track_layer_human}
-\title{Visualizes data from epiRomics results}
+\title{Visualizes data from epiRomics results (deprecated)}
 \usage{
 epiRomics_track_layer_human(
   epiRomics_putative_enhanceosome,
@@ -27,5 +27,21 @@ epiRomics_track_layer_human(
 GViz plot
 }
 \description{
-Visualizes data from epiRomics results
+This function is deprecated. Use \code{\link{epiRomics_track_layer}} instead,
+which automatically detects the genome from the database object and works
+for both human and mouse data.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_track_layer_human(db, 1, db,
+  data.frame(file = character(), name = character(),
+    color = character(), type = character())),
+  error = function(e) message(e$message))
+\donttest{
+epiRomics_track_layer_human("INS", epiRomics_dB, epiRomics_enhancers,
+  epiRomics_track_connection)
+}
 }

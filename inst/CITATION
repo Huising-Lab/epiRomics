@@ -1,16 +1,24 @@
-citHeader("To cite epiRomics in publications use:")
+bibentry(
+  bibtype  = "Article",
+  title    = "Chromatin accessibility differences between alpha, beta, and delta cells identifies common and cell type-specific enhancers",
+  author   = c(
+    person("Alex M.", "Mawla"),
+    person("Talitha", "van der Meulen"),
+    person("Mark O.", "Huising")
+  ),
+  journal  = "BMC Genomics",
+  year     = "2023",
+  doi      = "10.1186/s12864-023-09293-6"
+)
 
-citEntry(entry = "Article",
-  title        = "{epiRomics: a multi-omics R package to identify and visualize enhancers}",
-  author       = personList(as.person("Alex M. Mawla"),
-                   as.person("Mark O. Huising")),
-  journal      = "boiXriv",
-  year         = "2021",
-  url          = "https://doi.org/10.1101/2021.08.19.456732",
-
-  textVersion  =
-  paste("Alex M. Mawla & Mark O. Huising (2021).",
-        "epiRomics: a multi-omics R package to identify and visualize enhancers",
-        "bioRxiv",
-        "2021.08.19.456732.")
+bibentry(
+  bibtype  = "Article",
+  title    = "epiRomics: a multi-omics R package to identify and visualize enhancers",
+  author   = c(
+    person("Alex M.", "Mawla"),
+    person("Mark O.", "Huising")
+  ),
+  journal  = "bioRxiv",
+  year     = "2021",
+  doi      = "10.1101/2021.08.19.456732"
 )
