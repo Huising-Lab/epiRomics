@@ -2,16 +2,31 @@
 % Please edit documentation in R/epiRomics_predictors.R
 \name{epiRomics_predictors}
 \alias{epiRomics_predictors}
-\title{Predicts TF behavior in association with enhanceosome presence in accordance with functional annotation}
+\title{Predict TF behavior at enhanceosome regions (deprecated)}
 \usage{
 epiRomics_predictors(epiRomics_putative_enhanceosome)
 }
 \arguments{
-\item{epiRomics_putative_enhanceosome}{epiRomics class database containing putative enhanceosome calls}
+\item{epiRomics_putative_enhanceosome}{epiRomics class database containing
+putative enhanceosome calls}
 }
 \value{
-Returned decision tree available for plotting
+list (from epiRomics_tf_cobinding). Previously returned a ctree object.
 }
 \description{
-Predicts TF behavior in association with enhanceosome presence in accordance with functional annotation
+`r lifecycle::badge("deprecated")`
+
+Use \code{\link{epiRomics_tf_cobinding}} instead, which provides Fisher's
+exact test, odds ratios, PMI, and hierarchical clustering for TF co-binding
+analysis.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_predictors(db), error = function(e) message(e$message))
+\donttest{
+# Deprecated: use epiRomics_tf_cobinding() instead
+}
 }

@@ -8,21 +8,44 @@ epiRomics_build_dB(
   epiRomics_db_file,
   txdb_organism,
   epiRomics_genome,
-  epiRomics_organism
+  epiRomics_organism,
+  extraCols = NULL,
+  data_dir = NULL
 )
 }
 \arguments{
-\item{epiRomics_db_file}{character string of path to properly formatted csv file containing epigenetic data. [See vignette for more details]}
+\item{epiRomics_db_file}{character string of path to properly formatted csv file
+containing epigenetic data. [See vignette for more details]}
 
 \item{txdb_organism}{a character string containing the TxDB associated with your data.}
 
-\item{epiRomics_genome}{a character string containing the genome associated with your data. e.g. "mm10" or "hg19".}
+\item{epiRomics_genome}{a character string containing the genome associated with your data. e.g. "mm10" or "hg38".}
 
 \item{epiRomics_organism}{a character string containing the org.db associated with your data.}
+
+\item{extraCols}{named character vector of extra columns to read from chip/histone
+BED files. Default is NULL (no extra columns). Set to
+\code{c(signal = "numeric", pval = "numeric", qval = "numeric", peak = "numeric")}
+to read narrowPeak columns.}
+
+\item{data_dir}{optional character string specifying the root directory for
+resolving relative file paths in the CSV manifest. When provided, any
+relative path in the \code{path} column is prefixed with \code{data_dir}.
+This is especially useful with cached data from
+\code{\link{epiRomics_cache_data}} where the CSV uses relative paths.
+Default is NULL (paths used as-is).}
 }
 \value{
 Variable of class epiRomics for further downstream analysis
 }
 \description{
-Build epiRomics database
+Reads epigenomic annotation files from a CSV manifest and builds a unified
+epiRomics database for downstream analysis. Supports optional extra columns
+for ChIP/histone peak files (signal, pval, qval, peak).
+}
+\examples{
+tryCatch(epiRomics_build_dB("nonexistent.csv"), error = function(e) message(e$message))
+\donttest{
+epiRomics_dB <- epiRomics_build_dB(epiRomics_data_path, epiRomics_meta, "mm10")
+}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/epiRomics_enhancer_predictor_test.R
 \name{epiRomics_enhancer_predictor_test}
 \alias{epiRomics_enhancer_predictor_test}
-\title{Interrogates various histone marks against a curated database to determine which are most informative}
+\title{Evaluate histone marks against a curated database (deprecated)}
 \usage{
 epiRomics_enhancer_predictor_test(
   epiRomics_dB,
@@ -13,13 +13,30 @@ epiRomics_enhancer_predictor_test(
 \arguments{
 \item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
 
-\item{epiRomics_histone}{name or vector of histone mark(s), must match name in epiROmics_dB@meta, default set to h3k4me1}
+\item{epiRomics_histone}{name or vector of histone mark(s), must match name in
+epiROmics_dB@meta, default set to h3k4me1}
 
-\item{epiRomics_curated_database}{database to test histone marks against, must match name in epiROmics_dB@meta default set to fantom}
+\item{epiRomics_curated_database}{database to test histone marks against, must
+match name in epiROmics_dB@meta default set to fantom}
 }
 \value{
-Variable of class dataframe further exploring top histone marks that may determine enhancer regions
+data.frame with overlap fractions
 }
 \description{
-Interrogates various histone marks against a curated database to determine which are most informative
+`r lifecycle::badge("deprecated")`
+
+`epiRomics_enhancer_predictor_test()` was renamed to
+[epiRomics_enhancer_predictor_to_ref()] for clarity.
+}
+\examples{
+db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+  meta = data.frame(name = character(), type = character(),
+    file = character(), stringsAsFactors = FALSE),
+  genome = "hg38")
+tryCatch(epiRomics_enhancer_predictor_test(db),
+  error = function(e) message(e$message))
+\donttest{
+# Use epiRomics_enhancer_predictor_to_ref() instead
+result <- epiRomics_enhancer_predictor_to_ref(epiRomics_dB)
+}
 }

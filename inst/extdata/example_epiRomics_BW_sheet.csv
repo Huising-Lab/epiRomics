@@ -1,5 +1,5 @@
 path,name,color,type
-BigWigs/Kaestner_Alpha.atac.signal.subset.chr1.bigwig,Alpha_ATAC,#e13c64,atac
-BigWigs/Kaestner_Beta.atac.signal.subset.chr1.bigwig,Beta_ATAC,#008b00,atac
-BigWigs/Kaestner_Beta.rna.signal.subset.chr1.bigwig,Beta_RNA,#008b00,rna
-BigWigs/Kaestner_Alpha.rna.signal.subset.chr1.bigwig,Alpha_RNA,#e13c64,rna
+BigWigs/Kaestner_Alpha.atac.signal.subset.multi_chr.bigwig,Alpha_ATAC,#e13c64,atac
+BigWigs/Kaestner_Beta.atac.signal.subset.multi_chr.bigwig,Beta_ATAC,#008b00,atac
+BigWigs/Kaestner_Beta.rna.signal.subset.multi_chr.bigwig,Beta_RNA,#008b00,rna
+BigWigs/Kaestner_Alpha.rna.signal.subset.multi_chr.bigwig,Alpha_RNA,#e13c64,rna
