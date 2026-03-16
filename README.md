@@ -6,15 +6,25 @@ An R package designed to integrate and visualize various levels of epigenomic in
 
 Please contact <ammawla@ucdavis.edu> for suggestions, feedback, or bug reporting.
 
-**Paper:** [Chromatin accessibility differences between alpha, beta, and delta cells identifies common and cell type-specific enhancers](https://link.springer.com/article/10.1186/s12864-023-09293-6) — BMC Genomics (2023)
+## Interactive Showcase of Package
 
-**Package:** [epiRomics: a multi-omics R package to identify and visualize enhancers](https://www.biorxiv.org/content/10.1101/2021.08.19.456732v2) — bioRxiv (2021)
+Explore epiRomics results interactively through our companion Shiny web applications:
 
-## Shiny epiRomics
 
-Explore epiRomics results interactively through our companion Shiny web application:
+### Shiny epiRomics Mouse Alpha, Beta, and Delta Cells Browser
 
-**[Shiny epiRomics](https://huisinglab.com/epiRomics_2021/index.html)** — Interactive browser for pancreatic islet enhancer and enhanceosome analysis results.
+
+**[Shiny epiRomics Mouse Islet Enhanceosome Browser](https://huisinglab.com/epiRomics_2021/index.html)** — Interactive browser exploring mouse pancreatic islet enhancers and enhanceosome analysis results from our 2023 BMC Genomics publication.
+
+***Paper:*** Alex M. Mawla, Talitha van der Meulen, Mark O. Huising. (2023). Chromatin accessibility differences between alpha, beta, and delta cells identifies common and cell type-specific enhancers. *BMC Genomics*. [10.1186/s12864-023-09293-6](https://link.springer.com/article/10.1186/s12864-023-09293-6)
+
+### Shiny epiRomics Human Alpha and Beta Cells
+
+**[Shiny epiRomics Human Islet Enhanceosome Browser](https://huisinglab.shinyapps.io/Server_epiRomics_Shiny_Human/)** — Interactive browser exploring human pancreatic islet enhancer and enhanceosome analysis results used to create the example data and vignette for the epiRomics Package.
+
+***Package:*** Alex M. Mawla & Mark O. Huising. (2021). epiRomics: a multi-omics R package to identify and visualize enhancers. *bioRxiv* 2021.08.19.456732. [10.1101/2021.08.19.456732](https://www.biorxiv.org/content/10.1101/2021.08.19.456732v2)
+
+
 
 ## Features
 
