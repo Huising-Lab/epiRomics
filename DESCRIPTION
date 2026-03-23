@@ -72,4 +72,4 @@ Config/testthat/edition: 3
 ByteCompile: true
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

@@ -68,11 +68,10 @@ epiRomics_cache_data <- function(force_update = FALSE, ask = FALSE) {
         )
     }
 
-    ## ---- data URL (Dropbox direct download) ----
-    data_url <- base::paste0(
-        "https://www.dropbox.com/scl/fi/",
-        "jmd50qh3gvzebc8j3hjtc/epiromics_cache_data.tar.gz",
-        "?rlkey=ehg62zxukxiuj9mb79pscsekz&dl=1"
+    ## ---- data URL (Zenodo stable archive) ----
+    data_url <- paste0(
+        "https://zenodo.org/records/19189987/files/",
+        "epiromics_cache_data.tar.gz?download=1"
     )
 
     ## ---- set up BiocFileCache ----
