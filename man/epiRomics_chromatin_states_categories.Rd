@@ -13,9 +13,11 @@ epiRomics_chromatin_states_categories(
 )
 }
 \arguments{
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database containing
+all data initially loaded}
 
-\item{histone_marks}{character vector of histone mark names to use for classification.
+\item{histone_marks}{character vector of histone mark
+names to use for classification.
 Must match names in epiRomics_dB@meta. If NULL, auto-detects from meta.}
 
 \item{regions}{GRanges object of regions to classify. If NULL, uses all

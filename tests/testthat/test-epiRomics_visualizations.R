@@ -4,10 +4,15 @@ library(epiRomics)
 # Build database using helper
 epiRomics_dB <- build_test_dB()
 
-histone_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "histone"]
-enhancers <- epiRomics::epiRomics_enhancers(epiRomics_dB,
-  histone_marks[1], histone_marks[2])
-enhanceosome <- epiRomics::epiRomics_enhanceosome(enhancers, epiRomics_dB)
+# Generate enhanceosome using real data (guard against NULL when extdata missing)
+enhancers <- NULL
+enhanceosome <- NULL
+if (!is.null(epiRomics_dB)) {
+  histone_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "histone"]
+  enhancers <- epiRomics::epiRomics_enhancers_co_marks(epiRomics_dB,
+    histone_marks[1], histone_marks[2])
+  enhanceosome <- epiRomics::epiRomics_enhanceosome(enhancers, epiRomics_dB)
+}
 
 # --- call_accessible_regions ---
 # (plot_super_enhancers, plot_signal_enrichment, plot_tf_chromatin_state,

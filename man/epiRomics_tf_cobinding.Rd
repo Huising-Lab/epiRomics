@@ -14,9 +14,11 @@ epiRomics_tf_cobinding(
 )
 }
 \arguments{
-\item{epiRomics_enhanceosome}{epiRomics class database containing enhanceosome calls}
+\item{epiRomics_enhanceosome}{epiRomics class database
+containing enhanceosome calls}
 
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database containing
+all data initially loaded}
 
 \item{fdr_threshold}{numeric, FDR threshold for significance (default: 0.05)}
 
@@ -35,7 +37,8 @@ list with components:
   \describe{
     \item{pairwise}{data.frame with columns: tf1, tf2, n_both, n_tf1_only,
       n_tf2_only, n_neither, odds_ratio, pvalue, fdr, pmi, significant}
-    \item{presence_matrix}{logical matrix (regions x TFs) of binding presence}
+    \item{presence_matrix}{logical matrix (regions x TFs)
+      of binding presence}
     \item{clustering}{hclust object from hierarchical clustering of TF
       co-occurrence (Jaccard distance, Ward.D2 linkage)}
     \item{tf_names}{character vector of TF names analyzed}
@@ -50,7 +53,8 @@ with odds ratios, Pointwise Mutual Information (PMI), and hierarchical
 clustering.
 }
 \details{
-This replaces the previous decision-tree approach (\code{epiRomics_predictors})
+This replaces the previous decision-tree approach
+(\code{epiRomics_predictors})
 with statistically rigorous co-binding analysis. For each pair of TFs, a 2x2
 contingency table is constructed from the enhanceosome presence matrix.
 P-values are corrected using Benjamini-Hochberg FDR.
@@ -73,7 +77,8 @@ P-values are corrected using Benjamini-Hochberg FDR.
   \item \strong{Odds ratio}: Measures strength of association. OR > 1
     indicates co-occurrence; OR < 1 indicates mutual exclusion.
   \item \strong{PMI}: Pointwise Mutual Information quantifies the degree
-    of association between two TFs: \code{PMI(A,B) = log2(P(A,B) / (P(A)*P(B)))}.
+    of association between two TFs:
+    \code{PMI(A,B) = log2(P(A,B) / (P(A)*P(B)))}.
     PMI > 0 indicates co-occurrence; PMI < 0 indicates avoidance.
     Reference: Church & Hanks (1990) Computational Linguistics.
   \item \strong{BH-FDR}: Benjamini-Hochberg correction controls the false
@@ -96,7 +101,9 @@ db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
   meta = data.frame(name = character(), type = character(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
-tryCatch(epiRomics_tf_cobinding(db, db), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_tf_cobinding(db, db),
+  error = function(e) message(e$message))
 \donttest{
 cobinding <- epiRomics_tf_cobinding(enhanceosome, epiRomics_dB)
 # Significant co-binding pairs

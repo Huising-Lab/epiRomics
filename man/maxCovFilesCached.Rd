@@ -2,48 +2,42 @@
 % Please edit documentation in R/utils.R
 \name{maxCovFilesCached}
 \alias{maxCovFilesCached}
-\title{Cached multiple BigWig coverage calculation (opt-in fast path)}
+\title{Multiple BigWig coverage calculation}
 \usage{
-maxCovFilesCached(
-  bw_paths,
-  gr,
-  use_cache = FALSE,
-  cache_dir = base::tempdir(),
-  parallel = FALSE,
-  fast = FALSE
-)
+maxCovFilesCached(bw_paths, gr, parallel = FALSE, fast = FALSE)
 }
 \arguments{
-\item{bw_paths}{Character vector of paths to BigWig files}
+\item{bw_paths}{Character vector of paths to
+BigWig files}
 
-\item{gr}{GenomicRanges object containing regions to evaluate}
+\item{gr}{GenomicRanges object containing regions}
 
-\item{use_cache}{Logical, whether to use RDS caching (default: FALSE)}
+\item{parallel}{Logical, whether to use parallel
+processing (default: FALSE)}
 
-\item{cache_dir}{Directory to store cached data (default: tempdir())}
-
-\item{parallel}{Logical, whether to use parallel processing (default: FALSE)}
-
-\item{fast}{Logical, whether to use batch BigWig R-tree query path for all
-regions at once per file (default: FALSE). When TRUE, uses
-\code{.fast_bw_signal()} for efficient multi-region queries.}
+\item{fast}{Logical, whether to use batch BigWig
+R-tree query path for all regions at once per
+file (default: FALSE). When TRUE, uses
+\code{.fast_bw_signal()} for efficient
+multi-region queries.}
 }
 \value{
-GenomicRanges object with coverage values added as metadata column X
+GenomicRanges object with coverage values
+  added as metadata column X
 }
 \description{
-Alternative to \code{\link{maxCovFiles}} that supports RDS caching and
-parallel processing for multi-region batch queries (e.g., heatmaps).
-Default behavior (use_cache=FALSE) uses region-specific BigWig import.
+Multi-file BigWig coverage calculation with
+parallel processing and batch query support.
+Uses region-specific BigWig import.
 }
 \examples{
-gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1000, 2000))
-\donttest{
 gr <- GenomicRanges::GRanges(
-  seqnames = "chr1",
-  ranges = IRanges::IRanges(start = 1000, end = 2000)
+  "chr1", IRanges::IRanges(1000, 2000)
 )
-bw_files <- c("path/to/file1.bw", "path/to/file2.bw")
+\donttest{
+bw_files <- base::c(
+  "path/to/file1.bw", "path/to/file2.bw"
+)
 result <- maxCovFilesCached(bw_files, gr)
 }
 }

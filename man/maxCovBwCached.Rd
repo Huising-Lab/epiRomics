@@ -2,37 +2,30 @@
 % Please edit documentation in R/utils.R
 \name{maxCovBwCached}
 \alias{maxCovBwCached}
-\title{Cached BigWig coverage calculation (opt-in fast path)}
+\title{BigWig coverage calculation}
 \usage{
-maxCovBwCached(bw_path, gr, use_cache = FALSE, cache_dir = base::tempdir())
+maxCovBwCached(bw_path, gr)
 }
 \arguments{
 \item{bw_path}{Character string path to BigWig file}
 
-\item{gr}{GenomicRanges object containing regions to evaluate}
-
-\item{use_cache}{Logical, whether to use RDS caching (default: FALSE).
-When TRUE, imports full BigWig to RDS on first call, then reads from cache.
-When FALSE, uses region-specific BigWigSelection import (same speed as maxCovBw).}
-
-\item{cache_dir}{Directory to store cached data (default: tempdir())}
+\item{gr}{GenomicRanges object containing regions}
 }
 \value{
-Numeric value representing the maximum coverage across the regions
+Numeric value representing the maximum
+  coverage across the regions
 }
 \description{
-Alternative to \code{\link{maxCovBw}} that supports RDS caching for
-repeated multi-region queries. Uses \code{na.rm = TRUE} for robustness
-with potentially missing data. Note: may produce slightly different ylim
-values than the default \code{maxCovBw} if BigWig files contain NAs.
+Computes maximum coverage from a BigWig file over
+specified genomic regions using region-specific
+BigWigSelection import. Uses \code{na.rm = TRUE}
+for robustness with potentially missing data.
 }
 \examples{
-gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1000, 2000))
-\donttest{
 gr <- GenomicRanges::GRanges(
-  seqnames = "chr1",
-  ranges = IRanges::IRanges(start = 1000, end = 2000)
+  "chr1", IRanges::IRanges(1000, 2000)
 )
+\donttest{
 max_cov <- maxCovBwCached("path/to/file.bw", gr)
 }
 }

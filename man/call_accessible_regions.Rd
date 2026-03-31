@@ -59,7 +59,8 @@ tryCatch(call_accessible_regions("nonexistent.bw", GenomicRanges::GRanges()),
 accessible <- call_accessible_regions("sample.bw", regions, z_threshold = 1)
 
 # Auto-detect threshold from signal distribution (recommended)
-result <- call_accessible_regions("sample.bw", regions, auto_threshold = TRUE,
+result <- call_accessible_regions(
+  "sample.bw", regions, auto_threshold = TRUE,
   return_scores = TRUE)
 cat("Auto z-threshold:", result$auto_z, "\n")
 

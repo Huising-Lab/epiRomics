@@ -33,7 +33,9 @@
 #'   meta = data.frame(name = character(), type = character(),
 #'     file = character(), stringsAsFactors = FALSE),
 #'   genome = "hg38")
-#' tryCatch(epiRomics_regions_of_interest(db), error = function(e) message(e$message))
+#' tryCatch(
+#'   epiRomics_regions_of_interest(db),
+#'   error = function(e) message(e$message))
 #' \donttest{
 #' # Original GRanges interface (backward-compatible)
 #' roi <- epiRomics_regions_of_interest(dB, test_gr)
@@ -79,7 +81,9 @@ epiRomics_regions_of_interest <- function(epiRomics_putative_enhanceosome,
   input_type <- base::match.arg(input_type)
 
   if (input_type == "granges") {
-    base::stop("epiRomics_test_regions (GRanges) required for input_type='granges'")
+    base::stop(
+      "epiRomics_test_regions (GRanges) required for input_type='granges'"
+    )
   }
 
   if (input_type == "bed") {
@@ -98,33 +102,49 @@ epiRomics_regions_of_interest <- function(epiRomics_putative_enhanceosome,
   }
 
   if (input_type == "combined") {
-    # Union of all available evidence
-    keep <- base::rep(FALSE, base::length(annotations))
-
-    # BED evidence
-    if (!base::is.null(bed_path)) {
-      bed_gr <- .roi_from_bed(bed_path)
-      hits <- GenomicRanges::findOverlaps(annotations, bed_gr)
-      keep[S4Vectors::queryHits(hits)] <- TRUE
-    }
-
-    # Genelist evidence
-    if (!base::is.null(gene_list) && base::length(gene_list) > 0) {
-      if ("SYMBOL" %in% base::names(S4Vectors::mcols(annotations))) {
-        keep <- keep | (annotations$SYMBOL %in% gene_list)
-      }
-    }
-
-    if (!base::any(keep)) {
-      base::warning("No overlapping regions found for any combined evidence")
-    }
-
-    result <- epiRomics_putative_enhanceosome
-    result@annotations <- annotations[keep]
-    base::message(base::sprintf("Combined ROI: %d of %d regions retained",
-      base::sum(keep), base::length(annotations)))
-    return(result)
+    return(.roi_combined_filter(epiRomics_putative_enhanceosome, annotations,
+      bed_path, gene_list))
   }
+}
+
+#' Combined-mode ROI filter: union of BED and genelist evidence
+#'
+#' Applies BED overlap and/or genelist matching to the enhanceosome
+#' annotations. Any region matching at least one evidence source is retained.
+#'
+#' @param epiRomics_putative_enhanceosome epiRomicsS4 object.
+#' @param annotations GRanges of enhanceosome annotations.
+#' @param bed_path Character or NULL. Path to a BED file.
+#' @param gene_list Character vector or NULL. Gene symbols.
+#' @return Filtered epiRomicsS4 object with combined ROI.
+#' @noRd
+.roi_combined_filter <- function(epiRomics_putative_enhanceosome, annotations,
+                                  bed_path, gene_list) {
+  keep <- base::rep(FALSE, base::length(annotations))
+
+  # BED evidence
+  if (!base::is.null(bed_path)) {
+    bed_gr <- .roi_from_bed(bed_path)
+    hits <- GenomicRanges::findOverlaps(annotations, bed_gr)
+    keep[S4Vectors::queryHits(hits)] <- TRUE
+  }
+
+  # Genelist evidence
+  if (!base::is.null(gene_list) && base::length(gene_list) > 0) {
+    if ("SYMBOL" %in% base::names(S4Vectors::mcols(annotations))) {
+      keep <- keep | (annotations$SYMBOL %in% gene_list)
+    }
+  }
+
+  if (!base::any(keep)) {
+    base::warning("No overlapping regions found for any combined evidence")
+  }
+
+  result <- epiRomics_putative_enhanceosome
+  result@annotations <- annotations[keep]
+  base::message(base::sprintf("Combined ROI: %d of %d regions retained",
+    base::sum(keep), base::length(annotations)))
+  base::return(result)
 }
 
 #' Filter enhanceosome annotations by GRanges overlap
@@ -137,7 +157,9 @@ epiRomics_regions_of_interest <- function(epiRomics_putative_enhanceosome,
   result@annotations <- IRanges::subsetByOverlaps(dB@annotations, test_gr)
 
   if (base::length(result@annotations) == 0) {
-    base::warning("No overlapping regions found between enhanceosome and test regions")
+    base::warning(
+      "No overlapping regions found between enhanceosome and test regions"
+    )
   }
 
   n_kept <- base::length(result@annotations)

@@ -5,12 +5,16 @@ library(epiRomics)
 epiRomics_dB <- build_test_dB()
 track_connection <- make_track_connection()
 
-# Generate putative enhanceosome using real data
-histone_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "histone"]
-tf_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "chip"]
-# Use first two histone marks for enhancers
-epiRomics_enhancers <- epiRomics::epiRomics_enhancers(epiRomics_dB, histone_marks[1], histone_marks[2])
-putative_enhanceosome <- epiRomics::epiRomics_enhanceosome(epiRomics_enhancers, epiRomics_dB)
+# Generate putative enhanceosome using real data (guard against NULL when extdata missing)
+epiRomics_enhancers <- NULL
+putative_enhanceosome <- NULL
+if (!is.null(epiRomics_dB)) {
+  histone_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "histone"]
+  tf_marks <- epiRomics_dB@meta$name[epiRomics_dB@meta$type == "chip"]
+  # Use first two histone marks for enhancers
+  epiRomics_enhancers <- epiRomics::epiRomics_enhancers_co_marks(epiRomics_dB, histone_marks[1], histone_marks[2])
+  putative_enhanceosome <- epiRomics::epiRomics_enhanceosome(epiRomics_enhancers, epiRomics_dB)
+}
 
 # Test: Function works with valid input
 testthat::test_that("epiRomics_track_layer works with valid input", {

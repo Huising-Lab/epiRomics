@@ -8,10 +8,15 @@ plot_signal_histogram(
   bw_paths,
   regions,
   n_bins = 100,
-  show_z_lines = c(1, 1.5, 2),
+  show_z_lines = base::c(1, 1.5, 2),
   log_scale = TRUE,
   cex_label = 0.7,
-  cex_title = 1
+  cex_title = 1,
+  hist_fill = "#CCDDEE",
+  hist_border = "#88AACC",
+  density_col = "#2C3E50",
+  z_colors = base::c("#2ECC40", "#FF851B", "#E74C3C"),
+  suggest_col = "#B10DC9"
 )
 }
 \arguments{
@@ -26,14 +31,31 @@ vertical lines (default: c(1.0, 1.5, 2.0)).}
 
 \item{log_scale}{logical, use log10(signal + 1) for x-axis (default: TRUE).}
 
-\item{cex_label}{Numeric. Font size for threshold and annotation labels
-(default 0.7).}
+\item{cex_label}{Numeric. Font size for threshold and
+annotation labels (default 0.7).}
 
-\item{cex_title}{Numeric. Font size for histogram titles (default 1.0).}
+\item{cex_title}{Numeric. Font size for histogram titles
+(default 1.0).}
+
+\item{hist_fill}{character. Histogram bar fill color
+(default "#CCDDEE").}
+
+\item{hist_border}{character. Histogram bar border
+color (default "#88AACC").}
+
+\item{density_col}{character. Density overlay line
+color (default "#2C3E50").}
+
+\item{z_colors}{character vector. Colors for z-score
+threshold lines (default: green, orange, red).}
+
+\item{suggest_col}{character. Color for suggested
+threshold line (default "#B10DC9").}
 }
 \value{
-Invisible list of per-sample signal statistics, including
-  mean, sd, quantiles, and suggested thresholds.
+Invisible list of per-sample signal statistics,
+  including mean, sd, quantiles, and suggested
+  thresholds.
 }
 \description{
 Visualizes the distribution of BigWig signal across genomic regions to

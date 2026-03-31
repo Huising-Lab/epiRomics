@@ -460,3 +460,29 @@ test_that(".aggregate_signal_over_regions handles empty GRanges", {
   result2 <- epiRomics:::.aggregate_signal_over_regions(empty_bw, GRanges())
   expect_equal(length(result2), 0L)
 })
+
+# ============================================================
+# .detect_cores tests
+# ============================================================
+
+test_that(".detect_cores returns positive integer", {
+  n <- epiRomics:::.detect_cores()
+  expect_true(is.integer(n))
+  expect_true(n >= 1L)
+})
+
+test_that(".detect_cores respects max_cores cap", {
+  n <- epiRomics:::.detect_cores(max_cores = 2L)
+  expect_true(n >= 1L)
+  expect_true(n <= 2L)
+})
+
+test_that(".detect_cores never returns NA", {
+  n <- epiRomics:::.detect_cores()
+  expect_false(is.na(n))
+})
+
+test_that(".detect_cores with max_cores=1 returns 1", {
+  n <- epiRomics:::.detect_cores(max_cores = 1L)
+  expect_equal(n, 1L)
+})

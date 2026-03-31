@@ -1,6 +1,9 @@
 # Helper to create a working db_sheet with full paths from the relative-path CSV
 # testthat sources helper-*.R files before running tests
 
+# Package-local cache environment (avoids global env anti-pattern per TEST-02)
+.test_cache <- base::new.env(parent = base::emptyenv())
+
 #' Check if example data is available (inst/extdata present)
 #' @return TRUE if extdata is available, FALSE otherwise
 has_extdata <- function() {
@@ -33,8 +36,8 @@ make_db_sheet <- function() {
 #' Build the standard test database (cached per session)
 #' @return epiRomicsS4 object, or NULL if extdata missing
 build_test_dB <- function() {
-  if (exists(".test_epiRomics_dB", envir = .GlobalEnv)) {
-    return(get(".test_epiRomics_dB", envir = .GlobalEnv))
+  if (base::exists(".test_epiRomics_dB", envir = .test_cache)) {
+    return(base::get(".test_epiRomics_dB", envir = .test_cache))
   }
   db_sheet <- make_db_sheet()
   if (is.null(db_sheet)) return(NULL)
@@ -46,7 +49,7 @@ build_test_dB <- function() {
       epiRomics_organism = "org.Hs.eg.db"
     )
   })
-  assign(".test_epiRomics_dB", dB, envir = .GlobalEnv)
+  base::assign(".test_epiRomics_dB", dB, envir = .test_cache)
   dB
 }
 

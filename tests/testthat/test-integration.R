@@ -18,7 +18,7 @@ test_that("epiRomics vignette workflow integration test", {
   expect_true(nrow(epiRomics_dB@meta) > 0)
 
   # Identify putative enhancers
-  enhancers <- epiRomics_enhancers(
+  enhancers <- epiRomics_enhancers_co_marks(
     epiRomics_dB = epiRomics_dB,
     epiRomics_histone_mark_1 = "h3k4me1",
     epiRomics_histone_mark_2 = "h3k27ac"

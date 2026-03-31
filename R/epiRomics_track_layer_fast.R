@@ -5,13 +5,23 @@
 #' Used internally by \code{epiRomics_track_layer()} to load ATAC, RNA,
 #' and histone signal data.
 #'
-#' @param tc_sub data.frame subset of track_connection (path, name, color columns)
+#' @param tc_sub data.frame subset of track_connection
+#'   (path, name, color columns)
 #' @param region_gr GRanges object defining the genomic region
 #' @param xlims numeric vector of length 2 with plot x-axis limits
+#' @param quantile_cap numeric percentile for capping
+#'   outlier peaks (default 0.98). Scores above this
+#'   percentile are clipped.
+#' @param scale_factor numeric headroom multiplier for
+#'   y-axis maximum (default 1.1). Values above 1.0
+#'   add whitespace above tallest peak.
 #' @return list with elements: data (list of data.frames), max (numeric),
 #'   names (character), colors (character); or NULL if tc_sub has 0 rows
 #' @noRd
-.import_bw_group_data <- function(tc_sub, region_gr, xlims) {
+.import_bw_group_data <- function(
+    tc_sub, region_gr, xlims,
+    quantile_cap = 0.98,
+    scale_factor = 1.1) {
   n <- base::nrow(tc_sub)
   if (n == 0) return(NULL)
   imported <- base::vector("list", n)
@@ -29,7 +39,8 @@
       # loci like INS promoter (88K ATAC) from compressing all signal.
       # Peaks above the cap are clipped (flat-topped) by base R graphics.
       if (base::length(ovlp$score) > 100) {
-        max_scores[j] <- stats::quantile(ovlp$score, 0.98,
+        max_scores[j] <- stats::quantile(
+          ovlp$score, quantile_cap,
           names = FALSE)
       } else {
         max_scores[j] <- base::max(ovlp$score)
@@ -38,128 +49,68 @@
       imported[[j]] <- base::data.frame(pos = xlims, score = base::c(0, 0))
     }
   }
-  shared_max <- base::ceiling((base::max(max_scores) * 1.1) / 10) * 10
+  shared_max <- base::ceiling(
+    (base::max(max_scores) * scale_factor) / 10
+  ) * 10
   if (shared_max <= 0) shared_max <- 1
   base::list(data = imported, max = shared_max,
     names = tc_sub[, 2], colors = tc_sub[, 3])
 }
 
-#' Multi-track genomic visualization (base R graphics)
+#' Validate inputs for epiRomics_track_layer
 #'
-#' Renders a stacked multi-panel genome browser view using base R graphics.
-#' Includes gene model, BigWig signal tracks (ATAC, RNA, histone), enhancer
-#' index, chromatin state bars, FANTOM/UCNE annotations,
-#' TF binding peaks, and ncRNA annotations. A translucent
-#' violet highlight column marks the enhancer region of interest across all
-#' panels. Typically renders in 1-2 seconds.
+#' Checks epiRomics_putative_enhanceosome, epiRomics_index, epiRomics_dB,
+#' epiRomics_track_connection, and layout parameters. Returns validated
+#' signal_style and signal_layout after match.arg.
 #'
-#' For the original Gviz-based version (slower, but supports IdeogramTrack),
-#' see \code{\link{epiRomics_track_layer_deprecated}}.
-#'
-#' @param epiRomics_putative_enhanceosome epiRomics class database containing putative enhanceosome calls
-#' @param epiRomics_index numeric of row value from epiRomics_putative_enhanceosome to visualize
-#' @param epiRomics_dB epiRomics class database containing all data initially loaded
-#' @param epiRomics_track_connection data frame containing bigwig track locations and their names
-#' @param epiRomics_keep_epitracks logical indicating whether to show enhancer and chip tracks, default is TRUE
-#' @param chromatin_states data.frame, optional output from
-#'   \code{\link{epiRomics_chromatin_states}}. When provided, the enhancer
-#'   track is colored by chromatin state and separate per-state annotation
-#'   tracks are added.
-#' @param gene_lookup logical. When TRUE, omits the enhancer index bar and
-#'   violet highlight column. Used internally by
-#'   \code{\link{epiRomics_track_layer_gene}} to display a gene locus without
-#'   enhancer-specific visual elements. Default is FALSE.
-#' @param show_bigwig logical. Show BigWig signal tracks. Default TRUE.
-#' @param show_chromatin logical. Show chromatin state color tracks. Default TRUE.
-#' @param show_annotations logical. Show BED annotation tracks. Default TRUE.
-#' @param show_gene_model logical. Show gene model panel. Default TRUE.
-#' @param show_enhancer_highlight logical. Show enhancer index highlight.
-#'   Default TRUE.
-#' @param mirror logical. Use symmetric mirrored axes for paired ATAC/RNA
-#'   signals. Default TRUE.
-#' @param signal_style character. Signal rendering style: \code{"line"}
-#'   (default) draws vertical bars at each position (IGV/UCSC browser style),
-#'   \code{"polygon"} draws filled area charts.
-#' @param signal_layout character. Signal rendering layout: \code{"auto"}
-#'   detects paired signals and mirrors, \code{"stacked"} renders one row per
-#'   signal, \code{"mirrored"} always mirrors first two. Default \code{"auto"}.
-#' @param cex_cell_label numeric. Font size for cell type labels (e.g. Alpha,
-#'   Beta). Default 1.4.
-#' @param cex_axis numeric. Font size for y-axis tick labels on signal tracks.
-#'   Default 1.2.
-#' @param cex_coord numeric. Font size for chromosome, start, stop, genome
-#'   build text. Default 1.3.
-#' @param cex_annotation numeric. Font size for BED annotation labels.
-#'   Default 1.1.
-#' @param cex_gene numeric. Font size for gene name labels in gene model.
-#'   Default 1.2.
-#' @param cex_title numeric. Font size for main plot title. Default 1.5.
-#' @param cex_signal_label numeric. Font size for ATAC/RNA type indicator
-#'   text. Default 1.2.
-#' @param export character or NULL. File path to auto-export the plot (e.g.
-#'   \code{"plot.pdf"}, \code{"plot.eps"}, \code{"plot.png"}). When NULL
-#'   (default), the plot is drawn on the current device only.
-#' @param width numeric. Export width in inches. Default 10.
-#' @param height numeric. Export height in inches. Default 8.
-#' @return Invisible \code{NULL}. The function produces a base R multi-panel
-#'   plot on the current graphics device.
-#' @export
-#' @examples
-#' db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
-#'   meta = data.frame(name = character(), type = character(),
-#'     file = character(), stringsAsFactors = FALSE),
-#'   genome = "hg38")
-#' tryCatch(epiRomics_track_layer(db, 1, db,
-#'   data.frame(file = character(), name = character(),
-#'     color = character(), type = character())),
-#'   error = function(e) message(e$message))
-#' \donttest{
-#' epiRomics_track_layer(enhanceosome, 1, epiRomics_dB,
-#'   epiRomics_track_connection)
-#' # With font size and export customization:
-#' epiRomics_track_layer(enhanceosome, 1, epiRomics_dB,
-#'   epiRomics_track_connection, cex_title = 2.0,
-#'   mirror = FALSE, export = "figure.pdf")
-#' }
-epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
-                                        epiRomics_index,
-                                        epiRomics_dB,
-                                        epiRomics_track_connection,
-                                        epiRomics_keep_epitracks = TRUE,
-                                        chromatin_states = NULL,
-                                        gene_lookup = FALSE,
-                                        show_bigwig = TRUE,
-                                        show_chromatin = TRUE,
-                                        show_annotations = TRUE,
-                                        show_gene_model = TRUE,
-                                        show_enhancer_highlight = TRUE,
-                                        mirror = TRUE,
-                                        signal_style = c("line", "polygon"),
-                                        signal_layout = "auto",
-                                        cex_cell_label = 1.4,
-                                        cex_axis = 1.2,
-                                        cex_coord = 1.3,
-                                        cex_annotation = 1.1,
-                                        cex_gene = 1.2,
-                                        cex_title = 1.5,
-                                        cex_signal_label = 1.2,
-                                        export = NULL,
-                                        width = 10,
-                                        height = 8) {
-  validate_epiRomics_dB(epiRomics_putative_enhanceosome, "epiRomics_track_layer")
-  validate_numeric_param(epiRomics_index, "epiRomics_index",
-    "epiRomics_track_layer", min_val = 1)
-  validate_epiRomics_dB(epiRomics_dB, "epiRomics_track_layer")
-  validate_logical_param(epiRomics_keep_epitracks, "epiRomics_keep_epitracks",
-    "epiRomics_track_layer")
+#' @param epiRomics_putative_enhanceosome epiRomics S4 object
+#' @param epiRomics_index numeric row index
+#' @param epiRomics_dB epiRomics S4 database object
+#' @param epiRomics_track_connection data.frame of track connections
+#' @param epiRomics_keep_epitracks logical
+#' @param signal_style character vector for match.arg
+#' @param signal_layout character for match.arg
+#' @param export character or NULL export path
+#' @return list with validated signal_style and signal_layout
+#' @noRd
+.validate_track_layer_inputs <- function(epiRomics_putative_enhanceosome,
+                                         epiRomics_index,
+                                         epiRomics_dB,
+                                         epiRomics_track_connection,
+                                         epiRomics_keep_epitracks,
+                                         signal_style,
+                                         signal_layout,
+                                         export) {
+  validate_epiRomics_dB(
+    epiRomics_putative_enhanceosome,
+    "epiRomics_track_layer"
+  )
+  validate_numeric_param(
+    epiRomics_index, "epiRomics_index",
+    "epiRomics_track_layer", min_val = 1
+  )
+  validate_epiRomics_dB(
+    epiRomics_dB, "epiRomics_track_layer"
+  )
+  validate_logical_param(
+    epiRomics_keep_epitracks,
+    "epiRomics_keep_epitracks",
+    "epiRomics_track_layer"
+  )
 
   if (!base::is.data.frame(epiRomics_track_connection)) {
-    base::stop("epiRomics_track_connection must be a data frame")
+    base::stop(
+      "epiRomics_track_connection must be a data frame"
+    )
   }
-  if (epiRomics_index > base::length(epiRomics_putative_enhanceosome@annotations)) {
-    base::stop(base::sprintf("epiRomics_index (%d) exceeds number of annotations (%d)",
-      epiRomics_index,
-      base::length(epiRomics_putative_enhanceosome@annotations)))
+  n_annot <- base::length(
+    epiRomics_putative_enhanceosome@annotations
+  )
+  if (epiRomics_index > n_annot) {
+    base::stop(base::sprintf(
+      "epiRomics_index (%d) exceeds annotations (%d)",
+      epiRomics_index, n_annot
+    ))
   }
   # Validate new visibility/layout params
   signal_style <- base::match.arg(signal_style,
@@ -170,29 +121,55 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     base::stop("export must be NULL or a file path string")
   }
 
-  # Open export device if requested
-  if (!base::is.null(export)) {
-    ext <- base::tolower(tools::file_ext(export))
-    if (ext == "pdf") {
-      grDevices::pdf(export, width = width, height = height)
-    } else if (ext == "eps" || ext == "ps") {
-      grDevices::postscript(export, width = width, height = height,
-        horizontal = FALSE, paper = "special")
-    } else if (ext == "png") {
-      grDevices::png(export, width = width, height = height,
-        units = "in", res = 300)
-    } else if (ext == "tiff" || ext == "tif") {
-      grDevices::tiff(export, width = width, height = height,
-        units = "in", res = 300)
-    } else {
-      base::stop("Unsupported export format: ", ext,
-        ". Use pdf, eps, png, or tiff.")
-    }
-    base::on.exit(grDevices::dev.off(), add = TRUE)
-  }
+  base::list(signal_style = signal_style, signal_layout = signal_layout)
+}
 
-  # --- Extract focal region ---
-  enh_save <- epiRomics_putative_enhanceosome
+#' Open export graphics device
+#'
+#' Opens a pdf, eps, png, or tiff device based on the file extension.
+#' The caller must set on.exit(dev.off()) after calling this.
+#'
+#' @param export character file path for export
+#' @param width numeric width in inches
+#' @param height numeric height in inches
+#' @return invisible NULL
+#' @noRd
+.open_export_device <- function(export, width, height) {
+  ext <- base::tolower(tools::file_ext(export))
+  if (ext == "pdf") {
+    grDevices::pdf(export, width = width, height = height)
+  } else if (ext == "eps" || ext == "ps") {
+    grDevices::postscript(export, width = width, height = height,
+      horizontal = FALSE, paper = "special")
+  } else if (ext == "png") {
+    grDevices::png(export, width = width, height = height,
+      units = "in", res = 300)
+  } else if (ext == "tiff" || ext == "tif") {
+    grDevices::tiff(export, width = width, height = height,
+      units = "in", res = 300)
+  } else {
+    base::stop("Unsupported export format: ", ext,
+      ". Use pdf, eps, png, or tiff.")
+  }
+  base::invisible(NULL)
+}
+
+#' Extract focal region from enhanceosome
+#'
+#' Extracts the enhancer coordinates, gene symbol, genome, viewing window,
+#' and enhancer ID from the enhanceosome object.
+#'
+#' @param epiRomics_putative_enhanceosome epiRomics S4 object
+#' @param epiRomics_index numeric row index
+#' @param epiRomics_dB epiRomics S4 database object
+#' @param gene_lookup logical whether in gene lookup mode
+#' @return named list with enh, enh_chr, enh_s, enh_e, gene_symbol, genome,
+#'   min_track, max_track, region_gr, xlims, enh_id
+#' @noRd
+.extract_focal_region <- function(epiRomics_putative_enhanceosome,
+                                  epiRomics_index,
+                                  epiRomics_dB,
+                                  gene_lookup) {
   enh <- epiRomics_putative_enhanceosome@annotations[epiRomics_index]
   enh_chr <- base::as.character(GenomeInfoDb::seqnames(enh))
   enh_s <- BiocGenerics::start(enh)
@@ -208,8 +185,12 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     min_track <- base::floor((enh$geneStart - pad) / 100) * 100
     max_track <- base::ceiling((enh$geneEnd + pad) / 100) * 100
   } else {
-    min_track <- base::floor((base::min(enh_s, enh$geneStart) - 5000L) / 100) * 100
-    max_track <- base::ceiling((base::max(enh_e, enh$geneEnd) + 5000L) / 100) * 100
+    min_track <- base::floor(
+      (base::min(enh_s, enh$geneStart) - 5000L) / 100
+    ) * 100
+    max_track <- base::ceiling(
+      (base::max(enh_e, enh$geneEnd) + 5000L) / 100
+    ) * 100
   }
   region_gr <- GenomicRanges::GRanges(
     seqnames = enh_chr,
@@ -217,43 +198,37 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
   )
   xlims <- base::c(min_track, max_track)
   # Get the actual enhanceosome index ID (the name) for the label
+  enh_id <- base::names(
+    epiRomics_putative_enhanceosome@annotations
+  )[epiRomics_index]
 
-  enh_id <- base::names(epiRomics_putative_enhanceosome@annotations)[epiRomics_index]
+  base::list(enh = enh, enh_chr = enh_chr, enh_s = enh_s, enh_e = enh_e,
+    gene_symbol = gene_symbol, genome = genome, min_track = min_track,
+    max_track = max_track, region_gr = region_gr, xlims = xlims,
+    enh_id = enh_id)
+}
 
-  # Colors
-  hl_violet <- "#7B2D8E"
-  dull_blue <- "#7F8FA6"
-  enh_fill <- "#F0E6F680"   # translucent violet
-  enh_border <- "#D8BFD8"
-
-  # Helper: draw enhancer highlight that extends into margins for contiguous
-  # column across panels. Uses xpd=TRUE to draw beyond the plot region into
-  # the figure margins, so adjacent panels' highlights merge seamlessly.
-  # In gene_lookup mode, the highlight is skipped entirely since we are
-
-  # just viewing a gene locus, not highlighting a specific enhancer.
-  .draw_highlight <- function() {
-    if (gene_lookup) return(base::invisible(NULL))
-    usr <- graphics::par("usr")
-    y_ext <- (usr[4] - usr[3]) * 20
-    graphics::rect(enh_s, usr[3] - y_ext, enh_e, usr[4] + y_ext,
-      col = enh_fill, border = NA, xpd = TRUE)
-    graphics::segments(enh_s, usr[3] - y_ext, enh_s, usr[4] + y_ext,
-      col = enh_border, lwd = 0.5, xpd = TRUE)
-    graphics::segments(enh_e, usr[3] - y_ext, enh_e, usr[4] + y_ext,
-      col = enh_border, lwd = 0.5, xpd = TRUE)
-  }
-
-  # ====== DATA PREPARATION ======
-
-  # 1. Collapsed gene model: one row per gene (union of all transcript exons)
-  txdb_obj <- resolve_txdb(epiRomics_dB@txdb)
-  orgdb <- base::tryCatch(base::get(epiRomics_dB@organism), error = function(e) NULL)
-
-  # Get all genes overlapping the region
-  all_txdb_genes <- GenomicFeatures::genes(txdb_obj)
-  region_genes <- IRanges::subsetByOverlaps(all_txdb_genes, region_gr)
-
+#' Build collapsed gene models for the viewing region
+#'
+#' Queries the TxDb for genes overlapping the region, maps to symbols,
+#' builds union exon models, sorts with focal gene last, limits to 8 genes,
+#' and optionally expands the viewing window.
+#'
+#' @param txdb_obj TxDb object
+#' @param orgdb OrgDb object or NULL
+#' @param region_gr GRanges of the viewing region
+#' @param region_genes GRanges of genes overlapping region
+#' @param gene_symbol character focal gene symbol
+#' @param gene_lookup logical whether in gene lookup mode
+#' @param min_track numeric left boundary
+#' @param max_track numeric right boundary
+#' @param xlims numeric vector of length 2
+#' @param enh_chr character chromosome name
+#' @return list with gene_models, min_track, max_track, xlims, region_gr
+#' @noRd
+.build_gene_models <- function(txdb_obj, orgdb, region_gr, region_genes,
+                               gene_symbol, gene_lookup, min_track,
+                               max_track, xlims, enh_chr) {
   gene_models <- base::list()
   if (base::length(region_genes) > 0 && !base::is.null(orgdb)) {
     gene_ids <- base::names(region_genes)
@@ -363,16 +338,55 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
         ranges = IRanges::IRanges(start = min_track, end = max_track))
     }
   }
-  n_genes <- base::max(1L, base::length(gene_models))
 
-  # 2. BigWig signal data (single-pass import for each type)
-  tc_atac <- epiRomics_track_connection[epiRomics_track_connection$type == "atac", , drop = FALSE]
-  tc_rna <- epiRomics_track_connection[epiRomics_track_connection$type == "rna", , drop = FALSE]
-  tc_hist <- epiRomics_track_connection[epiRomics_track_connection$type == "histone", , drop = FALSE]
+  base::list(gene_models = gene_models, min_track = min_track,
+    max_track = max_track, xlims = xlims, region_gr = region_gr)
+}
 
-  atac_data <- .import_bw_group_data(tc_atac, region_gr, xlims)
-  rna_data <- .import_bw_group_data(tc_rna, region_gr, xlims)
-  hist_data <- .import_bw_group_data(tc_hist, region_gr, xlims)
+#' Prepare BigWig signal data for track layer
+#'
+#' Imports ATAC, RNA, and histone BigWig data, pairs matched ATAC/RNA
+#' samples into mirrored panels, and applies layout/visibility overrides.
+#'
+#' @param epiRomics_track_connection data.frame of track connections
+#' @param region_gr GRanges of the viewing region
+#' @param xlims numeric vector of length 2
+#' @param mirror logical whether to mirror paired signals
+#' @param signal_layout character layout mode
+#' @param show_bigwig logical whether to show BigWig tracks
+#' @param quantile_cap numeric percentile cap (default 0.98)
+#' @param scale_factor numeric y-axis headroom (default 1.1)
+#' @return list with atac_data, rna_data, hist_data, mirrored_pairs,
+#'   unpaired_atac, unpaired_rna
+#' @noRd
+.prepare_signal_data <- function(
+    epiRomics_track_connection, region_gr,
+    xlims, mirror, signal_layout,
+    show_bigwig,
+    quantile_cap = 0.98,
+    scale_factor = 1.1) {
+  tc_atac <- epiRomics_track_connection[
+    epiRomics_track_connection$type == "atac",
+    , drop = FALSE
+  ]
+  tc_rna <- epiRomics_track_connection[
+    epiRomics_track_connection$type == "rna",
+    , drop = FALSE
+  ]
+  tc_hist <- epiRomics_track_connection[
+    epiRomics_track_connection$type == "histone",
+    , drop = FALSE
+  ]
+
+  atac_data <- .import_bw_group_data(
+    tc_atac, region_gr, xlims,
+    quantile_cap, scale_factor)
+  rna_data <- .import_bw_group_data(
+    tc_rna, region_gr, xlims,
+    quantile_cap, scale_factor)
+  hist_data <- .import_bw_group_data(
+    tc_hist, region_gr, xlims,
+    quantile_cap, scale_factor)
 
   # 3. Try to pair matched ATAC/RNA samples into mirrored panels
   #    Publication-style: positive Y = ATAC, negative Y = RNA
@@ -434,25 +448,63 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     hist_data <- NULL
   }
 
-  # Count total panels
-  n_hist <- if (!base::is.null(hist_data)) base::length(hist_data$data) else 0L
-  n_signal <- n_mirrored + base::length(unpaired_atac) +
-    base::length(unpaired_rna) + n_hist
+  base::list(atac_data = atac_data, rna_data = rna_data,
+    hist_data = hist_data, mirrored_pairs = mirrored_pairs,
+    unpaired_atac = unpaired_atac, unpaired_rna = unpaired_rna)
+}
+
+#' Assemble annotation panels for track layer
+#'
+#' Builds the list of annotation panel entries (enhancer index, chromatin
+#' states, FANTOM5, UCNEs, Regulome, GWAS, TF, ncRNA) for the track layer.
+#'
+#' @param enh_save epiRomics S4 enhanceosome object (original)
+#' @param epiRomics_dB epiRomics S4 database object
+#' @param epiRomics_keep_epitracks logical
+#' @param enh GRanges single enhancer
+#' @param enh_id character enhancer ID
+#' @param epiRomics_index numeric row index
+#' @param gene_lookup logical
+#' @param show_enhancer_highlight logical
+#' @param show_chromatin logical
+#' @param show_annotations logical
+#' @param chromatin_states data.frame or NULL
+#' @param enh_chr character chromosome
+#' @param min_track numeric left boundary
+#' @param max_track numeric right boundary
+#' @param region_gr GRanges viewing region
+#' @param region_genes GRanges of genes in region
+#' @param genome character genome build
+#' @return list with annot_panels and n_annot
+#' @noRd
+.assemble_annotation_panels <- function(enh_save, epiRomics_dB,
+                                        epiRomics_keep_epitracks, enh,
+                                        enh_id, epiRomics_index,
+                                        gene_lookup,
+                                        show_enhancer_highlight,
+                                        show_chromatin, show_annotations,
+                                        chromatin_states, enh_chr,
+                                        min_track, max_track, region_gr,
+                                        region_genes, genome) {
+  hl_violet <- "#7B2D8E"
+  dull_blue <- "#7F8FA6"
   n_annot <- 0
-  annot_panels <- base::list()  # will collect {gr, label, color} entries
+  annot_panels <- base::list()
 
   if (epiRomics_keep_epitracks) {
     # Pre-filter annotations to viewing region
-    region_annots <- IRanges::subsetByOverlaps(epiRomics_dB@annotations, region_gr)
+    region_annots <- IRanges::subsetByOverlaps(
+      epiRomics_dB@annotations, region_gr
+    )
     region_types <- region_annots$type
     db_prefix <- base::paste0(genome, "_custom_")
     meta <- enh_save@meta
     all_types <- base::unique(epiRomics_dB@annotations$type)
 
     # ---- Track assembly (ordered top-to-bottom) ----
-    # Order: Enhancer index (if not gene_lookup) → Chromatin states
-    #   (Active/Poised/Repressed/Unmarked) → FANTOM5 → UCNEs →
-    #   Regulome Active → Regulome Super → T2D GWAS → TFs (ALL) → ncRNAs
+    # Order: Enhancer index (if not gene_lookup) -> Chromatin states
+    #   (Active/Poised/Repressed/Unmarked) -> FANTOM5 -> UCNEs ->
+    #   Regulome Active -> Regulome Super -> T2D GWAS -> TFs (ALL) -> ncRNAs
 
     # 1. Enhancer index -- SKIP in gene_lookup mode or if toggled off
     if (!gene_lookup && show_enhancer_highlight) {
@@ -466,7 +518,8 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
       n_annot <- n_annot + 1
     }
 
-    # 2. Chromatin states -- show ALL specific states (not just broad categories)
+    # 2. Chromatin states -- show ALL specific states
+    #    (not just broad categories)
     # Each state gets its own color and annotation track.
     cs_palette <- .chromatin_state_palette()
     # Display labels: 6 simplified chromatin states
@@ -501,7 +554,11 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
           GenomicRanges::GRanges()  # Empty GRanges for states with no data
         }
         st_label <- if (st %in% base::names(cs_labels)) cs_labels[st] else st
-        st_color <- if (st %in% base::names(cs_palette)) cs_palette[st] else "#AAAAAA"
+        st_color <- if (st %in% base::names(cs_palette)) {
+          cs_palette[st]
+        } else {
+          "#AAAAAA"
+        }
         annot_panels <- base::c(annot_panels, base::list(base::list(
           gr = st_gr, label = st_label,
           color = st_color,
@@ -514,14 +571,15 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     # These provide positional specificity on top of the 6-state classification.
     # CRITICAL: chromatin state regions can be wider than actual gene features.
     # We INTERSECT with actual TxDb gene boundaries to clip overlays:
-    #   - "Active Gene Body"  → active regions ∩ gene bodies (excluding TSS ±2kb)
+    #   - "Active Gene Body"  -> active regions intersect
+    #     gene bodies (excluding TSS +/-2kb)
     if (show_chromatin && !base::is.null(chromatin_states) &&
         base::is.data.frame(chromatin_states) &&
         base::nrow(chromatin_states) > 0 &&
         "genomic_context" %in% base::names(chromatin_states) &&
         base::length(region_genes) > 0) {
 
-      # Build TSS ±2kb windows from actual gene models in the view
+      # Build TSS +/-2kb windows from actual gene models in the view
       ctx_tss <- GenomicRanges::trim(base::suppressWarnings(
         GenomicRanges::resize(region_genes, width = 1L, fix = "start")))
       ctx_tss_win <- GenomicRanges::trim(base::suppressWarnings(
@@ -652,12 +710,137 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     } # end if (show_annotations)
   }
 
-  # Compute panel count (conditionally include gene model)
-  n_gene_panels <- if (show_gene_model) 1L else 0L
-  # gene + coord_bar + signals + annotations
-  n_panels <- n_gene_panels + 1 + n_signal + n_annot
+  base::list(annot_panels = annot_panels, n_annot = n_annot)
+}
 
-  # ====== DRAWING ======
+#' Draw enhancer highlight column across panels
+#'
+#' Draws the translucent violet highlight column extending into margins
+#' for a contiguous column across panels. Uses xpd=TRUE to draw beyond
+#' the plot region. In gene_lookup mode, returns immediately.
+#'
+#' @param enh_s numeric enhancer start coordinate
+#' @param enh_e numeric enhancer end coordinate
+#' @param enh_fill character fill color for highlight
+#' @param enh_border character border color for highlight
+#' @param gene_lookup logical whether in gene lookup mode
+#' @return invisible NULL
+#' @noRd
+.draw_highlight <- function(enh_s, enh_e, enh_fill, enh_border,
+                            gene_lookup) {
+  if (gene_lookup) return(base::invisible(NULL))
+  usr <- graphics::par("usr")
+  y_ext <- (usr[4] - usr[3]) * 20
+  graphics::rect(enh_s, usr[3] - y_ext, enh_e, usr[4] + y_ext,
+    col = enh_fill, border = NA, xpd = TRUE)
+  graphics::segments(enh_s, usr[3] - y_ext, enh_s, usr[4] + y_ext,
+    col = enh_border, lwd = 0.5, xpd = TRUE)
+  graphics::segments(enh_e, usr[3] - y_ext, enh_e, usr[4] + y_ext,
+    col = enh_border, lwd = 0.5, xpd = TRUE)
+}
+
+#' Draw a single signal panel
+#'
+#' Renders a single BigWig signal panel with either line or polygon style.
+#'
+#' @param df data.frame with pos and score columns
+#' @param ymax numeric y-axis maximum
+#' @param col character color for signal
+#' @param label character label for y-axis
+#' @param xlims numeric vector of length 2
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param signal_style character "line" or "polygon"
+#' @return invisible NULL
+#' @noRd
+.draw_signal_panel <- function(df, ymax, col, label, xlims,
+                               draw_highlight_fn, signal_style) {
+  graphics::plot(1, type = "n", xlim = xlims,
+    ylim = base::c(0, ymax),
+    xaxt = "n", ylab = label, xlab = "", bty = "n")
+  draw_highlight_fn()
+  if (base::nrow(df) > 0) {
+    ord <- base::order(df$pos)
+    px <- df$pos[ord]
+    py <- df$score[ord]
+    if (signal_style == "polygon") {
+      graphics::polygon(
+        base::c(px[1], px, px[base::length(px)]),
+        base::c(0, py, 0),
+        col = grDevices::adjustcolor(col, alpha.f = 0.85),
+        border = col, lwd = 0.3)
+    } else {
+      graphics::segments(px, 0, px, py, col = col, lwd = 1.5)
+    }
+  }
+  base::invisible(NULL)
+}
+
+#' Draw unpaired signal panels
+#'
+#' Renders unpaired ATAC, RNA, and histone signal panels.
+#'
+#' @param atac_data list or NULL from .import_bw_group_data
+#' @param rna_data list or NULL from .import_bw_group_data
+#' @param hist_data list or NULL from .import_bw_group_data
+#' @param unpaired_atac integer indices
+#' @param unpaired_rna integer indices
+#' @param xlims numeric vector of length 2
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param signal_style character "line" or "polygon"
+#' @return invisible NULL
+#' @noRd
+.draw_unpaired_signal_panels <- function(atac_data, rna_data, hist_data,
+                                         unpaired_atac, unpaired_rna,
+                                         xlims, draw_highlight_fn,
+                                         signal_style) {
+  # Unpaired ATAC panels
+  if (!base::is.null(atac_data) && base::length(unpaired_atac) > 0) {
+    for (j in unpaired_atac) {
+      .draw_signal_panel(atac_data$data[[j]], atac_data$max,
+        atac_data$colors[j], atac_data$names[j], xlims,
+        draw_highlight_fn, signal_style)
+    }
+  }
+  # Unpaired RNA panels
+  if (!base::is.null(rna_data) && base::length(unpaired_rna) > 0) {
+    for (j in unpaired_rna) {
+      .draw_signal_panel(rna_data$data[[j]], rna_data$max,
+        rna_data$colors[j], rna_data$names[j], xlims,
+        draw_highlight_fn, signal_style)
+    }
+  }
+  # Histone panels
+  if (!base::is.null(hist_data)) {
+    for (j in base::seq_along(hist_data$data)) {
+      .draw_signal_panel(hist_data$data[[j]], hist_data$max,
+        hist_data$colors[j], hist_data$names[j], xlims,
+        draw_highlight_fn, signal_style)
+    }
+  }
+  base::invisible(NULL)
+}
+
+#' Compute layout parameters for track layer panels
+#'
+#' Calculates left margin width, panel heights, and panel counts based
+#' on the annotation panels and signal data configuration.
+#'
+#' @param annot_panels list of annotation panel entries
+#' @param show_gene_model logical
+#' @param n_genes integer number of genes
+#' @param n_mirrored integer number of mirrored pairs
+#' @param unpaired_atac integer indices of unpaired ATAC tracks
+#' @param unpaired_rna integer indices of unpaired RNA tracks
+#' @param hist_data list or NULL of histone data
+#' @param n_annot integer number of annotation panels
+#' @return list with left_mar, panel_heights, n_panels, n_signal
+#' @noRd
+.compute_layout_params <- function(annot_panels, show_gene_model, n_genes,
+                                   n_mirrored, unpaired_atac, unpaired_rna,
+                                   hist_data, n_annot) {
+  n_hist <- if (!base::is.null(hist_data)) base::length(hist_data$data) else 0L
+  n_signal <- n_mirrored + base::length(unpaired_atac) +
+    base::length(unpaired_rna) + n_hist
 
   # Compute longest annotation label for dynamic left margin
   annot_labels <- base::vapply(annot_panels, function(ap) ap$label, "")
@@ -669,10 +852,12 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
   # Margin width: ~0.55 lines per character for horizontal text at cex 0.65
   left_mar <- base::max(8, base::ceiling(max_label_nchar * 0.55) + 2)
 
-  # Panel heights: gene=dynamic, coord=0.5, mirrored=3.5, signal=2, annotation=0.7
-  n_unpaired_signal <- base::length(unpaired_atac) + base::length(unpaired_rna) +
-    n_hist
+  # Panel heights: gene=dynamic, coord=0.5,
+  # mirrored=3.5, signal=2, annotation=0.7
+  n_unpaired_signal <- base::length(unpaired_atac) +
+    base::length(unpaired_rna) + n_hist
   gene_panel_height <- base::max(1.5, n_genes * 0.8)
+  n_gene_panels <- if (show_gene_model) 1L else 0L
   panel_heights <- base::c(
     if (show_gene_model) gene_panel_height,  # gene model (1 row per gene)
     0.8,                                  # coordinate bar
@@ -680,21 +865,35 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
     base::rep(2, n_unpaired_signal),      # individual signal tracks
     base::rep(0.7, n_annot)              # annotation bars (compact)
   )
+  # gene + coord_bar + signals + annotations
+  n_panels <- n_gene_panels + 1 + n_signal + n_annot
 
-  old_par <- graphics::par(no.readonly = TRUE)
-  base::on.exit(graphics::par(old_par), add = TRUE)
+  base::list(left_mar = left_mar, panel_heights = panel_heights,
+    n_panels = n_panels, n_signal = n_signal)
+}
 
-  graphics::layout(base::matrix(base::seq_len(n_panels), ncol = 1),
-    heights = panel_heights)
-  graphics::par(mar = base::c(0.3, left_mar, 0.3, 1), oma = base::c(1, 0, 2, 0),
-    bg = "white")
-
-  # Panel 1: Gene model (collapsed: one row per gene, union of all exons)
-  if (show_gene_model) {
+#' Draw gene model panel
+#'
+#' Renders the collapsed gene model panel with exon blocks, intron arrows,
+#' and gene labels.
+#'
+#' @param gene_models list of gene model entries
+#' @param xlims numeric vector of length 2
+#' @param gene_symbol character focal gene symbol
+#' @param min_track numeric left boundary
+#' @param max_track numeric right boundary
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param cex_gene numeric font size for gene labels
+#' @return invisible NULL
+#' @noRd
+.draw_gene_model_panel <- function(gene_models, xlims, gene_symbol,
+                                   min_track, max_track, draw_highlight_fn,
+                                   cex_gene) {
+  n_genes <- base::max(1L, base::length(gene_models))
   graphics::plot(1, type = "n", xlim = xlims,
     ylim = base::c(0.5, n_genes + 0.5),
     xaxt = "n", yaxt = "n", xlab = "", ylab = gene_symbol, bty = "n")
-  .draw_highlight()
+  draw_highlight_fn()
   if (base::length(gene_models) > 0) {
     view_span <- max_track - min_track
     arrow_half <- view_span * 0.008
@@ -751,12 +950,25 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
       }
     }
   }
-  } # end if (show_gene_model)
+  base::invisible(NULL)
+}
 
-  # Panel 2: Coordinate bar (chr, start, end) right below transcripts
+#' Draw coordinate bar panel
+#'
+#' Renders the chromosome coordinate bar below the gene model.
+#'
+#' @param xlims numeric vector of length 2
+#' @param enh_chr character chromosome name
+#' @param genome character genome build
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param cex_coord numeric font size for coordinates
+#' @return invisible NULL
+#' @noRd
+.draw_coordinate_bar <- function(xlims, enh_chr, genome, draw_highlight_fn,
+                                 cex_coord) {
   graphics::plot(1, type = "n", xlim = xlims, ylim = base::c(0, 1),
     xaxt = "n", yaxt = "n", xlab = "", ylab = "", bty = "n")
-  .draw_highlight()
+  draw_highlight_fn()
   # Draw a line spanning the full extent (raised to upper area)
   graphics::segments(xlims[1], 0.75, xlims[2], 0.75, lwd = 1.5, col = "#333333")
   # Tick marks at endpoints
@@ -772,145 +984,127 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
   # Chromosome and genome build in the center, BELOW the line bar
   graphics::text(base::mean(xlims), 0.15,
     base::paste0(enh_chr, " (", genome, ")"),
-    adj = base::c(0.5, 0.5), cex = cex_coord, col = "#333333", font = 2, xpd = TRUE)
+    adj = base::c(0.5, 0.5), cex = cex_coord,
+    col = "#333333", font = 2, xpd = TRUE)
+  base::invisible(NULL)
+}
 
-  # Signal panels
-  .draw_signal_panel <- function(df, ymax, col, label) {
-    graphics::plot(1, type = "n", xlim = xlims,
-      ylim = base::c(0, ymax),
-      xaxt = "n", ylab = label, xlab = "", bty = "n")
-    .draw_highlight()
-    if (base::nrow(df) > 0) {
-      ord <- base::order(df$pos)
-      px <- df$pos[ord]
-      py <- df$score[ord]
-      if (signal_style == "polygon") {
-        graphics::polygon(
-          base::c(px[1], px, px[base::length(px)]),
-          base::c(0, py, 0),
-          col = grDevices::adjustcolor(col, alpha.f = 0.85),
-          border = col, lwd = 0.3)
-      } else {
-        graphics::segments(px, 0, px, py, col = col, lwd = 1.5)
-      }
+#' Draw a single mirrored ATAC/RNA panel
+#'
+#' Renders a mirrored panel with ATAC on positive Y and RNA on negative Y.
+#'
+#' @param mp list with atac_idx, rna_idx, label
+#' @param atac_data list from .import_bw_group_data
+#' @param rna_data list from .import_bw_group_data
+#' @param xlims numeric vector of length 2
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param signal_style character "line" or "polygon"
+#' @param cex_cell_label numeric font size for cell labels
+#' @param cex_axis numeric font size for axis
+#' @param cex_signal_label numeric font size for signal labels
+#' @return invisible NULL
+#' @noRd
+.draw_mirrored_panel <- function(mp, atac_data, rna_data, xlims,
+                                 draw_highlight_fn, signal_style,
+                                 cex_cell_label, cex_axis,
+                                 cex_signal_label) {
+  atac_df <- atac_data$data[[mp$atac_idx]]
+  rna_df <- rna_data$data[[mp$rna_idx]]
+  # Use shared max across all samples for cross-panel comparability
+  atac_max <- atac_data$max
+  rna_max <- rna_data$max
+  # Equal-length axes: use the larger of the two so both sides match
+  mirror_max <- base::max(atac_max, rna_max)
+
+  # Scale factors so each assay fills its half of the axis
+  atac_scale <- if (atac_max > 0) mirror_max / atac_max else 1
+  rna_scale <- if (rna_max > 0) mirror_max / rna_max else 1
+
+  graphics::plot(1, type = "n", xlim = xlims,
+    ylim = base::c(-mirror_max, mirror_max),
+    xaxt = "n", yaxt = "n", xlab = "", ylab = "", bty = "n")
+  draw_highlight_fn()
+
+  # ATAC on positive Y
+  if (base::nrow(atac_df) > 0) {
+    ord_a <- base::order(atac_df$pos)
+    ax <- atac_df$pos[ord_a]
+    ay <- atac_df$score[ord_a] * atac_scale
+    acol <- atac_data$colors[mp$atac_idx]
+    if (signal_style == "polygon") {
+      graphics::polygon(
+        base::c(ax[1], ax, ax[base::length(ax)]),
+        base::c(0, ay, 0),
+        col = grDevices::adjustcolor(acol, alpha.f = 0.85),
+        border = acol, lwd = 0.3)
+    } else {
+      graphics::segments(ax, 0, ax, ay, col = acol, lwd = 1.5)
     }
   }
-
-  # Mirrored ATAC/RNA panels (publication style)
-  # Both halves fill their side equally --signal is scaled to mirror_max
-  # so that e.g. ATAC peak at 120 and RNA peak at 60 each fill to the edge.
-  # Axis labels show actual data values (not the rescaled values).
-  # SHARED max: all panels use the same ATAC max and same RNA max across
-
-  # all samples so that panels are directly comparable (e.g. if Beta RNA
-  # max=20 and Alpha RNA max=10, both panels scale to 20).
-  if (n_mirrored > 0) {
-    # Use the already-capped shared max from .import_bw_group_data()
-    # (includes 98th percentile clipping for extreme outlier peaks)
-    shared_atac_max <- atac_data$max
-    shared_rna_max <- rna_data$max
-
-    for (mp in mirrored_pairs) {
-      atac_df <- atac_data$data[[mp$atac_idx]]
-      rna_df <- rna_data$data[[mp$rna_idx]]
-      # Use shared max across all samples for cross-panel comparability
-      atac_max <- shared_atac_max
-      rna_max <- shared_rna_max
-      # Equal-length axes: use the larger of the two so both sides match
-      mirror_max <- base::max(atac_max, rna_max)
-
-      # Scale factors so each assay fills its half of the axis
-      atac_scale <- if (atac_max > 0) mirror_max / atac_max else 1
-      rna_scale <- if (rna_max > 0) mirror_max / rna_max else 1
-
-      graphics::plot(1, type = "n", xlim = xlims,
-        ylim = base::c(-mirror_max, mirror_max),
-        xaxt = "n", yaxt = "n", xlab = "", ylab = "", bty = "n")
-      .draw_highlight()
-
-      # ATAC on positive Y
-      if (base::nrow(atac_df) > 0) {
-        ord_a <- base::order(atac_df$pos)
-        ax <- atac_df$pos[ord_a]
-        ay <- atac_df$score[ord_a] * atac_scale
-        acol <- atac_data$colors[mp$atac_idx]
-        if (signal_style == "polygon") {
-          graphics::polygon(
-            base::c(ax[1], ax, ax[base::length(ax)]),
-            base::c(0, ay, 0),
-            col = grDevices::adjustcolor(acol, alpha.f = 0.85),
-            border = acol, lwd = 0.3)
-        } else {
-          graphics::segments(ax, 0, ax, ay, col = acol, lwd = 1.5)
-        }
-      }
-      # RNA on negative Y
-      if (base::nrow(rna_df) > 0) {
-        ord_r <- base::order(rna_df$pos)
-        rx <- rna_df$pos[ord_r]
-        ry <- -(rna_df$score[ord_r] * rna_scale)
-        rcol <- rna_data$colors[mp$rna_idx]
-        if (signal_style == "polygon") {
-          graphics::polygon(
-            base::c(rx[1], rx, rx[base::length(rx)]),
-            base::c(0, ry, 0),
-            col = grDevices::adjustcolor(rcol, alpha.f = 0.85),
-            border = rcol, lwd = 0.3)
-        } else {
-          graphics::segments(rx, 0, rx, ry, col = rcol, lwd = 1.5)
-        }
-      }
-      # Zero line
-      graphics::abline(h = 0, col = "#AAAAAA", lwd = 0.5)
-
-      # Custom y-axis: show actual data max values at the symmetric extent
-      graphics::axis(2, at = base::c(-mirror_max, 0, mirror_max),
-        labels = base::c(rna_max, 0, atac_max), las = 1, cex.axis = cex_axis)
-      # Label in margin
-      graphics::mtext(mp$label, side = 2, line = 3, cex = cex_cell_label, las = 1)
-      # Inline ATAC/RNA indicators
-      usr <- graphics::par("usr")
-      graphics::text(usr[2], mirror_max * 0.8, "ATAC", adj = base::c(1.1, 0.5),
-        cex = cex_signal_label, col = atac_data$colors[mp$atac_idx], font = 2)
-      graphics::text(usr[2], -mirror_max * 0.8, "RNA", adj = base::c(1.1, 0.5),
-        cex = cex_signal_label, col = rna_data$colors[mp$rna_idx], font = 2)
+  # RNA on negative Y
+  if (base::nrow(rna_df) > 0) {
+    ord_r <- base::order(rna_df$pos)
+    rx <- rna_df$pos[ord_r]
+    ry <- -(rna_df$score[ord_r] * rna_scale)
+    rcol <- rna_data$colors[mp$rna_idx]
+    if (signal_style == "polygon") {
+      graphics::polygon(
+        base::c(rx[1], rx, rx[base::length(rx)]),
+        base::c(0, ry, 0),
+        col = grDevices::adjustcolor(rcol, alpha.f = 0.85),
+        border = rcol, lwd = 0.3)
+    } else {
+      graphics::segments(rx, 0, rx, ry, col = rcol, lwd = 1.5)
     }
   }
+  # Zero line
+  graphics::abline(h = 0, col = "#AAAAAA", lwd = 0.5)
 
-  # Unpaired ATAC panels
-  if (!base::is.null(atac_data) && base::length(unpaired_atac) > 0) {
-    for (j in unpaired_atac) {
-      .draw_signal_panel(atac_data$data[[j]], atac_data$max,
-        atac_data$colors[j], atac_data$names[j])
-    }
-  }
-  # Unpaired RNA panels
-  if (!base::is.null(rna_data) && base::length(unpaired_rna) > 0) {
-    for (j in unpaired_rna) {
-      .draw_signal_panel(rna_data$data[[j]], rna_data$max,
-        rna_data$colors[j], rna_data$names[j])
-    }
-  }
-  # Histone panels
-  if (!base::is.null(hist_data)) {
-    for (j in base::seq_along(hist_data$data)) {
-      .draw_signal_panel(hist_data$data[[j]], hist_data$max,
-        hist_data$colors[j], hist_data$names[j])
-    }
-  }
+  # Custom y-axis: show actual data max values at the symmetric extent
+  graphics::axis(2, at = base::c(-mirror_max, 0, mirror_max),
+    labels = base::c(rna_max, 0, atac_max), las = 1, cex.axis = cex_axis)
+  # Label in margin
+  graphics::mtext(mp$label, side = 2, line = 3, cex = cex_cell_label, las = 1)
+  # Inline ATAC/RNA indicators
+  usr <- graphics::par("usr")
+  graphics::text(usr[2], mirror_max * 0.8, "ATAC", adj = base::c(1.1, 0.5),
+    cex = cex_signal_label, col = atac_data$colors[mp$atac_idx], font = 2)
+  graphics::text(usr[2], -mirror_max * 0.8, "RNA", adj = base::c(1.1, 0.5),
+    cex = cex_signal_label, col = rna_data$colors[mp$rna_idx], font = 2)
+  base::invisible(NULL)
+}
 
-  # Annotation panels --use horizontal mtext labels to avoid truncation
+#' Draw annotation panels
+#'
+#' Renders all annotation panels (enhancer index, chromatin states, BED
+#' annotations, TF peaks, ncRNA) with horizontal labels and optional
+#' enhancer overlap highlighting.
+#'
+#' @param annot_panels list of annotation panel entries
+#' @param xlims numeric vector of length 2
+#' @param enh_s numeric enhancer start
+#' @param enh_e numeric enhancer end
+#' @param gene_lookup logical
+#' @param draw_highlight_fn function to draw enhancer highlight
+#' @param cex_annotation numeric font size for annotation labels
+#' @return invisible NULL
+#' @noRd
+.draw_annotation_panels <- function(annot_panels, xlims, enh_s, enh_e,
+                                    gene_lookup, draw_highlight_fn,
+                                    cex_annotation) {
+  hl_violet <- "#7B2D8E"
+  n_annot <- base::length(annot_panels)
   if (n_annot > 0) {
     for (k in base::seq_along(annot_panels)) {
       ap <- annot_panels[[k]]
-      is_last <- (k == base::length(annot_panels) && n_signal == 0) ||
-                 (k == base::length(annot_panels))
+      is_last <- (k == base::length(annot_panels))
 
       graphics::plot(1, type = "n", xlim = xlims, ylim = base::c(0, 1),
         xaxt = "n", yaxt = "n", xlab = "", ylab = "", bty = "n")
       # Horizontal label in left margin (las=1) --avoids vertical clipping
-      graphics::mtext(ap$label, side = 2, line = 0.5, cex = cex_annotation, las = 1)
-      .draw_highlight()
+      graphics::mtext(ap$label, side = 2,
+        line = 0.5, cex = cex_annotation, las = 1)
+      draw_highlight_fn()
 
       gr <- ap$gr
       if (base::length(gr) > 0) {
@@ -947,113 +1141,19 @@ epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
       }
     }
   }
-
-  # Title (coordinates are now in the dedicated bar below transcripts)
-  title_text <- if (gene_lookup) {
-    gene_symbol
-  } else {
-    base::paste0(gene_symbol, " enhanceosome region")
-  }
-  graphics::mtext(title_text,
-    side = 3, outer = TRUE, line = 0.3, cex = cex_title, font = 2)
-
   base::invisible(NULL)
 }
 
-#' @rdname epiRomics_track_layer
-#' @export
-epiRomics_track_layer_fast <- epiRomics_track_layer
-
-
-#' Visualize any gene locus with multi-track BigWig overlay
+#' Resolve gene coordinates from symbol
 #'
-#' A convenience wrapper around \code{\link{epiRomics_track_layer}} that
-#' looks up a gene by symbol and creates a multi-track view without
-#' requiring the full enhanceosome pipeline.
+#' Looks up a gene symbol in the TxDb/OrgDb to find its chromosome,
+#' start, and end coordinates.
 #'
-#' The function queries the TxDb for the official gene body coordinates,
-#' builds a synthetic single-region epiRomics object, and passes it to
-#' \code{epiRomics_track_layer} for rendering. The viewing window spans
-#' the gene body plus \code{padding} on each side.
-#'
-#' @param gene_symbol Character. HGNC gene symbol (e.g. \code{"INS"},
-#'   \code{"GCG"}, \code{"PDX1"}).
-#' @param epiRomics_dB An epiRomics S4 database object.
-#' @param epiRomics_track_connection A data.frame from the BigWig CSV
-#'   sheet (columns: path, name, color, type).
-#' @param chromatin_states Optional. Output of
-#'   \code{\link{epiRomics_chromatin_states}}.
-#' @param padding Integer. Base pairs of padding around the gene body
-#'   (default 1000).
-#' @param show_bigwig Logical. Show BigWig signal tracks (default TRUE).
-#' @param show_chromatin Logical. Show chromatin state tracks (default TRUE).
-#' @param show_annotations Logical. Show BED annotation tracks (default TRUE).
-#' @param show_gene_model Logical. Show gene model panel (default TRUE).
-#' @param show_enhancer_highlight Logical. Show enhancer highlight (default TRUE).
-#' @param mirror Logical. Enable mirrored ATAC/RNA layout (default TRUE).
-#' @param signal_style Character. Signal rendering style: \code{"line"}
-#'   (default) draws vertical bars at each position (IGV/UCSC browser style),
-#'   \code{"polygon"} draws filled area charts.
-#' @param signal_layout Character. Signal layout mode: \code{"auto"},
-#'   \code{"stacked"}, or \code{"mirrored"}.
-#' @param cex_cell_label Numeric. Font size for cell type labels (default 1.4).
-#' @param cex_axis Numeric. Font size for axis labels (default 1.2).
-#' @param cex_coord Numeric. Font size for coordinate bar (default 1.3).
-#' @param cex_annotation Numeric. Font size for annotation labels (default 1.1).
-#' @param cex_gene Numeric. Font size for gene model labels (default 1.2).
-#' @param cex_title Numeric. Font size for plot title (default 1.5).
-#' @param cex_signal_label Numeric. Font size for signal indicators (default 1.2).
-#' @param export Character or NULL. File path for export (pdf, eps, png, tiff).
-#' @param width Numeric. Export width in inches (default 10).
-#' @param height Numeric. Export height in inches (default 8).
-#' @return Invisible NULL. A multi-panel base-R plot is drawn on the
-#'   current graphics device.
-#' @export
-#' @examples
-#' db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
-#'   meta = data.frame(name = character(), type = character(),
-#'     file = character(), stringsAsFactors = FALSE),
-#'   genome = "hg38")
-#' tc <- data.frame(path = character(), name = character(),
-#'   color = character(), type = character(), stringsAsFactors = FALSE)
-#' tryCatch(epiRomics_track_layer_gene("INS", db, tc),
-#'   error = function(e) message(e$message))
-#' \donttest{
-#' epiRomics_track_layer_gene("INS", epiRomics_dB, track_connection)
-#' epiRomics_track_layer_gene("GCG", epiRomics_dB, track_connection,
-#'   chromatin_states = cs, padding = 10000, export = "gcg_locus.pdf")
-#' }
-epiRomics_track_layer_gene <- function(gene_symbol,
-                                        epiRomics_dB,
-                                        epiRomics_track_connection,
-                                        chromatin_states = NULL,
-                                        padding = 1000L,
-                                        show_bigwig = TRUE,
-                                        show_chromatin = TRUE,
-                                        show_annotations = TRUE,
-                                        show_gene_model = TRUE,
-                                        show_enhancer_highlight = TRUE,
-                                        mirror = TRUE,
-                                        signal_style = c("line", "polygon"),
-                                        signal_layout = "auto",
-                                        cex_cell_label = 1.4,
-                                        cex_axis = 1.2,
-                                        cex_coord = 1.3,
-                                        cex_annotation = 1.1,
-                                        cex_gene = 1.2,
-                                        cex_title = 1.5,
-                                        cex_signal_label = 1.2,
-                                        export = NULL,
-                                        width = 10,
-                                        height = 8) {
-  if (!base::is.character(gene_symbol) || base::length(gene_symbol) != 1) {
-    base::stop("gene_symbol must be a single character string")
-  }
-  validate_epiRomics_dB(epiRomics_dB, "epiRomics_track_layer_gene")
-  if (!base::is.data.frame(epiRomics_track_connection)) {
-    base::stop("epiRomics_track_connection must be a data frame")
-  }
-
+#' @param gene_symbol character HGNC gene symbol
+#' @param epiRomics_dB epiRomics S4 database object
+#' @return list with gene_chr, gene_start, gene_end
+#' @noRd
+.resolve_gene_coordinates <- function(gene_symbol, epiRomics_dB) {
   # Resolve TxDb
   txdb_obj <- resolve_txdb(epiRomics_dB@txdb)
   orgdb <- base::tryCatch(
@@ -1086,53 +1186,327 @@ epiRomics_track_layer_gene <- function(gene_symbol,
   gene_start <- BiocGenerics::start(gene_gr)[1]
   gene_end <- BiocGenerics::end(gene_gr)[1]
 
-  # Build a synthetic single-region epiRomics object
-  # Place a 1-bp "enhancer" at the gene midpoint so the track_layer
+  base::list(gene_chr = gene_chr, gene_start = gene_start,
+    gene_end = gene_end)
+}
 
-  # centers the view on the gene
-  mid <- base::as.integer((gene_start + gene_end) / 2)
-  synth_gr <- GenomicRanges::GRanges(
-    seqnames = gene_chr,
-    ranges = IRanges::IRanges(start = mid, end = mid + 1L)
-  )
+#' Multi-track genomic visualization (base R graphics)
+#'
+#' Renders a stacked multi-panel genome browser view using base R graphics.
+#' Includes gene model, BigWig signal tracks (ATAC, RNA, histone), enhancer
+#' index, chromatin state bars, FANTOM/UCNE annotations,
+#' TF binding peaks, and ncRNA annotations. A translucent
+#' violet highlight column marks the enhancer region of interest across all
+#' panels. Typically renders in 1-2 seconds.
+#'
+#' @param epiRomics_putative_enhanceosome epiRomics class
+#'   database containing putative enhanceosome calls
+#' @param epiRomics_index numeric of row value from
+#'   epiRomics_putative_enhanceosome to visualize
+#' @param epiRomics_dB epiRomics class database containing
+#'   all data initially loaded
+#' @param epiRomics_track_connection data frame containing
+#'   bigwig track locations and their names
+#' @param epiRomics_keep_epitracks logical indicating whether
+#'   to show enhancer and chip tracks, default is TRUE
+#' @param chromatin_states data.frame, optional output from
+#'   \code{\link{epiRomics_chromatin_states}}. When provided, the enhancer
+#'   track is colored by chromatin state and separate per-state annotation
+#'   tracks are added.
+#' @param gene_lookup logical. When TRUE, omits the enhancer index bar and
+#'   violet highlight column. Used internally by
+#'   \code{\link{epiRomics_track_layer_gene}} to display a gene locus without
+#'   enhancer-specific visual elements. Default is FALSE.
+#' @param show_bigwig logical. Show BigWig signal tracks. Default TRUE.
+#' @param show_chromatin logical. Show chromatin state
+#'   color tracks. Default TRUE.
+#' @param show_annotations logical. Show BED annotation tracks. Default TRUE.
+#' @param show_gene_model logical. Show gene model panel. Default TRUE.
+#' @param show_enhancer_highlight logical. Show enhancer index highlight.
+#'   Default TRUE.
+#' @param mirror logical. Use symmetric mirrored axes for paired ATAC/RNA
+#'   signals. Default TRUE.
+#' @param signal_style character. Signal rendering style: \code{"line"}
+#'   (default) draws vertical bars at each position (IGV/UCSC browser style),
+#'   \code{"polygon"} draws filled area charts.
+#' @param signal_layout character. Signal rendering layout: \code{"auto"}
+#'   detects paired signals and mirrors, \code{"stacked"} renders one row per
+#'   signal, \code{"mirrored"} always mirrors first two. Default \code{"auto"}.
+#' @param cex_cell_label numeric. Font size for cell type labels (e.g. Alpha,
+#'   Beta). Default 1.4.
+#' @param cex_axis numeric. Font size for y-axis tick labels on signal tracks.
+#'   Default 1.2.
+#' @param cex_coord numeric. Font size for chromosome, start, stop, genome
+#'   build text. Default 1.3.
+#' @param cex_annotation numeric. Font size for BED annotation labels.
+#'   Default 1.1.
+#' @param cex_gene numeric. Font size for gene name labels in gene model.
+#'   Default 1.2.
+#' @param cex_title numeric. Font size for main plot title. Default 1.5.
+#' @param cex_signal_label numeric. Font size for ATAC/RNA
+#'   type indicator text. Default 1.2.
+#' @param quantile_cap numeric. Percentile for capping
+#'   extreme signal peaks (default 0.98). Peaks above
+#'   this percentile are clipped to prevent axis
+#'   compression.
+#' @param scale_factor numeric. Y-axis headroom
+#'   multiplier (default 1.1). Values above 1.0 add
+#'   whitespace above the tallest signal peak.
+#' @param export character or NULL. File path to
+#'   auto-export the plot (e.g. \code{"plot.pdf"},
+#'   \code{"plot.eps"}, \code{"plot.png"}). When NULL
+#'   (default), plot is drawn on current device only.
+#' @param width numeric. Export width in inches.
+#'   Default 10.
+#' @param height numeric. Export height in inches.
+#'   Default 8.
+#' @return Invisible \code{NULL}. The function produces
+#'   a base R multi-panel plot on the current graphics
+#'   device.
+#' @export
+#' @examples
+#' db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+#'   meta = data.frame(name = character(), type = character(),
+#'     file = character(), stringsAsFactors = FALSE),
+#'   genome = "hg38")
+#' tryCatch(epiRomics_track_layer(db, 1, db,
+#'   data.frame(file = character(), name = character(),
+#'     color = character(), type = character())),
+#'   error = function(e) message(e$message))
+#' \donttest{
+#' epiRomics_track_layer(enhanceosome, 1, epiRomics_dB,
+#'   epiRomics_track_connection)
+#' # With font size and export customization:
+#' epiRomics_track_layer(enhanceosome, 1, epiRomics_dB,
+#'   epiRomics_track_connection, cex_title = 2.0,
+#'   mirror = FALSE, export = "figure.pdf")
+#' }
+epiRomics_track_layer <- function(epiRomics_putative_enhanceosome,
+                                        epiRomics_index,
+                                        epiRomics_dB,
+                                        epiRomics_track_connection,
+                                        epiRomics_keep_epitracks = TRUE,
+                                        chromatin_states = NULL,
+                                        gene_lookup = FALSE,
+                                        show_bigwig = TRUE,
+                                        show_chromatin = TRUE,
+                                        show_annotations = TRUE,
+                                        show_gene_model = TRUE,
+                                        show_enhancer_highlight = TRUE,
+                                        mirror = TRUE,
+                                        signal_style = c("line", "polygon"),
+                                        signal_layout = "auto",
+                                        cex_cell_label = 1.4,
+                                        cex_axis = 1.2,
+                                        cex_coord = 1.3,
+                                        cex_annotation = 1.1,
+                                        cex_gene = 1.2,
+                                        cex_title = 1.5,
+                                        cex_signal_label = 1.2,
+                                        quantile_cap = 0.98,
+                                        scale_factor = 1.1,
+                                        export = NULL,
+                                        width = 10,
+                                        height = 8) {
+  v <- .validate_track_layer_inputs(epiRomics_putative_enhanceosome,
+    epiRomics_index, epiRomics_dB, epiRomics_track_connection,
+    epiRomics_keep_epitracks, signal_style, signal_layout, export)
+  signal_style <- v$signal_style; signal_layout <- v$signal_layout
+  if (!base::is.null(export)) {
+    .open_export_device(export, width, height)
+    base::on.exit(grDevices::dev.off(), add = TRUE)
+  }
+  focal <- .extract_focal_region(epiRomics_putative_enhanceosome,
+    epiRomics_index, epiRomics_dB, gene_lookup)
+  hl_fn <- function() .draw_highlight(focal$enh_s, focal$enh_e,
+    "#F0E6F680", "#D8BFD8", gene_lookup)
+  txdb_obj <- resolve_txdb(epiRomics_dB@txdb)
+  orgdb <- base::tryCatch(
+    base::get(epiRomics_dB@organism),
+    error = function(e) NULL)
+  region_genes <- IRanges::subsetByOverlaps(
+    GenomicFeatures::genes(txdb_obj), focal$region_gr)
+  gm <- .build_gene_models(txdb_obj, orgdb, focal$region_gr, region_genes,
+    focal$gene_symbol, gene_lookup, focal$min_track, focal$max_track,
+    focal$xlims, focal$enh_chr)
+  sig <- .prepare_signal_data(
+    epiRomics_track_connection, gm$region_gr,
+    gm$xlims, mirror, signal_layout,
+    show_bigwig, quantile_cap, scale_factor)
+  ap <- .assemble_annotation_panels(epiRomics_putative_enhanceosome,
+    epiRomics_dB, epiRomics_keep_epitracks, focal$enh, focal$enh_id,
+    epiRomics_index, gene_lookup, show_enhancer_highlight, show_chromatin,
+    show_annotations, chromatin_states, focal$enh_chr, gm$min_track,
+    gm$max_track, gm$region_gr, region_genes, focal$genome)
+  lp <- .compute_layout_params(ap$annot_panels, show_gene_model,
+    base::max(1L, base::length(gm$gene_models)),
+    base::length(sig$mirrored_pairs), sig$unpaired_atac,
+    sig$unpaired_rna, sig$hist_data, ap$n_annot)
+  old_par <- graphics::par(no.readonly = TRUE)
+  base::on.exit(graphics::par(old_par), add = TRUE)
+  graphics::layout(
+    base::matrix(base::seq_len(lp$n_panels), ncol = 1),
+    heights = lp$panel_heights)
+  graphics::par(
+    mar = base::c(0.3, lp$left_mar, 0.3, 1),
+    oma = base::c(1, 0, 2, 0), bg = "white")
+  if (show_gene_model) .draw_gene_model_panel(
+    gm$gene_models, gm$xlims, focal$gene_symbol,
+    gm$min_track, gm$max_track, hl_fn, cex_gene)
+  .draw_coordinate_bar(gm$xlims, focal$enh_chr, focal$genome, hl_fn, cex_coord)
+  for (mp in sig$mirrored_pairs) .draw_mirrored_panel(
+    mp, sig$atac_data, sig$rna_data, gm$xlims,
+    hl_fn, signal_style, cex_cell_label,
+    cex_axis, cex_signal_label)
+  .draw_unpaired_signal_panels(sig$atac_data, sig$rna_data, sig$hist_data,
+    sig$unpaired_atac, sig$unpaired_rna, gm$xlims, hl_fn, signal_style)
+  .draw_annotation_panels(ap$annot_panels, gm$xlims, focal$enh_s,
+    focal$enh_e, gene_lookup, hl_fn, cex_annotation)
+  title_text <- if (gene_lookup) focal$gene_symbol else
+    base::paste0(focal$gene_symbol, " enhanceosome region")
+  graphics::mtext(title_text, side = 3, outer = TRUE, line = 0.3,
+    cex = cex_title, font = 2)
+  base::invisible(NULL)
+}
+
+#' @rdname epiRomics_track_layer
+#' @export
+epiRomics_track_layer_fast <- epiRomics_track_layer
+
+
+#' Visualize any gene locus with multi-track BigWig overlay
+#'
+#' A convenience wrapper around \code{\link{epiRomics_track_layer}} that
+#' looks up a gene by symbol and creates a multi-track view without
+#' requiring the full enhanceosome pipeline.
+#'
+#' The function queries the TxDb for the official gene body coordinates,
+#' builds a synthetic single-region epiRomics object, and passes it to
+#' \code{epiRomics_track_layer} for rendering. The viewing window spans
+#' the gene body plus \code{padding} on each side.
+#'
+#' @param gene_symbol Character. HGNC gene symbol (e.g. \code{"INS"},
+#'   \code{"GCG"}, \code{"PDX1"}).
+#' @param epiRomics_dB An epiRomics S4 database object.
+#' @param epiRomics_track_connection A data.frame from the BigWig CSV
+#'   sheet (columns: path, name, color, type).
+#' @param chromatin_states Optional. Output of
+#'   \code{\link{epiRomics_chromatin_states}}.
+#' @param padding Integer. Base pairs of padding around the gene body
+#'   (default 1000).
+#' @param show_bigwig Logical. Show BigWig signal tracks (default TRUE).
+#' @param show_chromatin Logical. Show chromatin state tracks (default TRUE).
+#' @param show_annotations Logical. Show BED annotation tracks (default TRUE).
+#' @param show_gene_model Logical. Show gene model panel (default TRUE).
+#' @param show_enhancer_highlight Logical. Show enhancer
+#'   highlight (default TRUE).
+#' @param mirror Logical. Enable mirrored ATAC/RNA layout (default TRUE).
+#' @param signal_style Character. Signal rendering style: \code{"line"}
+#'   (default) draws vertical bars at each position (IGV/UCSC browser style),
+#'   \code{"polygon"} draws filled area charts.
+#' @param signal_layout Character. Signal layout mode: \code{"auto"},
+#'   \code{"stacked"}, or \code{"mirrored"}.
+#' @param cex_cell_label Numeric. Font size for cell type labels (default 1.4).
+#' @param cex_axis Numeric. Font size for axis labels (default 1.2).
+#' @param cex_coord Numeric. Font size for coordinate bar (default 1.3).
+#' @param cex_annotation Numeric. Font size for annotation labels (default 1.1).
+#' @param cex_gene Numeric. Font size for gene model labels (default 1.2).
+#' @param cex_title Numeric. Font size for plot title (default 1.5).
+#' @param cex_signal_label Numeric. Font size for signal
+#'   indicators (default 1.2).
+#' @param quantile_cap numeric. Percentile for capping
+#'   extreme signal peaks (default 0.98). Peaks above
+#'   this percentile are clipped to prevent axis
+#'   compression.
+#' @param scale_factor numeric. Y-axis headroom
+#'   multiplier (default 1.1). Values above 1.0 add
+#'   whitespace above the tallest signal peak.
+#' @param export Character or NULL. File path for
+#'   export (pdf, eps, png, tiff).
+#' @param width Numeric. Export width in inches
+#'   (default 10).
+#' @param height Numeric. Export height in inches
+#'   (default 8).
+#' @return Invisible NULL. A multi-panel base-R plot
+#'   is drawn on the current graphics device.
+#' @export
+#' @examples
+#' db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
+#'   meta = data.frame(name = character(), type = character(),
+#'     file = character(), stringsAsFactors = FALSE),
+#'   genome = "hg38")
+#' tc <- data.frame(path = character(), name = character(),
+#'   color = character(), type = character(),
+#'   stringsAsFactors = FALSE)
+#' tryCatch(epiRomics_track_layer_gene("INS", db, tc),
+#'   error = function(e) message(e$message))
+#' \donttest{
+#' epiRomics_track_layer_gene("INS", epiRomics_dB,
+#'   track_connection)
+#' epiRomics_track_layer_gene("GCG", epiRomics_dB,
+#'   track_connection, chromatin_states = cs,
+#'   padding = 10000, export = "gcg_locus.pdf")
+#' }
+epiRomics_track_layer_gene <- function(gene_symbol,
+                                        epiRomics_dB,
+                                        epiRomics_track_connection,
+                                        chromatin_states = NULL,
+                                        padding = 1000L,
+                                        show_bigwig = TRUE,
+                                        show_chromatin = TRUE,
+                                        show_annotations = TRUE,
+                                        show_gene_model = TRUE,
+                                        show_enhancer_highlight = TRUE,
+                                        mirror = TRUE,
+                                        signal_style = c("line", "polygon"),
+                                        signal_layout = "auto",
+                                        cex_cell_label = 1.4,
+                                        cex_axis = 1.2,
+                                        cex_coord = 1.3,
+                                        cex_annotation = 1.1,
+                                        cex_gene = 1.2,
+                                        cex_title = 1.5,
+                                        cex_signal_label = 1.2,
+                                        quantile_cap = 0.98,
+                                        scale_factor = 1.1,
+                                        export = NULL,
+                                        width = 10,
+                                        height = 8) {
+  if (!base::is.character(gene_symbol) || base::length(gene_symbol) != 1)
+    base::stop("gene_symbol must be a single character string")
+  validate_epiRomics_dB(epiRomics_dB, "epiRomics_track_layer_gene")
+  if (!base::is.data.frame(epiRomics_track_connection))
+    base::stop("epiRomics_track_connection must be a data frame")
+
+  # Resolve gene coordinates and build synthetic epiRomics object
+  gc <- .resolve_gene_coordinates(gene_symbol, epiRomics_dB)
+  mid <- base::as.integer((gc$gene_start + gc$gene_end) / 2)
+  synth_gr <- GenomicRanges::GRanges(seqnames = gc$gene_chr,
+    ranges = IRanges::IRanges(start = mid, end = mid + 1L))
   synth_gr$SYMBOL <- gene_symbol
-  synth_gr$geneStart <- gene_start
-  synth_gr$geneEnd <- gene_end
-  synth_gr$geneChr <- base::sub("^chr", "", gene_chr)
+  synth_gr$geneStart <- gc$gene_start
+  synth_gr$geneEnd <- gc$gene_end
+  synth_gr$geneChr <- base::sub("^chr", "", gc$gene_chr)
   base::names(synth_gr) <- "gene_lookup"
-
-  # Build a minimal epiRomics S4 wrapper
   synth_obj <- methods::new("epiRomicsS4")
   synth_obj@annotations <- synth_gr
-  synth_obj@meta <- epiRomics_dB@meta
-  synth_obj@txdb <- epiRomics_dB@txdb
+  synth_obj@meta <- epiRomics_dB@meta; synth_obj@txdb <- epiRomics_dB@txdb
   synth_obj@organism <- epiRomics_dB@organism
   synth_obj@genome <- epiRomics_dB@genome
 
-  epiRomics_track_layer(
-    synth_obj,
-    epiRomics_index = 1L,
+  epiRomics_track_layer(synth_obj, epiRomics_index = 1L,
     epiRomics_dB = epiRomics_dB,
     epiRomics_track_connection = epiRomics_track_connection,
-    chromatin_states = chromatin_states,
-    gene_lookup = TRUE,
-    show_bigwig = show_bigwig,
-    show_chromatin = show_chromatin,
-    show_annotations = show_annotations,
-    show_gene_model = show_gene_model,
-    show_enhancer_highlight = show_enhancer_highlight,
-    mirror = mirror,
-    signal_style = signal_style,
-    signal_layout = signal_layout,
-    cex_cell_label = cex_cell_label,
-    cex_axis = cex_axis,
-    cex_coord = cex_coord,
-    cex_annotation = cex_annotation,
-    cex_gene = cex_gene,
-    cex_title = cex_title,
+    chromatin_states = chromatin_states, gene_lookup = TRUE,
+    show_bigwig = show_bigwig, show_chromatin = show_chromatin,
+    show_annotations = show_annotations, show_gene_model = show_gene_model,
+    show_enhancer_highlight = show_enhancer_highlight, mirror = mirror,
+    signal_style = signal_style, signal_layout = signal_layout,
+    cex_cell_label = cex_cell_label, cex_axis = cex_axis,
+    cex_coord = cex_coord, cex_annotation = cex_annotation,
+    cex_gene = cex_gene, cex_title = cex_title,
     cex_signal_label = cex_signal_label,
-    export = export,
-    width = width,
-    height = height
-  )
+    quantile_cap = quantile_cap,
+    scale_factor = scale_factor,
+    export = export, width = width, height = height)
 }

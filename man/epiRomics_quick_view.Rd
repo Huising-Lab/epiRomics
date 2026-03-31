@@ -2,7 +2,8 @@
 % Please edit documentation in R/epiRomics_quick_view.R
 \name{epiRomics_quick_view}
 \alias{epiRomics_quick_view}
-\title{Quick standalone gene/region visualization from BigWig files}
+\title{Quick standalone gene/region visualization from BigWig
+files}
 \usage{
 epiRomics_quick_view(
   gene = NULL,
@@ -23,96 +24,124 @@ epiRomics_quick_view(
   cex_gene = 1.2,
   cex_title = 1.5,
   cex_signal_label = 1.2,
+  quantile_cap = 0.98,
+  scale_factor = 1.1,
   export = NULL,
   width = 10,
   height = 8
 )
 }
 \arguments{
-\item{gene}{Character or NULL. HGNC gene symbol (e.g., \code{"INS"},
-\code{"GCG"}). Exactly one of \code{gene} or \code{region} must be
-provided.}
+\item{gene}{Character or NULL. HGNC gene symbol (e.g.,
+\code{"INS"}, \code{"GCG"}). Exactly one of \code{gene}
+or \code{region} must be provided.}
 
 \item{region}{List or NULL. Genomic coordinates as
-\code{list(chr = "chr11", start = 2159779, end = 2161209)}.
-Exactly one of \code{gene} or \code{region} must be provided.}
+\code{list(chr = "chr11", start = 2159779,
+end = 2161209)}. Exactly one of \code{gene} or
+\code{region} must be provided.}
 
-\item{bw_paths}{Named character vector of BigWig file paths. Names are
-used as sample labels. If names contain both \code{"atac"} and
-\code{"rna"} (case-insensitive), mirror pairing is attempted.}
+\item{bw_paths}{Named character vector of BigWig file
+paths. Names are used as sample labels. If names contain
+both \code{"atac"} and \code{"rna"} (case-insensitive),
+mirror pairing is attempted.}
 
-\item{labels}{Character vector or NULL. Override sample labels. If NULL,
-uses \code{names(bw_paths)}.}
+\item{labels}{Character vector or NULL. Override sample
+labels. If NULL, uses \code{names(bw_paths)}.}
 
-\item{colors}{Character vector or NULL. Override sample colors. If NULL,
-uses a default colorblind-friendly palette. Must have the same length
-as \code{bw_paths}.}
+\item{colors}{Character vector or NULL. Override sample
+colors. If NULL, uses a default colorblind-friendly
+palette. Must have the same length as \code{bw_paths}.}
 
-\item{genome}{Character. Genome assembly: \code{"hg38"} (default) or
-\code{"mm10"}.}
+\item{genome}{Character. Genome assembly: \code{"hg38"}
+(default) or \code{"mm10"}.}
 
-\item{txdb}{Character or NULL. TxDb package name. If NULL, auto-resolved
-from \code{genome}.}
+\item{txdb}{Character or NULL. TxDb package name. If NULL,
+auto-resolved from \code{genome}.}
 
-\item{padding}{Integer. Base pairs of padding around gene/region
-(default 5000).}
+\item{padding}{Integer. Base pairs of padding around
+gene/region (default 5000).}
 
-\item{mirror}{Logical. Enable mirrored ATAC/RNA layout (default FALSE).}
+\item{mirror}{Logical. Enable mirrored ATAC/RNA layout
+(default FALSE).}
 
-\item{signal_style}{Character. Signal rendering style: \code{"line"}
-(default) draws vertical bars at each position (IGV/UCSC browser style),
-\code{"polygon"} draws filled area charts.}
+\item{signal_style}{Character. Signal rendering style:
+\code{"line"} (default) draws vertical bars at each
+position (IGV/UCSC browser style), \code{"polygon"}
+draws filled area charts.}
 
-\item{signal_layout}{Character. Signal layout mode: \code{"auto"},
-\code{"stacked"}, or \code{"mirrored"}.}
+\item{signal_layout}{Character. Signal layout mode:
+\code{"auto"}, \code{"stacked"}, or \code{"mirrored"}.}
 
-\item{cex_cell_label}{Numeric. Font size for cell type labels (default 1.4).}
+\item{cex_cell_label}{Numeric. Font size for cell type
+labels (default 1.4).}
 
-\item{cex_axis}{Numeric. Font size for axis labels (default 1.2).}
+\item{cex_axis}{Numeric. Font size for axis labels
+(default 1.2).}
 
-\item{cex_coord}{Numeric. Font size for coordinate bar (default 1.3).}
+\item{cex_coord}{Numeric. Font size for coordinate bar
+(default 1.3).}
 
-\item{cex_annotation}{Numeric. Font size for annotation labels (default 1.1).}
+\item{cex_annotation}{Numeric. Font size for annotation
+labels (default 1.1).}
 
-\item{cex_gene}{Numeric. Font size for gene model labels (default 1.2).}
+\item{cex_gene}{Numeric. Font size for gene model labels
+(default 1.2).}
 
-\item{cex_title}{Numeric. Font size for plot title (default 1.5).}
+\item{cex_title}{Numeric. Font size for plot title
+(default 1.5).}
 
-\item{cex_signal_label}{Numeric. Font size for signal indicators (default 1.2).}
+\item{cex_signal_label}{Numeric. Font size for signal
+indicators (default 1.2).}
 
-\item{export}{Character or NULL. File path for export (pdf, eps, png, tiff).}
+\item{quantile_cap}{numeric. Percentile for capping
+extreme signal peaks (default 0.98). Peaks above this
+percentile are clipped to prevent axis compression.}
+
+\item{scale_factor}{numeric. Y-axis headroom multiplier
+(default 1.1). Values above 1.0 add whitespace above
+the tallest signal peak.}
+
+\item{export}{Character or NULL. File path for export
+(pdf, eps, png, tiff).}
 
 \item{width}{Numeric. Export width in inches (default 10).}
 
-\item{height}{Numeric. Export height in inches (default 8).}
+\item{height}{Numeric. Export height in inches
+(default 8).}
 }
 \value{
-Invisible NULL. A multi-panel base-R plot is drawn on the
-  current graphics device (or exported to file if \code{export} is set).
+Invisible NULL. A multi-panel base-R plot is drawn
+  on the current graphics device (or exported to file if
+  \code{export} is set).
 }
 \description{
-A zero-configuration entry point for visualizing any genomic locus with
-BigWig signal tracks. Requires only a gene symbol (or genomic coordinates)
-and one or more BigWig file paths. No database setup, no track connection
-CSV, no chromatin states — just signal overlaid on the gene model.
+A zero-configuration entry point for visualizing any
+genomic locus with BigWig signal tracks. Requires only a
+gene symbol (or genomic coordinates) and one or more BigWig
+file paths. No database setup, no track connection CSV, no
+chromatin states --- just signal overlaid on the gene model.
 }
 \details{
-This is the simplest way to use epiRomics for exploratory visualization.
-Specify a gene by symbol (e.g., \code{"INS"}) or a region by coordinates.
-The function auto-resolves the TxDb annotation database for the specified
-genome assembly.
+This is the simplest way to use epiRomics for exploratory
+visualization. Specify a gene by symbol (e.g.,
+\code{"INS"}) or a region by coordinates. The function
+auto-resolves the TxDb annotation database for the
+specified genome assembly.
 }
 \examples{
 tryCatch(epiRomics_quick_view("INS",
   bw_paths = c(Sample = "nonexistent.bw")),
   error = function(e) message(e$message))
 \donttest{
-# Single BigWig — simplest usage
-epiRomics_quick_view("INS", bw_paths = c(Alpha_ATAC = "alpha_atac.bw"))
+# Single BigWig - simplest usage
+epiRomics_quick_view("INS",
+  bw_paths = c(Alpha_ATAC = "alpha_atac.bw"))
 
 # Two signals with mirroring and custom colors
 epiRomics_quick_view("INS",
-  bw_paths = c(Alpha_ATAC = "alpha_atac.bw", Alpha_RNA = "alpha_rna.bw"),
+  bw_paths = c(Alpha_ATAC = "alpha_atac.bw",
+    Alpha_RNA = "alpha_rna.bw"),
   colors = c("#e13c64", "#e13c64"),
   mirror = TRUE)
 
@@ -122,7 +151,9 @@ epiRomics_quick_view("PDX1",
   export = "PDX1_quick.eps")
 
 # View a region instead of a gene
-epiRomics_quick_view(region = list(chr = "chr11", start = 2159779,
-  end = 2161209), bw_paths = c(Signal = "track.bw"))
+epiRomics_quick_view(
+  region = list(chr = "chr11", start = 2159779,
+    end = 2161209),
+  bw_paths = c(Signal = "track.bw"))
 }
 }
