@@ -2,15 +2,18 @@
 % Please edit documentation in R/epiRomics_tf_overlap.R
 \name{epiRomics_tf_overlap}
 \alias{epiRomics_tf_overlap}
-\title{Analyze pairwise and multi-way overlap between transcription factor binding sites}
+\title{Analyze pairwise and multi-way overlap between
+transcription factor binding sites}
 \usage{
 epiRomics_tf_overlap(epiRomics_enhanceosome, epiRomics_dB, regions = NULL)
 }
 \arguments{
-\item{epiRomics_enhanceosome}{epiRomics class database containing enhanceosome calls,
-or an epiRomics database with ChIP data}
+\item{epiRomics_enhanceosome}{epiRomics class database
+containing enhanceosome calls, or an epiRomics
+database with ChIP data}
 
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database containing
+all data initially loaded}
 
 \item{regions}{GRanges object defining regions to analyze. If NULL, uses all
 enhanceosome annotation regions.}
@@ -18,12 +21,17 @@ enhanceosome annotation regions.}
 \value{
 list with components:
   \describe{
-    \item{overlap_matrix}{matrix of pairwise overlap coefficients (asymmetric: fraction of row TF overlapping col TF)}
+    \item{overlap_matrix}{matrix of pairwise overlap
+      coefficients (asymmetric: fraction of row TF
+      overlapping col TF)}
     \item{overlap_counts}{matrix of pairwise absolute overlap counts}
-    \item{jaccard_matrix}{matrix of pairwise Jaccard indices (symmetric: intersection/union)}
-    \item{unique_counts}{named integer vector of regions bound by ONLY that TF}
+    \item{jaccard_matrix}{matrix of pairwise Jaccard
+      indices (symmetric: intersection/union)}
+    \item{unique_counts}{named integer vector of regions
+      bound by ONLY that TF}
     \item{shared_all}{integer count of regions bound by ALL TFs}
-    \item{n_tf_counts}{table of how many regions are bound by exactly 1, 2, 3... N TFs}
+    \item{n_tf_counts}{table of how many regions are
+      bound by exactly 1, 2, 3... N TFs}
     \item{tf_names}{character vector of TF names analyzed}
     \item{summary}{data.frame with per-TF summary statistics}
   }
@@ -52,7 +60,9 @@ db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
   meta = data.frame(name = character(), type = character(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
-tryCatch(epiRomics_tf_overlap(db, db), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_tf_overlap(db, db),
+  error = function(e) message(e$message))
 \donttest{
 overlap <- epiRomics_tf_overlap(enhanceosome, epiRomics_dB)
 # Pairwise overlap matrix

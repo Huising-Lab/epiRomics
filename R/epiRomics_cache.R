@@ -1,3 +1,53 @@
+#' Download or retrieve the epiRomics data archive from BiocFileCache
+#'
+#' Queries BiocFileCache for an existing cached archive. If not found,
+#' downloads it. If force_update is TRUE, removes the old entry and
+#' re-downloads. Returns the local path to the archive file.
+#'
+#' @param cache A BiocFileCache object.
+#' @param data_url Character URL of the data archive.
+#' @param force_update Logical; if TRUE, re-download even if cached.
+#' @return Character string path to the local archive file.
+#' @noRd
+.download_or_retrieve_archive <- function(cache, data_url, force_update) {
+    query_result <- BiocFileCache::bfcquery(
+        cache, "epiromics_cache_data", "rname", exact = TRUE
+    )
+
+    if (base::nrow(query_result) == 0L) {
+        ## First time: download and add to cache
+        base::message(
+            "Downloading epiRomics example data (~1.3 GB).\n",
+            "This only needs to happen once..."
+        )
+        archive_path <- BiocFileCache::bfcadd(
+            cache,
+            rname   = "epiromics_cache_data",
+            fpath   = data_url,
+            action  = "copy"
+        )
+    } else if (force_update) {
+        ## Force re-download
+        base::message("Re-downloading epiRomics example data...")
+        rid <- query_result$rid[1L]
+        BiocFileCache::bfcremove(cache, rids = rid)
+        archive_path <- BiocFileCache::bfcadd(
+            cache,
+            rname   = "epiromics_cache_data",
+            fpath   = data_url,
+            action  = "copy"
+        )
+    } else {
+        ## Already cached
+        archive_path <- BiocFileCache::bfcrpath(
+            cache, rids = query_result$rid[1L]
+        )
+    }
+
+    base::return(archive_path)
+}
+
+
 #' Download and Cache epiRomics Example Data
 #'
 #' Downloads the epiRomics example dataset (histone marks, ChIP-seq peaks,
@@ -53,8 +103,9 @@
 #' cache_dir <- epiRomics_cache_data()
 #'
 #' ## Read the database sheet and resolve paths
-#' db_sheet <- read.csv(file.path(cache_dir, "example_epiRomics_Db_sheet.csv"),
-#'                      stringsAsFactors = FALSE)
+#' db_sheet <- read.csv(file.path(cache_dir,
+#'   "example_epiRomics_Db_sheet.csv"),
+#'   stringsAsFactors = FALSE)
 #' db_sheet$path <- file.path(cache_dir, db_sheet$path)
 #' }
 epiRomics_cache_data <- function(force_update = FALSE, ask = FALSE) {
@@ -77,43 +128,8 @@ epiRomics_cache_data <- function(force_update = FALSE, ask = FALSE) {
     ## ---- set up BiocFileCache ----
     cache <- BiocFileCache::BiocFileCache(ask = ask)
 
-    ## ---- check for existing cached archive ----
-    query_result <- BiocFileCache::bfcquery(
-        cache, "epiromics_cache_data", "rname", exact = TRUE
-    )
-
-    archive_path <- NULL
-
-    if (base::nrow(query_result) == 0L) {
-        ## First time: download and add to cache
-        base::message(
-            "Downloading epiRomics example data (~1.3 GB).\n",
-            "This only needs to happen once..."
-        )
-        archive_path <- BiocFileCache::bfcadd(
-            cache,
-            rname   = "epiromics_cache_data",
-            fpath   = data_url,
-            action  = "copy"
-        )
-    } else if (force_update) {
-        ## Force re-download
-        base::message("Re-downloading epiRomics example data...")
-        rid <- query_result$rid[1L]
-        ## Remove old entry and re-add
-        BiocFileCache::bfcremove(cache, rids = rid)
-        archive_path <- BiocFileCache::bfcadd(
-            cache,
-            rname   = "epiromics_cache_data",
-            fpath   = data_url,
-            action  = "copy"
-        )
-    } else {
-        ## Already cached
-        archive_path <- BiocFileCache::bfcrpath(
-            cache, rids = query_result$rid[1L]
-        )
-    }
+    ## ---- download or retrieve cached archive via helper ----
+    archive_path <- .download_or_retrieve_archive(cache, data_url, force_update)
 
     ## ---- extract archive ----
     cache_base   <- base::dirname(archive_path)
@@ -128,12 +144,13 @@ epiRomics_cache_data <- function(force_update = FALSE, ask = FALSE) {
         base::dir.create(extract_dir, recursive = TRUE, showWarnings = FALSE)
         utils::untar(archive_path, exdir = extract_dir)
         base::writeLines(base::as.character(base::Sys.time()), sentinel)
-        base::message("epiRomics data cached successfully at:\n  ", extract_dir)
+        base::message(
+            "epiRomics data cached successfully at:\n  ",
+            extract_dir
+        )
     }
 
     ## ---- locate data root ----
-    ## The tar.gz may contain a single top-level directory or flat files.
-    ## Detect and return the correct root.
     .find_data_root(extract_dir)
 }
 
@@ -175,7 +192,9 @@ epiRomics_has_cache <- function() {
         extract_dir <- base::file.path(
             base::dirname(archive_path), "epiRomics_extdata"
         )
-        sentinel <- base::file.path(extract_dir, ".epiRomics_extracted")
+        sentinel <- base::file.path(
+            extract_dir, ".epiRomics_extracted"
+        )
         base::file.exists(sentinel)
     }, error = function(e) FALSE)
 }
@@ -218,10 +237,11 @@ epiRomics_cache_path <- function() {
 
 #' Ensure Example Data is Available (Lazy Download)
 #'
-#' Internal helper that checks for cached data and downloads it if missing
-#' in interactive sessions. In non-interactive contexts (CI, R CMD check),
-#' returns \code{FALSE} silently. Used by the vignette and functions that
-#' operate on example data to provide a seamless experience.
+#' Internal helper that checks for cached data and downloads it
+#' if missing in interactive sessions. In non-interactive contexts
+#' (CI, R CMD check), returns \code{FALSE} silently. Used by the
+#' vignette and functions that operate on example data to provide
+#' a seamless experience.
 #'
 #' @param verbose Logical; if \code{TRUE}, prints status messages.
 #' @return Logical; \code{TRUE} if data is available after the call.
@@ -256,8 +276,9 @@ epiRomics_cache_path <- function() {
 
 #' Locate the data root inside the extraction directory
 #'
-#' If the archive contains a single top-level directory, that directory
-#' is the data root. Otherwise the extraction directory itself is used.
+#' If the archive contains a single top-level directory, that
+#' directory is the data root. Otherwise the extraction directory
+#' itself is used.
 #'
 #' @param extract_dir Path to the extraction directory.
 #' @return Normalized path to the data root.
@@ -266,12 +287,18 @@ epiRomics_cache_path <- function() {
     contents <- base::list.files(extract_dir, full.names = TRUE)
     ## Exclude the sentinel file
     contents <- contents[
-        !base::grepl("^\\.epiRomics_extracted$", base::basename(contents))
+        !base::grepl(
+            "^\\.epiRomics_extracted$",
+            base::basename(contents)
+        )
     ]
 
-    ## Single subdirectory → use that as root
-    if (base::length(contents) == 1L && base::dir.exists(contents)) {
-        return(base::normalizePath(contents, mustWork = TRUE))
+    ## Single subdirectory -> use that as root
+    if (base::length(contents) == 1L &&
+        base::dir.exists(contents)) {
+        return(
+            base::normalizePath(contents, mustWork = TRUE)
+        )
     }
 
     base::normalizePath(extract_dir, mustWork = TRUE)

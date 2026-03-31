@@ -1,7 +1,7 @@
 Package: epiRomics
 Type: Package
 Title: Epigenomic Analysis Package Built for R (epiRomics)
-Version: 0.99.0
+Version: 0.99.1
 Authors@R:
     c(person(given = "Alex M.",
              family = "Mawla",
@@ -15,7 +15,31 @@ Authors@R:
              comment = c(ORCID = "0000-0002-6594-2205")),
       person(given = "Huising Lab",
              family = "@ University of California, Davis",
-             role = "cph"))
+             role = "cph"),
+      person(given = "National Institutes of Health",
+             family = "NIDDK",
+             role = "fnd",
+             comment = "NIDDK110276 to M.O.H."),
+      person(given = "Juvenile Diabetes Research Foundation",
+             family = "",
+             role = "fnd",
+             comment = "CDA-2-2013-54 and 2-SRA-2021-1054-M-N to M.O.H."),
+      person(given = "Stephen F. and Bettina A. Sims",
+             family = "Immunology Fellowship",
+             role = "fnd",
+             comment = "Fellowship to A.M.M."),
+      person(given = "Amazon Web Services",
+             family = "",
+             role = "fnd",
+             comment = "Machine Learning Research Award to A.M.M."),
+      person(given = "UC Davis Flow Cytometry",
+             family = "Shared Resource Laboratory",
+             role = "fnd",
+             comment = "NCI P30 CA093373 and NIH S10 OD018223"),
+      person(given = "University of California, Davis",
+             family = "",
+             role = "fnd",
+             comment = "Start-up funds to T.v.d.M."))
 Description: Integrates various levels of epigenomic information, including
     ChIP-seq, histone modification, ATAC-seq, and RNA-seq data. Regulatory
     network analysis uses combinatory approaches to infer regions of
@@ -26,7 +50,7 @@ Description: Integrates various levels of epigenomic information, including
     reporting.
 License: Artistic-2.0
 Depends:
-    R (>= 4.4.0)
+    R (>= 4.5.0)
 URL: https://github.com/Huising-Lab/epiRomics
 BugReports: https://github.com/Huising-Lab/epiRomics/issues
 biocViews: Epigenetics, ChIPSeq, ATACSeq, RNASeq, Visualization, Sequencing,
@@ -59,9 +83,7 @@ Imports:
 Suggests:
     BiocFileCache (>= 2.14.0),
     covr,
-    Gviz (>= 1.50.0),
     knitr,
-    lifecycle,
     parallel,
     testthat (>= 3.0.0),
     pkgdown (>= 2.1.1),

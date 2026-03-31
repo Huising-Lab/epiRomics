@@ -4,9 +4,13 @@ library(epiRomics)
 # Build database using helper
 epiRomics_dB <- build_test_dB()
 
-# Get putative enhancers and enhanceosome
-enhancers <- epiRomics::epiRomics_enhancers(epiRomics_dB, "h3k4me1", "h3k27ac")
-enhanceosome <- epiRomics::epiRomics_enhanceosome(enhancers, epiRomics_dB)
+# Get putative enhancers and enhanceosome (guard against NULL when extdata missing)
+enhancers <- NULL
+enhanceosome <- NULL
+if (!is.null(epiRomics_dB)) {
+  enhancers <- epiRomics::epiRomics_enhancers_co_marks(epiRomics_dB, "h3k4me1", "h3k27ac")
+  enhanceosome <- epiRomics::epiRomics_enhanceosome(enhancers, epiRomics_dB)
+}
 
 # Test: epiRomics_enhancers_filter returns correct S4 class and filtered output
 

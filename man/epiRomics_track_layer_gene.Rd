@@ -25,6 +25,8 @@ epiRomics_track_layer_gene(
   cex_gene = 1.2,
   cex_title = 1.5,
   cex_signal_label = 1.2,
+  quantile_cap = 0.98,
+  scale_factor = 1.1,
   export = NULL,
   width = 10,
   height = 8
@@ -53,7 +55,8 @@ sheet (columns: path, name, color, type).}
 
 \item{show_gene_model}{Logical. Show gene model panel (default TRUE).}
 
-\item{show_enhancer_highlight}{Logical. Show enhancer highlight (default TRUE).}
+\item{show_enhancer_highlight}{Logical. Show enhancer
+highlight (default TRUE).}
 
 \item{mirror}{Logical. Enable mirrored ATAC/RNA layout (default TRUE).}
 
@@ -76,17 +79,30 @@ sheet (columns: path, name, color, type).}
 
 \item{cex_title}{Numeric. Font size for plot title (default 1.5).}
 
-\item{cex_signal_label}{Numeric. Font size for signal indicators (default 1.2).}
+\item{cex_signal_label}{Numeric. Font size for signal
+indicators (default 1.2).}
 
-\item{export}{Character or NULL. File path for export (pdf, eps, png, tiff).}
+\item{quantile_cap}{numeric. Percentile for capping
+extreme signal peaks (default 0.98). Peaks above
+this percentile are clipped to prevent axis
+compression.}
 
-\item{width}{Numeric. Export width in inches (default 10).}
+\item{scale_factor}{numeric. Y-axis headroom
+multiplier (default 1.1). Values above 1.0 add
+whitespace above the tallest signal peak.}
 
-\item{height}{Numeric. Export height in inches (default 8).}
+\item{export}{Character or NULL. File path for
+export (pdf, eps, png, tiff).}
+
+\item{width}{Numeric. Export width in inches
+(default 10).}
+
+\item{height}{Numeric. Export height in inches
+(default 8).}
 }
 \value{
-Invisible NULL. A multi-panel base-R plot is drawn on the
-  current graphics device.
+Invisible NULL. A multi-panel base-R plot
+  is drawn on the current graphics device.
 }
 \description{
 A convenience wrapper around \code{\link{epiRomics_track_layer}} that
@@ -105,12 +121,15 @@ db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
 tc <- data.frame(path = character(), name = character(),
-  color = character(), type = character(), stringsAsFactors = FALSE)
+  color = character(), type = character(),
+  stringsAsFactors = FALSE)
 tryCatch(epiRomics_track_layer_gene("INS", db, tc),
   error = function(e) message(e$message))
 \donttest{
-epiRomics_track_layer_gene("INS", epiRomics_dB, track_connection)
-epiRomics_track_layer_gene("GCG", epiRomics_dB, track_connection,
-  chromatin_states = cs, padding = 10000, export = "gcg_locus.pdf")
+epiRomics_track_layer_gene("INS", epiRomics_dB,
+  track_connection)
+epiRomics_track_layer_gene("GCG", epiRomics_dB,
+  track_connection, chromatin_states = cs,
+  padding = 10000, export = "gcg_locus.pdf")
 }
 }

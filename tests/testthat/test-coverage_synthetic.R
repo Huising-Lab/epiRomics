@@ -47,27 +47,7 @@
   )
 }
 
-# ---- 1. epiRomics_track_layer_deprecated: validation ----
-test_that("epiRomics_track_layer_deprecated validates dB annotations", {
-  db <- .make_empty_db()
-  # Empty annotations triggers before index validation
-  expect_error(
-    epiRomics_track_layer_deprecated(db, epiRomics_index = 1,
-      epiRomics_dB = db, epiRomics_track_connection = data.frame()),
-    "empty|NULL|annotations"
-  )
-})
-
-test_that("epiRomics_track_layer_deprecated validates index with valid dB", {
-  db <- .make_minimal_db()
-  expect_error(
-    epiRomics_track_layer_deprecated(db, epiRomics_index = -1,
-      epiRomics_dB = db, epiRomics_track_connection = data.frame()),
-    "epiRomics_index"
-  )
-})
-
-# ---- 3. epiRomics_track_layer_gene: validation ----
+# ---- 1. epiRomics_track_layer_gene: validation ----
 test_that("epiRomics_track_layer_gene rejects non-character gene_symbol", {
   expect_error(
     epiRomics_track_layer_gene(gene_symbol = 123, epiRomics_dB = .make_empty_db(),

@@ -28,6 +28,8 @@ epiRomics_track_layer(
   cex_gene = 1.2,
   cex_title = 1.5,
   cex_signal_label = 1.2,
+  quantile_cap = 0.98,
+  scale_factor = 1.1,
   export = NULL,
   width = 10,
   height = 8
@@ -56,21 +58,28 @@ epiRomics_track_layer_fast(
   cex_gene = 1.2,
   cex_title = 1.5,
   cex_signal_label = 1.2,
+  quantile_cap = 0.98,
+  scale_factor = 1.1,
   export = NULL,
   width = 10,
   height = 8
 )
 }
 \arguments{
-\item{epiRomics_putative_enhanceosome}{epiRomics class database containing putative enhanceosome calls}
+\item{epiRomics_putative_enhanceosome}{epiRomics class
+database containing putative enhanceosome calls}
 
-\item{epiRomics_index}{numeric of row value from epiRomics_putative_enhanceosome to visualize}
+\item{epiRomics_index}{numeric of row value from
+epiRomics_putative_enhanceosome to visualize}
 
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database containing
+all data initially loaded}
 
-\item{epiRomics_track_connection}{data frame containing bigwig track locations and their names}
+\item{epiRomics_track_connection}{data frame containing
+bigwig track locations and their names}
 
-\item{epiRomics_keep_epitracks}{logical indicating whether to show enhancer and chip tracks, default is TRUE}
+\item{epiRomics_keep_epitracks}{logical indicating whether
+to show enhancer and chip tracks, default is TRUE}
 
 \item{chromatin_states}{data.frame, optional output from
 \code{\link{epiRomics_chromatin_states}}. When provided, the enhancer
@@ -84,7 +93,8 @@ enhancer-specific visual elements. Default is FALSE.}
 
 \item{show_bigwig}{logical. Show BigWig signal tracks. Default TRUE.}
 
-\item{show_chromatin}{logical. Show chromatin state color tracks. Default TRUE.}
+\item{show_chromatin}{logical. Show chromatin state
+color tracks. Default TRUE.}
 
 \item{show_annotations}{logical. Show BED annotation tracks. Default TRUE.}
 
@@ -121,20 +131,33 @@ Default 1.2.}
 
 \item{cex_title}{numeric. Font size for main plot title. Default 1.5.}
 
-\item{cex_signal_label}{numeric. Font size for ATAC/RNA type indicator
-text. Default 1.2.}
+\item{cex_signal_label}{numeric. Font size for ATAC/RNA
+type indicator text. Default 1.2.}
 
-\item{export}{character or NULL. File path to auto-export the plot (e.g.
-\code{"plot.pdf"}, \code{"plot.eps"}, \code{"plot.png"}). When NULL
-(default), the plot is drawn on the current device only.}
+\item{quantile_cap}{numeric. Percentile for capping
+extreme signal peaks (default 0.98). Peaks above
+this percentile are clipped to prevent axis
+compression.}
 
-\item{width}{numeric. Export width in inches. Default 10.}
+\item{scale_factor}{numeric. Y-axis headroom
+multiplier (default 1.1). Values above 1.0 add
+whitespace above the tallest signal peak.}
 
-\item{height}{numeric. Export height in inches. Default 8.}
+\item{export}{character or NULL. File path to
+auto-export the plot (e.g. \code{"plot.pdf"},
+\code{"plot.eps"}, \code{"plot.png"}). When NULL
+(default), plot is drawn on current device only.}
+
+\item{width}{numeric. Export width in inches.
+Default 10.}
+
+\item{height}{numeric. Export height in inches.
+Default 8.}
 }
 \value{
-Invisible \code{NULL}. The function produces a base R multi-panel
-  plot on the current graphics device.
+Invisible \code{NULL}. The function produces
+  a base R multi-panel plot on the current graphics
+  device.
 }
 \description{
 Renders a stacked multi-panel genome browser view using base R graphics.
@@ -143,10 +166,6 @@ index, chromatin state bars, FANTOM/UCNE annotations,
 TF binding peaks, and ncRNA annotations. A translucent
 violet highlight column marks the enhancer region of interest across all
 panels. Typically renders in 1-2 seconds.
-}
-\details{
-For the original Gviz-based version (slower, but supports IdeogramTrack),
-see \code{\link{epiRomics_track_layer_deprecated}}.
 }
 \examples{
 db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),

@@ -14,18 +14,25 @@ epiRomics_build_dB(
 )
 }
 \arguments{
-\item{epiRomics_db_file}{character string of path to properly formatted csv file
-containing epigenetic data. [See vignette for more details]}
+\item{epiRomics_db_file}{character string of path to
+properly formatted csv file containing epigenetic
+data. [See vignette for more details]}
 
-\item{txdb_organism}{a character string containing the TxDB associated with your data.}
+\item{txdb_organism}{a character string containing
+the TxDB associated with your data.}
 
-\item{epiRomics_genome}{a character string containing the genome associated with your data. e.g. "mm10" or "hg38".}
+\item{epiRomics_genome}{a character string containing
+the genome associated with your data.
+e.g. "mm10" or "hg38".}
 
-\item{epiRomics_organism}{a character string containing the org.db associated with your data.}
+\item{epiRomics_organism}{a character string
+containing the org.db associated with your data.}
 
-\item{extraCols}{named character vector of extra columns to read from chip/histone
-BED files. Default is NULL (no extra columns). Set to
-\code{c(signal = "numeric", pval = "numeric", qval = "numeric", peak = "numeric")}
+\item{extraCols}{named character vector of extra
+columns to read from chip/histone BED files.
+Default is NULL (no extra columns). Set to
+\code{c(signal = "numeric", pval = "numeric",
+qval = "numeric", peak = "numeric")}
 to read narrowPeak columns.}
 
 \item{data_dir}{optional character string specifying the root directory for
@@ -44,8 +51,13 @@ epiRomics database for downstream analysis. Supports optional extra columns
 for ChIP/histone peak files (signal, pval, qval, peak).
 }
 \examples{
-tryCatch(epiRomics_build_dB("nonexistent.csv"), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_build_dB("nonexistent.csv"),
+  error = function(e) message(e$message)
+)
 \donttest{
-epiRomics_dB <- epiRomics_build_dB(epiRomics_data_path, epiRomics_meta, "mm10")
+epiRomics_dB <- epiRomics_build_dB(
+  epiRomics_data_path, epiRomics_meta, "mm10"
+)
 }
 }

@@ -55,7 +55,8 @@ complementary evidence types that can be used independently or combined.
 
 \describe{
   \item{signal}{Import ATAC-seq/DNase-seq BigWig signal over each region.
-    Regions with mean signal above a z-score threshold are flagged accessible.
+    Regions with mean signal above a z-score threshold
+    are flagged accessible.
     Requires \code{epiRomics_track_connection} with ATAC/DNase tracks.}
   \item{bed}{Overlap with an external accessibility BED file (e.g., ENCODE
     peaks, DHS hotspots). Any region overlapping a BED entry is flagged.

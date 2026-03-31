@@ -11,13 +11,16 @@ epiRomics_enhancer_predictor_to_ref(
 )
 }
 \arguments{
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database
+containing all data initially loaded}
 
-\item{epiRomics_histone}{name or vector of histone mark(s), must match name in
-epiROmics_dB@meta, default set to h3k4me1}
+\item{epiRomics_histone}{name or vector of histone
+mark(s), must match name in epiROmics_dB@meta,
+default set to h3k4me1}
 
-\item{epiRomics_curated_database}{database to test histone marks against, must
-match name in epiROmics_dB@meta default set to fantom}
+\item{epiRomics_curated_database}{database to test
+histone marks against, must match name in
+epiROmics_dB@meta default set to fantom}
 }
 \value{
 Variable of class dataframe further exploring top histone marks that
@@ -33,7 +36,10 @@ db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
   meta = data.frame(name = character(), type = character(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
-tryCatch(epiRomics_enhancer_predictor_to_ref(db), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_enhancer_predictor_to_ref(db),
+  error = function(e) message(e$message)
+)
 \donttest{
 test <- epiRomics_enhancer_predictor_to_ref(epiRomics_dB)
 }

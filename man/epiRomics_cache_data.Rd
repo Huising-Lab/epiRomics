@@ -60,8 +60,9 @@ epiRomics_has_cache()
 cache_dir <- epiRomics_cache_data()
 
 ## Read the database sheet and resolve paths
-db_sheet <- read.csv(file.path(cache_dir, "example_epiRomics_Db_sheet.csv"),
-                     stringsAsFactors = FALSE)
+db_sheet <- read.csv(file.path(cache_dir,
+  "example_epiRomics_Db_sheet.csv"),
+  stringsAsFactors = FALSE)
 db_sheet$path <- file.path(cache_dir, db_sheet$path)
 }
 }

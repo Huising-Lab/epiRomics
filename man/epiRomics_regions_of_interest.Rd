@@ -53,7 +53,9 @@ db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
   meta = data.frame(name = character(), type = character(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
-tryCatch(epiRomics_regions_of_interest(db), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_regions_of_interest(db),
+  error = function(e) message(e$message))
 \donttest{
 # Original GRanges interface (backward-compatible)
 roi <- epiRomics_regions_of_interest(dB, test_gr)

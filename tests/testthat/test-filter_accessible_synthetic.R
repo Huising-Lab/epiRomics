@@ -258,3 +258,59 @@ test_that("result preserves original columns plus atac_accessible", {
   expect_true("atac_accessible" %in% names(result))
   expect_equal(nrow(result), 5)
 })
+
+# ============================================================================
+# SIGNAL CONDITION TESTS
+# ============================================================================
+
+test_that("signal mode emits proper warning on BigWig import failure", {
+  pe <- .make_pe()
+  tc <- data.frame(
+    path = "/tmp/nonexistent_test.bw",
+    name = "test_atac",
+    color = "#000000",
+    type = "atac",
+    stringsAsFactors = FALSE
+  )
+  # Capture all warnings to check that our code emits a proper warning()
+  # (rtracklayer may also emit its own warnings about the missing file)
+  warnings_caught <- character(0)
+  result <- suppressMessages(
+    withCallingHandlers(
+      epiRomics_filter_accessible(pe, mode = "signal",
+        epiRomics_track_connection = tc),
+      warning = function(w) {
+        warnings_caught <<- c(warnings_caught, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    )
+  )
+  # Our code must emit a warning matching "failed to import"
+  import_warnings <- grep("failed to import", warnings_caught, value = TRUE)
+  expect_true(length(import_warnings) >= 1,
+    info = paste("Expected 'failed to import' warning, got:",
+      paste(warnings_caught, collapse = "; ")))
+  # The warning must include the file path
+  expect_true(any(grepl("/tmp/nonexistent_test\\.bw", import_warnings)),
+    info = "Warning should include the BigWig file path")
+  # Function returns a data.frame (graceful degradation)
+  expect_true(is.data.frame(result))
+})
+
+test_that("signal mode returns zero signal for failed track", {
+  pe <- .make_pe()
+  tc <- data.frame(
+    path = "/tmp/nonexistent_test.bw",
+    name = "test_atac",
+    color = "#000000",
+    type = "atac",
+    stringsAsFactors = FALSE
+  )
+  result <- suppressMessages(suppressWarnings(
+    epiRomics_filter_accessible(pe, mode = "signal",
+      epiRomics_track_connection = tc)
+  ))
+  expect_true(is.data.frame(result))
+  expect_true("atac_test_atac" %in% names(result))
+  expect_equal(result$atac_test_atac, rep(0, 5))
+})

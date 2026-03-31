@@ -2,34 +2,48 @@
 % Please edit documentation in R/epiRomics_enhancers_filter.R
 \name{epiRomics_enhancers_filter}
 \alias{epiRomics_enhancers_filter}
-\title{Filters putative enhancers called by epiRomics_enhancers by crossing against curated FANTOM data}
+\title{Filters putative enhancers called by
+epiRomics_enhancers by crossing against curated
+FANTOM data}
 \usage{
 epiRomics_enhancers_filter(
   epiRomics_putative_enhancers,
   epiRomics_dB,
-  epiRomics_type = "mm10_custom_fantom"
+  epiRomics_type = NULL
 )
 }
 \arguments{
-\item{epiRomics_putative_enhancers}{epiRomics class database containing putative enhancer calls}
+\item{epiRomics_putative_enhancers}{epiRomics class
+database containing putative enhancer calls}
 
-\item{epiRomics_dB}{epiRomics class database containing all data initially loaded}
+\item{epiRomics_dB}{epiRomics class database
+containing all data initially loaded}
 
-\item{epiRomics_type}{epiRomics reference containing database to validate putative enhancers against}
+\item{epiRomics_type}{epiRomics reference containing
+database to validate putative enhancers against.
+Default NULL derives from genome:
+\code{paste0(genome, "_custom_fantom")}.}
 }
 \value{
 Variable of class epiRomics with filtered candidate enhancer regions
 }
 \description{
-Filters putative enhancers called by epiRomics_enhancers by crossing against curated FANTOM data
+Filters putative enhancers called by
+epiRomics_enhancers by crossing against curated
+FANTOM data
 }
 \examples{
 db <- epiRomicsS4(annotations = GenomicRanges::GRanges(),
   meta = data.frame(name = character(), type = character(),
     file = character(), stringsAsFactors = FALSE),
   genome = "hg38")
-tryCatch(epiRomics_enhancers_filter(db, db), error = function(e) message(e$message))
+tryCatch(
+  epiRomics_enhancers_filter(db, db),
+  error = function(e) message(e$message)
+)
 \donttest{
-filtered <- epiRomics_enhancers_filter(epiRomics_putative_enhancers, epiRomics_dB)
+filtered <- epiRomics_enhancers_filter(
+  epiRomics_putative_enhancers, epiRomics_dB
+)
 }
 }

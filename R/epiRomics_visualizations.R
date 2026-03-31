@@ -39,7 +39,8 @@
 #' accessible <- call_accessible_regions("sample.bw", regions, z_threshold = 1)
 #'
 #' # Auto-detect threshold from signal distribution (recommended)
-#' result <- call_accessible_regions("sample.bw", regions, auto_threshold = TRUE,
+#' result <- call_accessible_regions(
+#'   "sample.bw", regions, auto_threshold = TRUE,
 #'   return_scores = TRUE)
 #' cat("Auto z-threshold:", result$auto_z, "\n")
 #'
@@ -88,39 +89,18 @@ call_accessible_regions <- function(bw_path, regions, z_threshold = 1.0,
     return(base::rep(FALSE, n_regions))
   }
 
-  z_scores <- (region_signal - mu) / sigma
-
-  # Auto-detect threshold from signal distribution valley
-  auto_z <- NA_real_
-  if (auto_threshold) {
-    log_sig <- base::log10(region_signal + 1)
-    dens <- .safe_density(log_sig)
-    valley_x <- .find_signal_valley(dens)
-
-    valley_raw <- if (!base::is.na(valley_x)) {
-      10^valley_x - 1
-    } else {
-      10^0.1 - 1  # Fallback: log10 = 0.1 (raw ~ 0.26)
-    }
-    auto_z <- (valley_raw - mu) / sigma
-    z_threshold <- auto_z
-  }
-
-  accessible <- if (!base::is.null(z_threshold)) {
-    z_scores >= z_threshold
-  } else {
-    base::rep(TRUE, n_regions)
-  }
+  scores <- .compute_accessibility_scores(
+    region_signal, n_regions, auto_threshold, z_threshold, mu, sigma)
 
   if (return_scores) {
     return(base::list(
-      z_scores = z_scores,
+      z_scores = scores$z_scores,
       signal = region_signal,
-      accessible = accessible,
+      accessible = scores$accessible,
       mu = mu, sigma = sigma,
-      auto_z = if (auto_threshold) auto_z else NA_real_))
+      auto_z = if (auto_threshold) scores$auto_z else NA_real_))
   }
-  return(accessible)
+  return(scores$accessible)
 }
 
 
@@ -138,11 +118,23 @@ call_accessible_regions <- function(bw_path, regions, z_threshold = 1.0,
 #' @param show_z_lines numeric vector, z-score thresholds to show as
 #'   vertical lines (default: c(1.0, 1.5, 2.0)).
 #' @param log_scale logical, use log10(signal + 1) for x-axis (default: TRUE).
-#' @param cex_label Numeric. Font size for threshold and annotation labels
-#'   (default 0.7).
-#' @param cex_title Numeric. Font size for histogram titles (default 1.0).
-#' @return Invisible list of per-sample signal statistics, including
-#'   mean, sd, quantiles, and suggested thresholds.
+#' @param cex_label Numeric. Font size for threshold and
+#'   annotation labels (default 0.7).
+#' @param cex_title Numeric. Font size for histogram titles
+#'   (default 1.0).
+#' @param hist_fill character. Histogram bar fill color
+#'   (default "#CCDDEE").
+#' @param hist_border character. Histogram bar border
+#'   color (default "#88AACC").
+#' @param density_col character. Density overlay line
+#'   color (default "#2C3E50").
+#' @param z_colors character vector. Colors for z-score
+#'   threshold lines (default: green, orange, red).
+#' @param suggest_col character. Color for suggested
+#'   threshold line (default "#B10DC9").
+#' @return Invisible list of per-sample signal statistics,
+#'   including mean, sd, quantiles, and suggested
+#'   thresholds.
 #' @export
 #' @examples
 #' tryCatch(plot_signal_histogram(c(Alpha = "nonexistent.bw"),
@@ -155,11 +147,20 @@ call_accessible_regions <- function(bw_path, regions, z_threshold = 1.0,
 #' # Use stats to pick threshold:
 #' stats$Alpha$suggested_threshold
 #' }
-plot_signal_histogram <- function(bw_paths, regions, n_bins = 100,
-                                   show_z_lines = c(1.0, 1.5, 2.0),
-                                   log_scale = TRUE,
-                                   cex_label = 0.7,
-                                   cex_title = 1.0) {
+plot_signal_histogram <- function(
+    bw_paths, regions,
+    n_bins = 100,
+    show_z_lines = base::c(1.0, 1.5, 2.0),
+    log_scale = TRUE,
+    cex_label = 0.7,
+    cex_title = 1.0,
+    hist_fill = "#CCDDEE",
+    hist_border = "#88AACC",
+    density_col = "#2C3E50",
+    z_colors = base::c(
+      "#2ECC40", "#FF851B",
+      "#E74C3C"),
+    suggest_col = "#B10DC9") {
   if (!base::is.character(bw_paths) || base::length(bw_paths) == 0) {
     base::stop("bw_paths must be a character vector of BigWig file paths")
   }
@@ -183,87 +184,11 @@ plot_signal_histogram <- function(bw_paths, regions, n_bins = 100,
   base::on.exit(graphics::par(old_par), add = TRUE)
 
   for (i in base::seq_along(bw_paths)) {
-    ct <- ct_names[i]
-    result <- call_accessible_regions(bw_paths[i], regions,
-      z_threshold = NULL, return_scores = TRUE)
-
-    sig <- result$signal
-    mu <- result$mu
-    sigma <- result$sigma
-
-    # Log transform for visualization if requested
-    plot_vals <- if (log_scale) base::log10(sig + 1) else sig
-    x_lab <- if (log_scale) "log10(mean signal + 1)" else "Mean signal"
-
-    # Histogram — cap y-axis so signal is visible (noise peak dominates)
-    h <- graphics::hist(plot_vals, breaks = n_bins, plot = FALSE)
-    sorted_counts <- base::sort(h$counts, decreasing = TRUE)
-    y_cap <- if (base::length(sorted_counts) >= 3) {
-      sorted_counts[base::max(2, base::ceiling(base::length(sorted_counts) * 0.05))] * 1.3
-    } else {
-      base::max(h$counts)
-    }
-    graphics::hist(plot_vals, breaks = n_bins, main = ct,
-      xlab = x_lab, ylab = "# Regions", col = "#CCDDEE", border = "#88AACC",
-      freq = TRUE, ylim = base::c(0, y_cap))
-
-    # Indicate if noise peak was truncated
-    if (base::max(h$counts) > y_cap) {
-      noise_peak_x <- h$mids[base::which.max(h$counts)]
-      graphics::text(noise_peak_x, y_cap * 0.95,
-        labels = base::paste0("(truncated: ", base::max(h$counts), ")"),
-        cex = cex_label * 0.85, col = "#888888")
-    }
-
-    # Add density overlay
-    dens <- .safe_density(plot_vals)
-    dens_scale <- y_cap / base::max(dens$y) * 0.8
-    graphics::lines(dens$x, dens$y * dens_scale, col = "#2C3E50", lwd = 2)
-
-    # Add z-score threshold lines
-    z_colors <- base::c("#2ECC40", "#FF851B", "#E74C3C")
-    for (j in base::seq_along(show_z_lines)) {
-      z_val <- show_z_lines[j]
-      raw_threshold <- mu + z_val * sigma
-      plot_threshold <- if (log_scale) base::log10(raw_threshold + 1) else raw_threshold
-      line_col <- if (j <= base::length(z_colors)) z_colors[j] else "#333333"
-      graphics::abline(v = plot_threshold, col = line_col, lwd = 2, lty = 2)
-      n_above <- base::sum(sig >= raw_threshold)
-      graphics::text(plot_threshold, graphics::par("usr")[4] * 0.95,
-        labels = base::paste0("z=", z_val, "\n(n=", n_above, ")"),
-        pos = 4, cex = cex_label, col = line_col)
-    }
-
-    # Suggested threshold via shared valley detection
-    min_after_peak <- .find_signal_valley(dens)
-
-    suggested_raw <- if (!base::is.na(min_after_peak)) {
-      if (log_scale) 10^min_after_peak - 1 else min_after_peak
-    } else {
-      10^0.1 - 1
-    }
-
-    suggested_z <- if (sigma > 0) (suggested_raw - mu) / sigma else 1.0
-
-    stats_list[[ct]] <- base::list(
-      mu = mu, sigma = sigma,
-      n_regions = base::length(sig),
-      n_nonzero = base::sum(sig > 0),
-      quantiles = stats::quantile(sig, probs = base::c(0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1)),
-      suggested_threshold = suggested_raw,
-      suggested_z = base::round(suggested_z, 2),
-      n_accessible_z1 = base::sum(result$z_scores >= 1.0),
-      n_accessible_z1.5 = base::sum(result$z_scores >= 1.5),
-      n_accessible_z2 = base::sum(result$z_scores >= 2.0)
-    )
-
-    # Add suggested threshold line
-    if (!base::is.na(min_after_peak)) {
-      graphics::abline(v = min_after_peak, col = "#B10DC9", lwd = 2, lty = 1)
-      graphics::text(min_after_peak, graphics::par("usr")[4] * 0.85,
-        labels = base::paste0("suggested\nz=", base::round(suggested_z, 1)),
-        pos = 4, cex = cex_label, col = "#B10DC9")
-    }
+    stats_list[[ct_names[i]]] <- .draw_histogram_panel(
+      bw_paths[i], ct_names[i], regions,
+      n_bins, show_z_lines, log_scale,
+      cex_label, hist_fill, hist_border,
+      density_col, z_colors, suggest_col)
   }
 
   base::invisible(stats_list)
@@ -331,10 +256,14 @@ plot_signal_histogram <- function(bw_paths, regions, n_bins = 100,
 #' )
 #' table(ct$cell_type)  # Shared, Alpha, Beta, Closed
 #' }
-classify_celltype_accessibility <- function(bw_paths, regions, z_threshold = 1.0,
+classify_celltype_accessibility <- function(bw_paths,
+                                            regions,
+                                            z_threshold = 1.0,
                                             auto_threshold = FALSE) {
   if (!base::is.character(bw_paths) || base::is.null(base::names(bw_paths))) {
-    base::stop("bw_paths must be a named character vector (names = cell-type labels)")
+    base::stop(
+      "bw_paths must be a named character vector (names = cell-type labels)"
+    )
   }
   if (base::any(base::names(bw_paths) == "")) {
     base::stop("All elements of bw_paths must be named")
@@ -352,14 +281,209 @@ classify_celltype_accessibility <- function(bw_paths, regions, z_threshold = 1.0
   base::colnames(acc_matrix) <- ct_names
 
   for (i in base::seq_along(ct_names)) {
-    acc_matrix[, i] <- call_accessible_regions(bw_paths[i], regions, z_threshold,
+    acc_matrix[, i] <- call_accessible_regions(
+      bw_paths[i], regions, z_threshold,
       auto_threshold = auto_threshold)
   }
 
-  # Classify each region
+  labels <- .classify_accessibility_labels(
+    acc_matrix, ct_names, n_regions, n_ct)
+
+  result <- base::data.frame(
+    region_idx = base::seq_len(n_regions),
+    cell_type = labels$cell_type,
+    accessible_in = labels$accessible_in,
+    stringsAsFactors = FALSE
+  )
+  base::attr(result, "accessibility_matrix") <- acc_matrix
+  return(result)
+}
+
+
+# ---- Extracted helpers (not exported) ----
+
+#' Compute z-scores and accessibility calls from region signal
+#'
+#' @param region_signal numeric vector of per-region signal values
+#' @param n_regions integer, number of regions
+#' @param auto_threshold logical, use auto-detection
+#' @param z_threshold numeric or NULL, z-score cutoff
+#' @param mu numeric, mean signal
+#' @param sigma numeric, SD of signal
+#' @return list with z_scores, accessible, auto_z
+#' @noRd
+.compute_accessibility_scores <- function(region_signal, n_regions,
+                                          auto_threshold, z_threshold,
+                                          mu, sigma) {
+  z_scores <- (region_signal - mu) / sigma
+
+  # Auto-detect threshold from signal distribution valley
+  auto_z <- NA_real_
+  if (auto_threshold) {
+    log_sig <- base::log10(region_signal + 1)
+    dens <- .safe_density(log_sig)
+    valley_x <- .find_signal_valley(dens)
+
+    valley_raw <- if (!base::is.na(valley_x)) {
+      10^valley_x - 1
+    } else {
+      10^0.1 - 1  # Fallback: log10 = 0.1 (raw ~ 0.26)
+    }
+    auto_z <- (valley_raw - mu) / sigma
+    z_threshold <- auto_z
+  }
+
+  accessible <- if (!base::is.null(z_threshold)) {
+    z_scores >= z_threshold
+  } else {
+    base::rep(TRUE, n_regions)
+  }
+
+  base::list(z_scores = z_scores, accessible = accessible, auto_z = auto_z)
+}
+
+
+#' Draw a single histogram panel for one BigWig sample
+#'
+#' @param bw_path character, path to BigWig file
+#' @param ct_name character, sample/cell-type label
+#' @param regions GRanges object of regions
+#' @param n_bins integer, number of histogram bins
+#' @param show_z_lines numeric vector of z-score thresholds
+#' @param log_scale logical, use log10 transform
+#' @param cex_label numeric, font size for labels
+#' @param hist_fill character, histogram fill color
+#' @param hist_border character, histogram border color
+#' @param density_col character, density line color
+#' @param z_colors character vector, z-score line colors
+#' @param suggest_col character, suggested threshold color
+#' @return list of signal statistics for this sample
+#' @noRd
+.draw_histogram_panel <- function(
+    bw_path, ct_name, regions, n_bins,
+    show_z_lines, log_scale, cex_label,
+    hist_fill, hist_border,
+    density_col, z_colors, suggest_col) {
+  result <- call_accessible_regions(bw_path, regions,
+    z_threshold = NULL, return_scores = TRUE)
+
+  sig <- result$signal
+  mu <- result$mu
+  sigma <- result$sigma
+
+  # Log transform for visualization if requested
+  plot_vals <- if (log_scale) base::log10(sig + 1) else sig
+  x_lab <- if (log_scale) "log10(mean signal + 1)" else "Mean signal"
+
+  # Histogram -- cap y-axis so signal is visible (noise peak dominates)
+  h <- graphics::hist(plot_vals, breaks = n_bins, plot = FALSE)
+  sorted_counts <- base::sort(h$counts, decreasing = TRUE)
+  y_cap <- if (base::length(sorted_counts) >= 3) {
+    sorted_counts[base::max(
+      2,
+      base::ceiling(
+        base::length(sorted_counts) * 0.05)
+    )] * 1.3
+  } else {
+    base::max(h$counts)
+  }
+  graphics::hist(
+    plot_vals, breaks = n_bins,
+    main = ct_name, xlab = x_lab,
+    ylab = "# Regions",
+    col = hist_fill, border = hist_border,
+    freq = TRUE,
+    ylim = base::c(0, y_cap))
+
+  # Indicate if noise peak was truncated
+  if (base::max(h$counts) > y_cap) {
+    noise_peak_x <- h$mids[base::which.max(h$counts)]
+    graphics::text(noise_peak_x, y_cap * 0.95,
+      labels = base::paste0("(truncated: ", base::max(h$counts), ")"),
+      cex = cex_label * 0.85, col = "#888888")
+  }
+
+  # Add density overlay
+  dens <- .safe_density(plot_vals)
+  dens_scale <- y_cap / base::max(dens$y) * 0.8
+  graphics::lines(
+    dens$x, dens$y * dens_scale,
+    col = density_col, lwd = 2)
+
+  # Add z-score threshold lines
+  for (j in base::seq_along(show_z_lines)) {
+    z_val <- show_z_lines[j]
+    raw_threshold <- mu + z_val * sigma
+    plot_threshold <- if (log_scale) {
+      base::log10(raw_threshold + 1)
+    } else {
+      raw_threshold
+    }
+    line_col <- if (j <= base::length(z_colors)) z_colors[j] else "#333333"
+    graphics::abline(v = plot_threshold, col = line_col, lwd = 2, lty = 2)
+    n_above <- base::sum(sig >= raw_threshold)
+    graphics::text(plot_threshold, graphics::par("usr")[4] * 0.95,
+      labels = base::paste0("z=", z_val, "\n(n=", n_above, ")"),
+      pos = 4, cex = cex_label, col = line_col)
+  }
+
+  # Suggested threshold via shared valley detection
+  min_after_peak <- .find_signal_valley(dens)
+
+  suggested_raw <- if (!base::is.na(min_after_peak)) {
+    if (log_scale) 10^min_after_peak - 1 else min_after_peak
+  } else {
+    10^0.1 - 1
+  }
+
+  suggested_z <- if (sigma > 0) (suggested_raw - mu) / sigma else 1.0
+
+  # Add suggested threshold line
+  if (!base::is.na(min_after_peak)) {
+    graphics::abline(
+      v = min_after_peak,
+      col = suggest_col, lwd = 2, lty = 1)
+    graphics::text(
+      min_after_peak,
+      graphics::par("usr")[4] * 0.85,
+      labels = base::paste0(
+        "suggested\nz=",
+        base::round(suggested_z, 1)),
+      pos = 4, cex = cex_label,
+      col = suggest_col)
+  }
+
+  base::list(
+    mu = mu, sigma = sigma,
+    n_regions = base::length(sig),
+    n_nonzero = base::sum(sig > 0),
+    quantiles = stats::quantile(
+      sig,
+      probs = base::c(
+        0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1)),
+    suggested_threshold = suggested_raw,
+    suggested_z = base::round(suggested_z, 2),
+    n_accessible_z1 = base::sum(result$z_scores >= 1.0),
+    n_accessible_z1.5 = base::sum(result$z_scores >= 1.5),
+    n_accessible_z2 = base::sum(result$z_scores >= 2.0)
+  )
+}
+
+
+#' Classify regions by accessibility pattern across cell types
+#'
+#' @param acc_matrix logical matrix (regions x cell types)
+#' @param ct_names character vector of cell-type names
+#' @param n_regions integer, number of regions
+#' @param n_ct integer, number of cell types
+#' @return list with cell_type and accessible_in character vectors
+#' @noRd
+.classify_accessibility_labels <- function(acc_matrix, ct_names,
+                                           n_regions, n_ct) {
   n_accessible <- base::rowSums(acc_matrix)
 
-  # Build accessible_in string column-wise (iterates over cell types, not regions)
+  # Build accessible_in string column-wise
+  # (iterates over cell types, not regions)
   accessible_in <- base::rep("", n_regions)
   for (j in base::seq_along(ct_names)) {
     has_ct <- acc_matrix[, j]
@@ -391,14 +515,7 @@ classify_celltype_accessibility <- function(bw_paths, regions, z_threshold = 1.0
     cell_type[mixed] <- "Shared"
   }
 
-  result <- base::data.frame(
-    region_idx = base::seq_len(n_regions),
-    cell_type = cell_type,
-    accessible_in = accessible_in,
-    stringsAsFactors = FALSE
-  )
-  base::attr(result, "accessibility_matrix") <- acc_matrix
-  return(result)
+  base::list(cell_type = cell_type, accessible_in = accessible_in)
 }
 
 

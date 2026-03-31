@@ -1,7 +1,77 @@
-#' Identifies putative enhanceosome regions by cross-referencing candidate enhancer regions against co-TF enrichment
+#' Annotate enhanceosome peaks via ChIPseeker with RDS caching
 #'
-#' @param epiRomics_putative_enhancers epiRomics class database containing putative enhancer calls
-#' @param epiRomics_dB epiRomics class database containing all data initially loaded
+#' Sets up a cache directory, computes a digest key from the GRanges
+#' coordinates and annotation parameters, and either loads a cached
+#' annotatePeak result or runs ChIPseeker::annotatePeak fresh. Returns
+#' the annotated GRanges with sequential names.
+#'
+#' @param epiRomics_enhanceosome_data_table GRanges
+#'   of sorted enhanceosome peaks.
+#' @param epiRomics_dB epiRomics class database (for txdb, organism).
+#' @param txdb_obj TxDb object for annotation.
+#' @return Annotated GRanges with sequential names reflecting ChIP_Hits rank.
+#' @noRd
+.annotate_enhanceosome_peaks <- function(
+    epiRomics_enhanceosome_data_table,
+    epiRomics_dB,
+    txdb_obj) {
+  # Cache annotatePeak result for repeated calls with same input
+  cache_dir <- base::file.path(base::tempdir(), "epiRomics_cache")
+  if (!base::dir.exists(cache_dir)) {
+    base::dir.create(cache_dir, recursive = TRUE)
+  }
+  annot_key <- digest::digest(base::paste(
+    base::paste(
+      base::as.character(GenomeInfoDb::seqnames(
+        epiRomics_enhanceosome_data_table
+      )),
+      collapse = ","
+    ),
+    base::paste(
+      BiocGenerics::start(
+        epiRomics_enhanceosome_data_table
+      ),
+      collapse = ","
+    ),
+    epiRomics_dB@txdb, epiRomics_dB@organism, sep = "|"
+  ))
+  annot_cache <- base::file.path(
+    cache_dir,
+    base::paste0("annotatePeak_", annot_key, ".rds")
+  )
+
+  if (base::file.exists(annot_cache)) {
+    base::message("Loading cached annotatePeak results...")
+    annotated <- base::readRDS(annot_cache)
+  } else {
+    annotated <- ChIPseeker::annotatePeak(
+      epiRomics_enhanceosome_data_table,
+      tssRegion = c(-3000, 3000),
+      TxDb = txdb_obj,
+      annoDb = epiRomics_dB@organism
+    )
+    annotated <- annotated@anno
+    base::saveRDS(annotated, annot_cache)
+  }
+
+  # Set sequential names (1, 2, ..., N) reflecting ChIP_Hits rank.
+  # These names persist through downstream filtering so that filtered
+  # subsets retain their original enhanceosome rank.
+  base::names(annotated) <- base::as.character(
+    base::seq_len(base::length(annotated))
+  )
+
+  base::return(annotated)
+}
+
+#' Identifies putative enhanceosome regions by
+#' cross-referencing candidate enhancer regions
+#' against co-TF enrichment
+#'
+#' @param epiRomics_putative_enhancers epiRomics class
+#'   database containing putative enhancer calls
+#' @param epiRomics_dB epiRomics class database
+#'   containing all data initially loaded
 #' @return Variable of class epiRomics with enhanceosome annotations
 #' @export
 #' @examples
@@ -9,13 +79,21 @@
 #'   meta = data.frame(name = character(), type = character(),
 #'     file = character(), stringsAsFactors = FALSE),
 #'   genome = "hg38")
-#' tryCatch(epiRomics_enhanceosome(db, db), error = function(e) message(e$message))
+#' tryCatch(
+#'   epiRomics_enhanceosome(db, db),
+#'   error = function(e) message(e$message)
+#' )
 #' \donttest{
-#' enhanceosome <- epiRomics_enhanceosome(epiRomics_putative_enhancers, epiRomics_dB)
+#' enhanceosome <- epiRomics_enhanceosome(
+#'   epiRomics_putative_enhancers, epiRomics_dB
+#' )
 #' }
 epiRomics_enhanceosome <- function(epiRomics_putative_enhancers, epiRomics_dB) {
   epiRomics_chips <- epiRomics_dB@meta[epiRomics_dB@meta$type == "chip", "name"]
-  epiRomics_chips_db_access <- base::paste0(epiRomics_dB@genome, "_custom_", epiRomics_chips)
+  epiRomics_chips_db_access <- base::paste0(
+    epiRomics_dB@genome, "_custom_",
+    epiRomics_chips
+  )
   # Pre-split annotations by type to avoid repeated linear scans
   annot_by_type <- base::split(
     epiRomics_dB@annotations,
@@ -26,7 +104,10 @@ epiRomics_enhanceosome <- function(epiRomics_putative_enhancers, epiRomics_dB) {
   n_chips <- base::length(epiRomics_chips)
 
   # Build subject list for lapply (avoids per-iteration hash lookup)
-  subject_list <- base::lapply(epiRomics_chips_db_access, function(key) annot_by_type[[key]])
+  subject_list <- base::lapply(
+    epiRomics_chips_db_access,
+    function(key) annot_by_type[[key]]
+  )
 
   # Parallel countOverlaps when >2 ChIP targets and parallel available
   use_par <- n_chips > 2L &&
@@ -34,7 +115,9 @@ epiRomics_enhanceosome <- function(epiRomics_putative_enhancers, epiRomics_dB) {
     .Platform$OS.type == "unix"
 
   apply_fn <- if (use_par) {
-    n_cores <- base::min(n_chips, base::max(1L, parallel::detectCores() - 1L))
+    n_cores <- .detect_cores(
+      max_cores = n_chips
+    )
     function(x, f) parallel::mclapply(x, f, mc.cores = n_cores)
   } else {
     base::lapply
@@ -47,7 +130,8 @@ epiRomics_enhanceosome <- function(epiRomics_putative_enhancers, epiRomics_dB) {
     GenomicRanges::countOverlaps(query_gr, s_gr)
   })
 
-  # Add counts directly as mcols (avoids slow GRanges->data.frame->GRanges round-trip)
+  # Add counts directly as mcols
+  # (avoids slow GRanges->df->GRanges round-trip)
   for (j in base::seq_along(epiRomics_chips)) {
     GenomicRanges::mcols(query_gr)[[epiRomics_chips[j]]] <- count_cols[[j]]
   }
@@ -58,35 +142,14 @@ epiRomics_enhanceosome <- function(epiRomics_putative_enhancers, epiRomics_dB) {
   epiRomics_enhanceosome_data_table <- query_gr[
     base::order(GenomicRanges::mcols(query_gr)$ChIP_Hits, decreasing = TRUE)]
   txdb_obj <- resolve_txdb(epiRomics_dB@txdb)
-  # Cache annotatePeak result for repeated calls with same input
-  cache_dir <- base::file.path(base::tempdir(), "epiRomics_cache")
-  if (!base::dir.exists(cache_dir)) base::dir.create(cache_dir, recursive = TRUE)
-  annot_key <- digest::digest(base::paste(
-    base::paste(base::as.character(GenomeInfoDb::seqnames(epiRomics_enhanceosome_data_table)), collapse = ","),
-    base::paste(BiocGenerics::start(epiRomics_enhanceosome_data_table), collapse = ","),
-    epiRomics_dB@txdb, epiRomics_dB@organism, sep = "|"
-  ))
-  annot_cache <- base::file.path(cache_dir, base::paste0("annotatePeak_", annot_key, ".rds"))
 
-  if (base::file.exists(annot_cache)) {
-    base::message("Loading cached annotatePeak results...")
-    epiRomics_enhanceosome_data_table_annotated <- base::readRDS(annot_cache)
-  } else {
-    epiRomics_enhanceosome_data_table_annotated <- ChIPseeker::annotatePeak(epiRomics_enhanceosome_data_table,
-      tssRegion = c(-3000, 3000), TxDb = txdb_obj, annoDb = epiRomics_dB@organism
-    )
-    epiRomics_enhanceosome_data_table_annotated <- epiRomics_enhanceosome_data_table_annotated@anno
-    base::saveRDS(epiRomics_enhanceosome_data_table_annotated, annot_cache)
-  }
-  # Set sequential names (1, 2, ..., N) reflecting ChIP_Hits rank.
-
-  # These names persist through downstream filtering (e.g.,
-  # epiRomics_regions_of_interest) so that filtered subsets retain
-  # their original enhanceosome rank as GRanges names / row names.
-  base::names(epiRomics_enhanceosome_data_table_annotated) <- base::as.character(
-    base::seq_len(base::length(epiRomics_enhanceosome_data_table_annotated))
+  # Annotate peaks via extracted helper
+  annotated <- .annotate_enhanceosome_peaks(
+    epiRomics_enhanceosome_data_table,
+    epiRomics_dB, txdb_obj
   )
+
   epiRomics_enhanceosome <- epiRomics_putative_enhancers
-  epiRomics_enhanceosome@annotations <- epiRomics_enhanceosome_data_table_annotated
+  epiRomics_enhanceosome@annotations <- annotated
   base::return(epiRomics_enhanceosome)
 }

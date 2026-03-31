@@ -23,10 +23,12 @@ epiRomicsS4 <- methods::setClass(Class = "epiRomicsS4", slots = c(
 
 methods::setValidity("epiRomicsS4", function(object) {
   errors <- base::character()
-  if (base::length(object@genome) > 0 && !base::all(base::nchar(object@genome) > 0)) {
+  if (base::length(object@genome) > 0 &&
+      !base::all(base::nchar(object@genome) > 0)) {
     errors <- base::c(errors, "genome must be a non-empty character string")
   }
-  if (base::length(object@txdb) > 0 && !base::all(base::nchar(object@txdb) > 0)) {
+  if (base::length(object@txdb) > 0 &&
+      !base::all(base::nchar(object@txdb) > 0)) {
     errors <- base::c(errors, "txdb must be a non-empty character string")
   }
   if (base::length(errors) == 0) TRUE else errors
@@ -34,9 +36,27 @@ methods::setValidity("epiRomicsS4", function(object) {
 
 methods::setMethod("show", "epiRomicsS4", function(object) {
   base::cat("epiRomicsS4 object\n")
-  base::cat("  Genome:", if (base::length(object@genome) > 0) object@genome else "(not set)", "\n")
+  base::cat(
+    "  Genome:",
+    if (base::length(object@genome) > 0) {
+      object@genome
+    } else {
+      "(not set)"
+    }, "\n")
   base::cat("  Annotations:", base::length(object@annotations), "ranges\n")
   base::cat("  Meta:", base::nrow(object@meta), "rows\n")
-  base::cat("  Organism:", if (base::length(object@organism) > 0) object@organism else "(not set)", "\n")
-  base::cat("  TxDb:", if (base::length(object@txdb) > 0) object@txdb else "(not set)", "\n")
+  base::cat(
+    "  Organism:",
+    if (base::length(object@organism) > 0) {
+      object@organism
+    } else {
+      "(not set)"
+    }, "\n")
+  base::cat(
+    "  TxDb:",
+    if (base::length(object@txdb) > 0) {
+      object@txdb
+    } else {
+      "(not set)"
+    }, "\n")
 })
