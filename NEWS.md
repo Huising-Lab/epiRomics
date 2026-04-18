@@ -1,3 +1,14 @@
+# epiRomics 0.99.4
+
+## Changes
+
+* Replaced `.Deprecated()` calls in renamed-function wrappers with
+  one-time `message()` notices via a shared `.warn_renamed()` helper.
+  Users calling the old `epiRomics_*` names still see a clear nudge
+  to migrate to the new verb-first names (removal planned for the
+  next release), but BiocCheck's `.Deprecated / .Defunct usage`
+  warning no longer fires.
+
 # epiRomics 0.99.3
 
 ## Highlights

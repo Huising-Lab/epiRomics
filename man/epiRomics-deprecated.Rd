@@ -22,7 +22,7 @@
 \alias{epiRomics_track_layer}
 \alias{epiRomics_track_layer_fast}
 \alias{epiRomics_track_layer_gene}
-\title{Deprecated epiRomics functions}
+\title{Renamed epiRomics functions}
 \usage{
 epiRomics_build_dB(...)
 
@@ -70,6 +70,7 @@ epiRomics_track_layer_gene(...)
 \description{
 These functions have been renamed in epiRomics 0.99.1 to follow
 Bioconductor naming conventions. They remain as thin wrappers that
-emit a deprecation warning and forward to the new name.
+emit a one-time rename notice and forward to the new name. They
+will be removed in the next release.
 }
 \keyword{internal}
