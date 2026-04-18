@@ -1,5 +1,5 @@
 # ============================================================================
-# SYNTHETIC DATA TESTS for epiRomics_chromatin_states
+# SYNTHETIC DATA TESTS for classify_chromatin_states
 # These tests use small, hand-crafted GRanges to verify classification rules.
 # No database rebuild, no file I/O — pure logic verification in seconds.
 #
@@ -46,7 +46,7 @@ test_that("active classified from H3K4me1 + H3K27ac", {
     h3k27ac = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true(nrow(result) > 0)
   expect_true("active" %in% result$chromatin_state)
 })
@@ -60,7 +60,7 @@ test_that("active classified from H3K4me3 + H3K27ac", {
     h3k27ac = GRanges("chr1", IRanges(5000, 6000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true(nrow(result) > 0)
   expect_true("active" %in% result$chromatin_state)
 })
@@ -74,7 +74,7 @@ test_that("bivalent classified from H3K4me3 + H3K27me3", {
     h3k27me3 = GRanges("chr1", IRanges(5000, 6000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true(nrow(result) > 0)
   expect_true("bivalent" %in% result$chromatin_state)
 })
@@ -88,7 +88,7 @@ test_that("poised classified from H3K4me1 + H3K27me3", {
     h3k27me3 = GRanges("chr1", IRanges(10000, 11000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("poised" %in% result$chromatin_state)
 })
 
@@ -101,7 +101,7 @@ test_that("repressed classified from H3K27me3 + H3K9me3", {
     h3k9me3 = GRanges("chr1", IRanges(20000, 21000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("repressed" %in% result$chromatin_state)
 })
 
@@ -113,7 +113,7 @@ test_that("repressed classified from H3K27me3 alone", {
     h3k27me3 = GRanges("chr1", IRanges(30000, 31000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("repressed" %in% result$chromatin_state)
 })
 
@@ -125,7 +125,7 @@ test_that("repressed classified from H3K9me3 alone (heterochromatin)", {
     h3k9me3 = GRanges("chr1", IRanges(40000, 41000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("repressed" %in% result$chromatin_state)
 })
 
@@ -137,7 +137,7 @@ test_that("unmarked classified from H3K36me3 alone (gene body)", {
     h3k36me3 = GRanges("chr1", IRanges(50000, 51000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("unmarked" %in% result$chromatin_state)
 })
 
@@ -149,7 +149,7 @@ test_that("primed classified from H3K4me1 alone", {
     h3k4me1 = GRanges("chr1", IRanges(60000, 61000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("primed" %in% result$chromatin_state)
 })
 
@@ -163,7 +163,7 @@ test_that("active classified from H3K4me1 + H3K27ac + H3K36me3", {
     h3k36me3 = GRanges("chr1", IRanges(70000, 71000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("active" %in% result$chromatin_state)
 })
 
@@ -176,7 +176,7 @@ test_that("H3K27me3 + H3K9me3 is repressed (highest repressive priority)", {
     h3k9me3 = GRanges("chr1", IRanges(80000, 81000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   region_state <- result$chromatin_state[1]
   expect_equal(region_state, "repressed")
 })
@@ -191,7 +191,7 @@ test_that("H3K4me3 + H3K27me3 + H3K27ac = bivalent (repressive overrides active)
     h3k27ac = GRanges("chr1", IRanges(90000, 91000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("bivalent" %in% result$chromatin_state)
 })
 
@@ -204,7 +204,7 @@ test_that("genomic_context populated with TSS refinement enabled", {
     h3k27ac = GRanges("chr1", IRanges(50000000, 50001000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = TRUE)
+  result <- classify_chromatin_states(db, refine_by_tss = TRUE)
   # State should always be 'active' regardless of TSS proximity
   expect_true("active" %in% result$chromatin_state)
   # genomic_context should be one of the valid values
@@ -220,7 +220,7 @@ test_that("only 6 valid state labels are ever produced", {
     h3k27me3 = GRanges("chr1", IRanges(c(5000, 50000000), c(6000, 50001000)))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = TRUE)
+  result <- classify_chromatin_states(db, refine_by_tss = TRUE)
   valid_states <- c("active", "bivalent", "poised", "primed", "repressed", "unmarked")
   expect_true(all(result$chromatin_state %in% valid_states))
   # Explicitly check old names NEVER appear
@@ -244,7 +244,7 @@ test_that("multiple non-overlapping regions get independent states", {
     h3k27me3 = GRanges("chr1", IRanges(50000, 51000))         # only second
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
 
   expect_true(nrow(result) >= 2)
   # First region: H3K4me1 + H3K27ac = active
@@ -261,7 +261,7 @@ test_that("output has required columns regardless of input", {
     h3k4me1 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
 
   required_cols <- c("seqnames", "start", "end", "width", "chromatin_state",
     "genomic_context", "marks_present", "n_marks", "is_hotspot")
@@ -279,7 +279,7 @@ test_that("n_marks matches comma count in marks_present", {
     h3k36me3 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
 
   for (i in seq_len(nrow(result))) {
     if (result$marks_present[i] == "") {
@@ -303,7 +303,7 @@ test_that("empty regions returns empty data.frame with warning", {
   db <- make_mock_dB(marks)
   empty_gr <- GRanges()
   expect_warning(
-    result <- epiRomics_chromatin_states(db, regions = empty_gr),
+    result <- classify_chromatin_states(db, regions = empty_gr),
     "No regions to classify"
   )
   expect_equal(nrow(result), 0)
@@ -318,7 +318,7 @@ test_that("genomic_context is always one of promoter/gene_body/intergenic", {
     h3k27ac = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = TRUE)
+  result <- classify_chromatin_states(db, refine_by_tss = TRUE)
   expect_true(all(result$genomic_context %in% c("promoter", "gene_body", "intergenic")))
 })
 
@@ -332,7 +332,7 @@ test_that("is_hotspot TRUE for regions with 3+ overlapping marks", {
     h3k36me3 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true(any(result$is_hotspot))
   hotspots <- result[result$is_hotspot, ]
   expect_true(all(hotspots$n_marks >= 3))
@@ -347,7 +347,7 @@ test_that("is_hotspot FALSE for regions with < 3 marks", {
     h3k27ac = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_false(any(result$is_hotspot))
 })
 
@@ -359,7 +359,7 @@ test_that("H2A.Z alone classified as unmarked", {
     H2A.Z = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("unmarked" %in% result$chromatin_state)
 })
 
@@ -372,7 +372,7 @@ test_that("H2A.Z + H3K27ac classified as active", {
     h3k27ac = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("active" %in% result$chromatin_state)
 })
 
@@ -385,7 +385,7 @@ test_that("H2A.Z + H3K27me3 classified as poised", {
     h3k27me3 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("poised" %in% result$chromatin_state)
 })
 
@@ -399,7 +399,7 @@ test_that("H3K4me1 + H3K27ac + H3K27me3 = poised (repressive wins)", {
     h3k27me3 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   # H3K4me1 + H3K27me3 = poised (checked before H3K4me1 + H3K27ac)
   expect_true("poised" %in% result$chromatin_state)
 })
@@ -415,7 +415,7 @@ test_that("error when no histone marks in database", {
     genome = "hg38",
     txdb = "TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene",
     organism = "org.Hs.eg.db")
-  expect_error(epiRomics_chromatin_states(db), "empty|No histone")
+  expect_error(classify_chromatin_states(db), "empty|No histone")
 })
 
 # ============================================================================
@@ -429,7 +429,7 @@ test_that("custom regions parameter classifies specified regions", {
   db <- make_mock_dB(marks)
   # Query a region that overlaps the marks
   custom_gr <- GRanges("chr1", IRanges(500, 2500))
-  result <- epiRomics_chromatin_states(db, regions = custom_gr, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, regions = custom_gr, refine_by_tss = FALSE)
   expect_equal(nrow(result), 1)
   expect_equal(result$chromatin_state[1], "active")
 })
@@ -444,7 +444,7 @@ test_that("custom regions with no mark overlap = unmarked", {
   db <- make_mock_dB(marks)
   # Query a region that does NOT overlap the marks
   custom_gr <- GRanges("chr1", IRanges(50000, 51000))
-  result <- epiRomics_chromatin_states(db, regions = custom_gr, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, regions = custom_gr, refine_by_tss = FALSE)
   expect_equal(nrow(result), 1)
   expect_equal(result$chromatin_state[1], "unmarked")
 })
@@ -457,7 +457,7 @@ test_that("h2az_overlap column present in output", {
     h3k4me1 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_true("h2az_overlap" %in% names(result))
 })
 
@@ -524,7 +524,7 @@ test_that("comprehensive mark combinations all produce valid 6-state labels", {
 
   for (i in seq_along(combos)) {
     db <- make_mock_dB(combos[[i]]$marks)
-    result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+    result <- classify_chromatin_states(db, refine_by_tss = FALSE)
     expect_true(all(result$chromatin_state %in% valid_states),
       info = paste0("Combo ", i, ": got ", paste(unique(result$chromatin_state), collapse = ", ")))
     expect_true(combos[[i]]$expected %in% result$chromatin_state,
@@ -542,7 +542,7 @@ test_that("H3K36me3 + H3K27ac is active (active gene body)", {
     h3k27ac = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_equal(result$chromatin_state[1], "active")
   expect_true(grepl("h3k36me3", result$marks_present[1]))
   expect_true(grepl("h3k27ac", result$marks_present[1]))
@@ -556,7 +556,7 @@ test_that("H3K36me3 alone shows in marks_present even when unmarked", {
     h3k36me3 = GRanges("chr1", IRanges(1000, 2000))
   )
   db <- make_mock_dB(marks)
-  result <- epiRomics_chromatin_states(db, refine_by_tss = FALSE)
+  result <- classify_chromatin_states(db, refine_by_tss = FALSE)
   expect_equal(result$chromatin_state[1], "unmarked")
   expect_true(grepl("h3k36me3", result$marks_present[1]),
     info = "H3K36me3 gene body should appear in marks_present for provenance")

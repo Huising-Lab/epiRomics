@@ -5,7 +5,7 @@
 # Provides reusable constructors for:
 #   - epiRomicsS4 objects with histone/chip/functional annotations
 #   - Temporary BigWig files for coverage testing
-#   - CSV manifest files for epiRomics_build_dB testing
+#   - CSV manifest files for build_database testing
 #   - Putative enhancer data.frames for annotation testing
 #   - Regression baseline save/load/compare utilities
 # ============================================================================
@@ -234,9 +234,9 @@ make_synthetic_bigwig <- function(regions_gr, scores, path = NULL) {
 }
 
 # ----------------------------------------------------------------------------
-# 5. make_synthetic_bed_csv: Create a CSV manifest for epiRomics_build_dB
+# 5. make_synthetic_bed_csv: Create a CSV manifest for build_database
 # ----------------------------------------------------------------------------
-#' Create a CSV manifest file suitable for epiRomics_build_dB
+#' Create a CSV manifest file suitable for build_database
 #'
 #' @param bed_entries List of lists, each with: name (character), type (character),
 #'   content (GRanges). Writes BED files to tempdir and creates the CSV manifest.
@@ -275,10 +275,10 @@ make_synthetic_bed_csv <- function(bed_entries, genome = "hg38", path = NULL) {
 # ----------------------------------------------------------------------------
 # 6. make_synthetic_putative_enhancers: Mock putative enhancers data.frame
 # ----------------------------------------------------------------------------
-#' Create a data.frame matching the output format of epiRomics_putative_enhancers
+#' Create a data.frame matching the output format of find_putative_enhancers
 #'
 #' @param n Integer number of putative enhancer rows to generate (default 5)
-#' @return A data.frame with columns matching epiRomics_putative_enhancers output
+#' @return A data.frame with columns matching find_putative_enhancers output
 make_synthetic_putative_enhancers <- function(n = 5L) {
   starts <- base::seq(1000L, by = 5000L, length.out = n)
   ends <- starts + 1000L

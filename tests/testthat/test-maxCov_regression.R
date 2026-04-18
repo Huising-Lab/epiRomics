@@ -10,7 +10,7 @@ library(GenomicRanges)
 library(IRanges)
 
 test_that("maxCovBwCached regression: single BigWig", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
   # Create synthetic BigWig with known scores
   gr <- GenomicRanges::GRanges(
@@ -37,7 +37,7 @@ test_that("maxCovBwCached regression: single BigWig", {
 })
 
 test_that("maxCovFilesCached regression: multiple BigWigs", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
   # Create two synthetic BigWig files with different max scores
   gr1 <- GenomicRanges::GRanges(

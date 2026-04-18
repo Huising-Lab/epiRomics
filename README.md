@@ -14,7 +14,7 @@ Explore epiRomics results interactively through our companion Shiny web applicat
 ### Shiny epiRomics Mouse Alpha, Beta, and Delta Cells Browser
 
 
-**[Shiny epiRomics Mouse Islet Enhanceosome Browser](https://huisinglab.com/epiRomics_2021/index.html)** — Interactive browser exploring mouse pancreatic islet enhancers and enhanceosome analysis results from our 2023 BMC Genomics publication.
+**[Shiny epiRomics Mouse Islet Enhanceosome Browser](https://www.huisinglab.com/epiRomics_2021/index.html)** — Interactive browser exploring mouse pancreatic islet enhancers and enhanceosome analysis results from our 2023 BMC Genomics publication.
 
 ***Paper:*** Alex M. Mawla, Talitha van der Meulen, Mark O. Huising. (2023). Chromatin accessibility differences between alpha, beta, and delta cells identifies common and cell type-specific enhancers. *BMC Genomics*. [10.1186/s12864-023-09293-6](https://link.springer.com/article/10.1186/s12864-023-09293-6)
 
@@ -39,27 +39,9 @@ Explore epiRomics results interactively through our companion Shiny web applicat
 
 ### Prerequisites
 
-epiRomics requires R version 4.4.0 or higher and several Bioconductor packages. Make sure you have the latest version of R and Bioconductor installed.
+epiRomics requires R version 4.5.0 or higher and several Bioconductor packages. Make sure you have the latest version of R and Bioconductor installed.
 
-### Install from GitHub
-
-```r
-# Install devtools if not already installed
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
-
-# Install epiRomics
-devtools::install_github("Huising-Lab/epiRomics")
-
-# Load the package
-library(epiRomics)
-
-# Download example data (~1.3 GB, one-time)
-epiRomics_cache_data()
-```
-
-### Install from Bioconductor
+### Install from Bioconductor (recommended)
 
 ```r
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -67,8 +49,26 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 }
 BiocManager::install("epiRomics")
 
-# Download example data (~1.3 GB, one-time)
-epiRomics::epiRomics_cache_data()
+library(epiRomics)
+
+# Optional: download the full example dataset (~1.3 GB, one-time,
+# cached via BiocFileCache). The package also ships a small toy
+# subset in `inst/extdata/toy/` that runs all examples without any
+# download.
+epiRomics::cache_data()
+```
+
+### Install from GitHub (development / not recommended for regular users)
+
+> **Note:** The Bioconductor release channel is the supported install
+> path. GitHub installation is intended for developers tracking the
+> `main` branch between releases and is not advised for regular users.
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("Huising-Lab/epiRomics")
 ```
 
 ## Quick Start
@@ -78,45 +78,47 @@ epiRomics::epiRomics_cache_data()
 library(epiRomics)
 
 # Build epiRomics database
-epiRomics_dB <- epiRomics_build_dB(
-  epiRomics_db_file = "path/to/your/data.csv",
+database <- build_database(
+  db_file = "path/to/your/data.csv",
   txdb_organism = "TxDb.Hsapiens.UCSC.hg38.knownGene",
-  epiRomics_genome = "hg38",
-  epiRomics_organism = "org.Hs.eg.db"
+  genome = "hg38",
+  organism = "org.Hs.eg.db"
 )
 
 # Identify putative enhancers
-enhancers <- epiRomics_enhancers_co_marks(
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_histone_mark_1 = "h3k4me1",
-  epiRomics_histone_mark_2 = "h3k27ac"
+enhancers <- find_enhancers_by_comarks(
+  database = database,
+  histone_mark_1 = "h3k4me1",
+  histone_mark_2 = "h3k27ac"
 )
 
 # Identify enhanceosomes
-enhanceosomes <- epiRomics_enhanceosome(
-  epiRomics_putative_enhancers = enhancers,
-  epiRomics_dB = epiRomics_dB
+enhanceosomes <- find_enhanceosomes(
+  putative_enhancers = enhancers,
+  database = database
 )
 
 # Visualize results
-epiRomics_track_layer(
-  epiRomics_putative_enhanceosome = enhanceosomes,
-  epiRomics_index = 1,
-  epiRomics_dB = epiRomics_dB,
-  epiRomics_track_connection = your_track_data
+plot_tracks(
+  enhanceosomes,
+  index = 1,
+  database = database,
+  track_connection = your_track_data
 )
 ```
 
 ## Documentation
 
-- **Vignette (HTML)**: [Getting Started with epiRomics](https://htmlpreview.github.io/?https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.html) <br>
-- **Vignette (PDF)**: [Getting Started with epiRomics](https://github.com/Huising-Lab/epiRomics/blob/main/doc/getting-started-with-epiRomics.pdf)<br>
-- **Reference Manual**: [Package Documentation](https://github.com/Huising-Lab/epiRomics/blob/main/doc/epiRomics-manual.pdf)<br>
-- **Help**: `help(package = 'epiRomics', help_type = 'html')`
+- **pkgdown site** (live): <https://huising-lab.github.io/epiRomics/> — full reference manual, both vignettes, and changelog rendered as a browsable website. This is the best entry point while the Bioconductor landing page is still pending.
+- **Bioconductor landing page**: <https://bioconductor.org/packages/epiRomics/> (available after the package is accepted into a Bioconductor release).
+- **Vignettes** (after install): `browseVignettes("epiRomics")`
+  - *Getting Started with epiRomics* — lightweight walkthrough using the bundled toy dataset
+  - *Full Analysis with epiRomics* — complete human pancreatic islet analysis (uses `cache_data()`)
+- **Reference manual** (after install): `help(package = "epiRomics", help_type = "html")`
 
 ## Example Data
 
-Example data is downloaded on demand via `epiRomics_cache_data()` (~1.3 GB, cached locally after first download). The dataset focuses on delineating putative human pancreatic islet enhancers between alpha and beta cells and includes:
+Example data is downloaded on demand via `cache_data()` (~1.3 GB, cached locally after first download). The dataset focuses on delineating putative human pancreatic islet enhancers between alpha and beta cells and includes:
 
 - Human pancreatic islet alpha and beta ATAC-seq data from GEO accession [GSE76268](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE76268)
 - ChIP-seq data for transcription factors Foxa2, MafB, Nkx2.2, Nkx6.1, and Pdx1
@@ -144,8 +146,9 @@ This package is licensed under the [Artistic License 2.0](https://opensource.org
 ## Contact
 
 For questions, suggestions, or bug reports, please contact:
+
 - **Maintainer**: Alex M. Mawla <ammawla@ucdavis.edu>
-- **GitHub Issues**: [https://github.com/Huising-Lab/epiRomics/issues](https://github.com/Huising-Lab/epiRomics/issues)
+- **GitHub Issues**: <https://github.com/Huising-Lab/epiRomics/issues>
 
 
 ## Troubleshooting
@@ -153,7 +156,7 @@ For questions, suggestions, or bug reports, please contact:
 ### Installation Issues
 
 **Problem**: Package dependencies fail to install <br>
-**Solution**: Make sure you have the latest version of R (≥ 4.4.0) and Bioconductor:
+**Solution**: Make sure you have the latest version of R (≥ 4.5.0) and Bioconductor:
 
 ```r
 # Update R packages

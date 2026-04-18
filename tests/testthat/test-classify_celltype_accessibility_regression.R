@@ -10,7 +10,7 @@ library(GenomicRanges)
 library(IRanges)
 
 test_that("classify_celltype_accessibility regression: two celltypes", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
   # Alpha: high signal in first half, low in second
   gr_alpha <- GenomicRanges::GRanges(

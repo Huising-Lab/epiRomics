@@ -1,4 +1,4 @@
-# Synthetic tests for epiRomics_regions_of_interest() expanded modes
+# Synthetic tests for get_regions_of_interest() expanded modes
 # No database rebuild — uses in-memory GRanges + mock epiRomicsS4
 
 # --- Helpers ---
@@ -43,7 +43,7 @@ make_temp_bed <- function(regions_gr) {
 # ============================================================
 test_that("rejects non-epiRomicsS4 input", {
   expect_error(
-    epiRomics_regions_of_interest("not_a_dB", make_test_gr()),
+    get_regions_of_interest("not_a_dB", make_test_gr()),
     "epiRomicsS4"
   )
 })
@@ -52,7 +52,7 @@ test_that("rejects empty annotations", {
   dB <- make_mock_dB(10)
   dB@annotations <- GenomicRanges::GRanges()
   expect_error(
-    epiRomics_regions_of_interest(dB, make_test_gr()),
+    get_regions_of_interest(dB, make_test_gr()),
     "empty|no annotations"
   )
 })
@@ -60,7 +60,7 @@ test_that("rejects empty annotations", {
 test_that("rejects non-GRanges test_regions", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, "not_granges"),
+    get_regions_of_interest(dB, "not_granges"),
     "GRanges"
   )
 })
@@ -68,15 +68,15 @@ test_that("rejects non-GRanges test_regions", {
 test_that("granges mode requires test_regions", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "granges"),
-    "epiRomics_test_regions.*required"
+    get_regions_of_interest(dB, input_type = "granges"),
+    "test_regions.*required"
   )
 })
 
 test_that("bed mode requires bed_path", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "bed"),
+    get_regions_of_interest(dB, input_type = "bed"),
     "bed_path required"
   )
 })
@@ -84,7 +84,7 @@ test_that("bed mode requires bed_path", {
 test_that("genelist mode requires gene_list", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "genelist"),
+    get_regions_of_interest(dB, input_type = "genelist"),
     "gene_list required"
   )
 })
@@ -92,7 +92,7 @@ test_that("genelist mode requires gene_list", {
 test_that("genelist mode rejects empty gene_list", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "genelist",
+    get_regions_of_interest(dB, input_type = "genelist",
       gene_list = character(0)),
     "gene_list required"
   )
@@ -101,7 +101,7 @@ test_that("genelist mode rejects empty gene_list", {
 test_that("invalid input_type rejected", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "invalid"),
+    get_regions_of_interest(dB, input_type = "invalid"),
     "arg"
   )
 })
@@ -113,7 +113,7 @@ test_that("GRanges overlap returns correct subset", {
   dB <- make_mock_dB(10)
   # First region starts at 1000, second at 6000, third at 11000...
   test_gr <- make_test_gr(start = 1000L, width = 600L, n = 1)
-  result <- epiRomics_regions_of_interest(dB, test_gr)
+  result <- get_regions_of_interest(dB, test_gr)
   expect_s4_class(result, "epiRomicsS4")
   expect_equal(length(result@annotations), 1)
   expect_equal(GenomicRanges::start(result@annotations), 1000L)
@@ -123,7 +123,7 @@ test_that("GRanges no overlap warns", {
   dB <- make_mock_dB(10)
   test_gr <- make_test_gr(start = 999000L, width = 100L, n = 1)
   expect_warning(
-    epiRomics_regions_of_interest(dB, test_gr),
+    get_regions_of_interest(dB, test_gr),
     "No overlapping"
   )
 })
@@ -135,14 +135,14 @@ test_that("GRanges multiple overlaps work", {
     seqnames = "chr1",
     ranges = IRanges::IRanges(start = c(900L, 5900L), width = 700L)
   )
-  result <- epiRomics_regions_of_interest(dB, test_gr)
+  result <- get_regions_of_interest(dB, test_gr)
   expect_equal(length(result@annotations), 2)
 })
 
 test_that("GRanges mode preserves metadata columns", {
   dB <- make_mock_dB(10)
   test_gr <- make_test_gr(start = 1000L, width = 600L, n = 1)
-  result <- epiRomics_regions_of_interest(dB, test_gr)
+  result <- get_regions_of_interest(dB, test_gr)
   expect_true("SYMBOL" %in% names(S4Vectors::mcols(result@annotations)))
   expect_equal(result@annotations$SYMBOL, "GENE1")
 })
@@ -151,7 +151,7 @@ test_that("GRanges mode ignores input_type when test_regions provided", {
   dB <- make_mock_dB(10)
   test_gr <- make_test_gr(start = 1000L, width = 600L, n = 1)
   # Even with input_type = "bed", should use test_regions directly
-  result <- epiRomics_regions_of_interest(dB, test_gr, input_type = "bed")
+  result <- get_regions_of_interest(dB, test_gr, input_type = "bed")
   expect_equal(length(result@annotations), 1)
 })
 
@@ -164,7 +164,7 @@ test_that("BED mode imports and filters correctly", {
   bed_file <- make_temp_bed(bed_gr)
   on.exit(base::unlink(bed_file))
 
-  result <- epiRomics_regions_of_interest(dB, input_type = "bed",
+  result <- get_regions_of_interest(dB, input_type = "bed",
     bed_path = bed_file)
   expect_equal(length(result@annotations), 1)
 })
@@ -172,7 +172,7 @@ test_that("BED mode imports and filters correctly", {
 test_that("BED mode missing file errors", {
   dB <- make_mock_dB(10)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "bed",
+    get_regions_of_interest(dB, input_type = "bed",
       bed_path = "/nonexistent/file.bed"),
     "not found"
   )
@@ -185,7 +185,7 @@ test_that("BED mode no overlap warns", {
   on.exit(base::unlink(bed_file))
 
   expect_warning(
-    epiRomics_regions_of_interest(dB, input_type = "bed",
+    get_regions_of_interest(dB, input_type = "bed",
       bed_path = bed_file),
     "No overlapping"
   )
@@ -196,7 +196,7 @@ test_that("BED mode no overlap warns", {
 # ============================================================
 test_that("genelist filters by SYMBOL", {
   dB <- make_mock_dB(10)
-  result <- epiRomics_regions_of_interest(dB, input_type = "genelist",
+  result <- get_regions_of_interest(dB, input_type = "genelist",
     gene_list = c("GENE1", "GENE3", "GENE5"))
   expect_equal(length(result@annotations), 3)
   expect_true(all(result@annotations$SYMBOL %in% c("GENE1", "GENE3", "GENE5")))
@@ -205,7 +205,7 @@ test_that("genelist filters by SYMBOL", {
 test_that("genelist no matches warns", {
   dB <- make_mock_dB(10)
   expect_warning(
-    epiRomics_regions_of_interest(dB, input_type = "genelist",
+    get_regions_of_interest(dB, input_type = "genelist",
       gene_list = c("NONEXISTENT1", "NONEXISTENT2")),
     "No annotations matched"
   )
@@ -214,7 +214,7 @@ test_that("genelist no matches warns", {
 test_that("genelist all match returns all", {
   dB <- make_mock_dB(5)
   genes <- paste0("GENE", 1:5)
-  result <- epiRomics_regions_of_interest(dB, input_type = "genelist",
+  result <- get_regions_of_interest(dB, input_type = "genelist",
     gene_list = genes)
   expect_equal(length(result@annotations), 5)
 })
@@ -222,7 +222,7 @@ test_that("genelist all match returns all", {
 test_that("genelist requires SYMBOL column", {
   dB <- make_mock_dB(10, with_symbol = FALSE)
   expect_error(
-    epiRomics_regions_of_interest(dB, input_type = "genelist",
+    get_regions_of_interest(dB, input_type = "genelist",
       gene_list = c("GENE1")),
     "SYMBOL column"
   )
@@ -239,7 +239,7 @@ test_that("combined mode unions BED + genelist evidence", {
   on.exit(base::unlink(bed_file))
 
   # Genelist covers GENE5 (different region)
-  result <- epiRomics_regions_of_interest(dB, input_type = "combined",
+  result <- get_regions_of_interest(dB, input_type = "combined",
     bed_path = bed_file, gene_list = c("GENE5"))
   # Should retain GENE1 (BED overlap) + GENE5 (genelist match) = 2
   expect_equal(length(result@annotations), 2)
@@ -252,14 +252,14 @@ test_that("combined mode with only BED works", {
   bed_file <- make_temp_bed(bed_gr)
   on.exit(base::unlink(bed_file))
 
-  result <- epiRomics_regions_of_interest(dB, input_type = "combined",
+  result <- get_regions_of_interest(dB, input_type = "combined",
     bed_path = bed_file)
   expect_equal(length(result@annotations), 1)
 })
 
 test_that("combined mode with only genelist works", {
   dB <- make_mock_dB(10)
-  result <- epiRomics_regions_of_interest(dB, input_type = "combined",
+  result <- get_regions_of_interest(dB, input_type = "combined",
     gene_list = c("GENE2", "GENE4"))
   expect_equal(length(result@annotations), 2)
 })
@@ -267,7 +267,7 @@ test_that("combined mode with only genelist works", {
 test_that("combined mode no evidence warns", {
   dB <- make_mock_dB(10)
   expect_warning(
-    epiRomics_regions_of_interest(dB, input_type = "combined"),
+    get_regions_of_interest(dB, input_type = "combined"),
     "No overlapping"
   )
 })
@@ -279,7 +279,7 @@ test_that("combined mode deduplicates overlapping evidence", {
   bed_file <- make_temp_bed(bed_gr)
   on.exit(base::unlink(bed_file))
 
-  result <- epiRomics_regions_of_interest(dB, input_type = "combined",
+  result <- get_regions_of_interest(dB, input_type = "combined",
     bed_path = bed_file, gene_list = c("GENE1"))
   # GENE1 hit by both sources, should still be 1 region not 2
   expect_equal(length(result@annotations), 1)
@@ -291,7 +291,7 @@ test_that("combined mode deduplicates overlapping evidence", {
 test_that("all modes return epiRomicsS4 with preserved slots", {
   dB <- make_mock_dB(10)
   test_gr <- make_test_gr(start = 1000L, width = 600L, n = 1)
-  result <- epiRomics_regions_of_interest(dB, test_gr)
+  result <- get_regions_of_interest(dB, test_gr)
   expect_s4_class(result, "epiRomicsS4")
   expect_equal(result@txdb, "TxDb.Hsapiens.UCSC.hg38.knownGene")
   expect_equal(result@organism, "Homo sapiens")

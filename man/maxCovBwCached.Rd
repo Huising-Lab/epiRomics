@@ -22,10 +22,10 @@ BigWigSelection import. Uses \code{na.rm = TRUE}
 for robustness with potentially missing data.
 }
 \examples{
+bw_path <- make_example_bigwig()
 gr <- GenomicRanges::GRanges(
-  "chr1", IRanges::IRanges(1000, 2000)
+  "chr1", IRanges::IRanges(1000L, 2000L)
 )
-\donttest{
-max_cov <- maxCovBwCached("path/to/file.bw", gr)
-}
+max_cov <- maxCovBwCached(bw_path, gr)
+file.remove(bw_path)
 }

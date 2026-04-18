@@ -1,35 +1,55 @@
-# IDE and project files
-^.*\.Rproj$
-^\.Rproj\.user$
-^\.Rhistory$
-
-# GitHub and CI (not part of R package)
+# GitHub and CI
 ^\.github$
 ^codecov\.yml$
 ^CODE_OF_CONDUCT\.md$
 
-# pkgdown (built by GitHub Actions)
+# pkgdown site (built by GitHub Actions on gh-pages)
 ^_pkgdown\.yml$
 ^pkgdown$
 ^docs$
 
-# Build artifacts
+# Build / check artifacts
 ^Meta$
 ^doc$
 ^epiRomics\.BiocCheck$
 ^epiRomics\.Rcheck$
 
-# Vignette cache
+# Vignette caches and local previews
 ^vignettes/.*_cache$
+^vignettes/built$
 
-# Data files (downloaded via BiocFileCache, not shipped)
-^inst/extdata$
+# pkgdown-only articles — rendered on the site, not as package vignettes
+^vignettes/articles$
 
-# Test artifacts (not needed in tarball)
+# Full-scale data directories — ship only inst/extdata/toy/ in the tarball
+^inst/extdata/Histone$
+^inst/extdata/ChIP$
+^inst/extdata/BED_Annotation$
+^inst/extdata/BigWigs$
+^inst/extdata/.*\.csv\.bak$
+
+# Test artifacts
 ^tests/testthat/test-regression\.R$
 ^tests/testthat/expected_outputs$
 ^tests/testthat/Rplots\.pdf$
 
-# LICENSE file (R knows Artistic-2.0 natively)
+# LICENSE file (R recognises Artistic-2.0 natively)
 ^LICENSE$
-EOF
+
+# Editor / IDE cruft (belt-and-suspenders; .gitignore should catch first)
+^\.Rproj\.user$
+^.*\.Rproj$
+^\.vscode$
+^\.idea$
+
+# R session / user state
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+^\.Rprofile$
+
+# OS junk
+^\.DS_Store$
+^.*\.DS_Store$
+^Thumbs\.db$
+^Desktop\.ini$

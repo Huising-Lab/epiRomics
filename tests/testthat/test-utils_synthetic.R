@@ -24,49 +24,49 @@ make_valid_dB <- function(genome = "hg38") {
 }
 
 # ============================================================================
-# validate_epiRomics_dB tests
+# validate_database tests
 # ============================================================================
 
-test_that("validate_epiRomics_dB accepts valid objects", {
+test_that("validate_database accepts valid objects", {
   db <- make_valid_dB()
-  expect_true(epiRomics:::validate_epiRomics_dB(db))
+  expect_true(epiRomics:::validate_database(db))
 })
 
-test_that("validate_epiRomics_dB rejects non-epiRomicsS4 objects", {
-  expect_error(epiRomics:::validate_epiRomics_dB("not_a_db"),
+test_that("validate_database rejects non-epiRomicsS4 objects", {
+  expect_error(epiRomics:::validate_database("not_a_db"),
     "must be an epiRomicsS4 object")
-  expect_error(epiRomics:::validate_epiRomics_dB(42),
+  expect_error(epiRomics:::validate_database(42),
     "must be an epiRomicsS4 object")
-  expect_error(epiRomics:::validate_epiRomics_dB(NULL),
+  expect_error(epiRomics:::validate_database(NULL),
     "must be an epiRomicsS4 object")
-  expect_error(epiRomics:::validate_epiRomics_dB(list()),
+  expect_error(epiRomics:::validate_database(list()),
     "must be an epiRomicsS4 object")
 })
 
-test_that("validate_epiRomics_dB rejects empty annotations", {
+test_that("validate_database rejects empty annotations", {
   db <- make_valid_dB()
   db@annotations <- GRanges()
-  expect_error(epiRomics:::validate_epiRomics_dB(db),
+  expect_error(epiRomics:::validate_database(db),
     "annotations is empty or NULL")
 })
 
-test_that("validate_epiRomics_dB rejects empty meta", {
+test_that("validate_database rejects empty meta", {
   db <- make_valid_dB()
   db@meta <- data.frame()
-  expect_error(epiRomics:::validate_epiRomics_dB(db),
+  expect_error(epiRomics:::validate_database(db),
     "meta is empty or NULL")
 })
 
-test_that("validate_epiRomics_dB rejects empty genome", {
+test_that("validate_database rejects empty genome", {
   db <- make_valid_dB()
   db@genome <- character(0)
-  expect_error(epiRomics:::validate_epiRomics_dB(db),
+  expect_error(epiRomics:::validate_database(db),
     "genome is empty or NULL")
 })
 
-test_that("validate_epiRomics_dB includes function_name in error", {
+test_that("validate_database includes function_name in error", {
   expect_error(
-    epiRomics:::validate_epiRomics_dB("bad", function_name = "my_func"),
+    epiRomics:::validate_database("bad", function_name = "my_func"),
     "my_func")
 })
 
@@ -295,7 +295,9 @@ test_that("aggregate_signal returns 0 for non-overlapping regions", {
   bw <- GRanges("chr1", IRanges(100, 200), score = 10)
   regions <- GRanges("chr2", IRanges(100, 200))  # different chromosome
 
-  result <- epiRomics:::.aggregate_signal_over_regions(bw, regions)
+  # Expected 'no sequence levels in common' from findOverlaps is the whole point
+  result <- suppressWarnings(
+    epiRomics:::.aggregate_signal_over_regions(bw, regions))
   expect_equal(result, 0)
 })
 
@@ -365,7 +367,9 @@ test_that("aggregate_weighted_signal returns 0 for non-overlapping", {
   bw <- GRanges("chr1", IRanges(100, 200), score = 10)
   regions <- GRanges("chr2", IRanges(100, 200))
 
-  result <- epiRomics:::.aggregate_weighted_signal(bw, regions)
+  # Expected 'no sequence levels in common' is the behavior under test
+  result <- suppressWarnings(
+    epiRomics:::.aggregate_weighted_signal(bw, regions))
   expect_equal(result, 0)
 })
 
@@ -420,7 +424,7 @@ test_that(".fast_bw_signal returns zeros for empty regions", {
   empty_gr <- GRanges()
   result <- epiRomics:::.fast_bw_signal("nonexistent.bw", empty_gr, type = "mean")
   expect_equal(length(result), 0L)
-  expect_is(result, "numeric")
+  expect_type(result, "double")
 })
 
 test_that(".fast_bw_replicate_mean handles empty inputs", {
@@ -434,11 +438,14 @@ test_that(".fast_bw_replicate_mean handles empty inputs", {
 })
 
 test_that(".fast_bw_replicate_mean with single file matches .fast_bw_signal", {
-  # Can only test with actual BigWig file
-  bw_file <- system.file("extdata", "BigWigs",
-    "Kaestner_Alpha.atac.signal.subset.multi_chr.bigwig", package = "epiRomics")
-  skip_if(bw_file == "", "No BigWig test file available")
-  regions <- GRanges("chr1", IRanges(c(1000000, 2000000), c(1010000, 2010000)))
+  # Uses shipped toy BigWig (hg38 chr11 INS locus, ~120 kb window)
+  require_extdata()
+  bw_file <- system.file("extdata", "toy", "BigWigs",
+    "Alpha_ATAC.toy.bw", package = "epiRomics")
+  expect_true(nzchar(bw_file) && file.exists(bw_file),
+    info = "Toy Alpha_ATAC.toy.bw must ship with the package")
+  regions <- GRanges("chr11",
+                     IRanges(c(2100000, 2150000), c(2110000, 2160000)))
   single <- epiRomics:::.fast_bw_signal(bw_file, regions, type = "mean")
   replicate <- epiRomics:::.fast_bw_replicate_mean(bw_file, regions, type = "mean")
   expect_equal(single, replicate, tolerance = 1e-6)

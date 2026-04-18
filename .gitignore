@@ -1,47 +1,87 @@
-# R build artifacts
+# ---------------------------------------------------------------------------
+# epiRomics/.gitignore
+#
+# Ships *only* package source to git. Anything built, cached, editor-local,
+# OS-local, or regenerable lives outside the tarball and outside the repo.
+# Matches .Rbuildignore intent where they overlap; see that file for the
+# R CMD build exclusion list.
+# ---------------------------------------------------------------------------
+
+# R build artifacts ---------------------------------------------------------
 *.tar.gz
 *.Rcheck/
-*.Rcheck
 Meta/
 inst/doc/
+/doc/
 
-# Compiled code
+# Compiled code -------------------------------------------------------------
 src/*.o
 src/*.so
 src/*.dll
 
-# R session files
-.Rhistory
-.Rapp.history
-.RData
-.Ruserdata
-
-# IDE / project files
-.Rproj.user
-
-# Vignette build artifacts
-vignettes/*_cache/
-vignettes/*_files/
+# Vignette build artifacts --------------------------------------------------
+vignettes/**/*_cache/
+vignettes/**/*_files/
+vignettes/**/*.html
+vignettes/**/*.pdf
+vignettes/*.R
 vignettes/preamble.tex
+vignettes/built/
 
-# Data files (downloaded via BiocFileCache)
+# Data files (fetched on demand via BiocFileCache) -- keep toy subset only --
 inst/extdata/*
+!inst/extdata/toy/
+!inst/extdata/toy/**
+!inst/extdata/example_epiRomics_BW_sheet.csv
 
-# Test artifacts
+# Test artifacts ------------------------------------------------------------
 tests/testthat/expected_outputs/
 tests/testthat/Rplots.pdf
 tests/testthat/test-regression.R
 
-# Generated files
+# Generated files -----------------------------------------------------------
 *.eps
 *.timestamp
 *.rdb
 *.rdx
 
-# BiocCheck output
+# BiocCheck output ----------------------------------------------------------
 epiRomics.BiocCheck/
 
-# pkgdown
-_pkgdown.yml
+# pkgdown output (published to gh-pages, not main) --------------------------
 docs/
 
+# R session / user state ----------------------------------------------------
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rprofile
+.Rproj.user/
+*.Rproj
+
+# Editor / IDE cruft --------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+\#*\#
+.\#*
+
+# OS-specific junk ----------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Local tool caches / logs --------------------------------------------------
+*.log
+.cache/
+.mypy_cache/
+.pytest_cache/
+node_modules/

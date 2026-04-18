@@ -31,13 +31,10 @@ parallel processing and batch query support.
 Uses region-specific BigWig import.
 }
 \examples{
+bw_path <- make_example_bigwig()
 gr <- GenomicRanges::GRanges(
-  "chr1", IRanges::IRanges(1000, 2000)
+  "chr1", IRanges::IRanges(1000L, 2000L)
 )
-\donttest{
-bw_files <- base::c(
-  "path/to/file1.bw", "path/to/file2.bw"
-)
-result <- maxCovFilesCached(bw_files, gr)
-}
+result <- maxCovFilesCached(c(bw_path, bw_path), gr)
+file.remove(bw_path)
 }
