@@ -1,7 +1,7 @@
 Package: epiRomics
 Type: Package
 Title: Epigenomic Analysis Package Built for R (epiRomics)
-Version: 0.99.2
+Version: 0.99.3
 Authors@R:
     c(person(given = "Alex M.",
              family = "Mawla",
@@ -12,34 +12,7 @@ Authors@R:
              family = "Huising",
              role = "aut",
              email = "mhuising@ucdavis.edu",
-             comment = c(ORCID = "0000-0002-6594-2205")),
-      person(given = "Huising Lab",
-             family = "@ University of California, Davis",
-             role = "cph"),
-      person(given = "National Institutes of Health",
-             family = "NIDDK",
-             role = "fnd",
-             comment = "NIDDK110276 to M.O.H."),
-      person(given = "Juvenile Diabetes Research Foundation",
-             family = "",
-             role = "fnd",
-             comment = "CDA-2-2013-54 and 2-SRA-2021-1054-M-N to M.O.H."),
-      person(given = "Stephen F. and Bettina A. Sims",
-             family = "Immunology Fellowship",
-             role = "fnd",
-             comment = "Fellowship to A.M.M."),
-      person(given = "Amazon Web Services",
-             family = "",
-             role = "fnd",
-             comment = "Machine Learning Research Award to A.M.M."),
-      person(given = "UC Davis Flow Cytometry",
-             family = "Shared Resource Laboratory",
-             role = "fnd",
-             comment = "NCI P30 CA093373 and NIH S10 OD018223"),
-      person(given = "University of California, Davis",
-             family = "",
-             role = "fnd",
-             comment = "Start-up funds to T.v.d.M."))
+             comment = c(ORCID = "0000-0002-6594-2205")))
 Description: Integrates various levels of epigenomic information, including
     ChIP-seq, histone modification, ATAC-seq, and RNA-seq data. Regulatory
     network analysis uses combinatory approaches to infer regions of
@@ -51,7 +24,7 @@ Description: Integrates various levels of epigenomic information, including
 License: Artistic-2.0
 Depends:
     R (>= 4.5.0)
-URL: https://github.com/Huising-Lab/epiRomics
+URL: https://huising-lab.github.io/epiRomics/, https://github.com/Huising-Lab/epiRomics
 BugReports: https://github.com/Huising-Lab/epiRomics/issues
 biocViews: Epigenetics, ChIPSeq, ATACSeq, RNASeq, Visualization, Sequencing,
     Software, HistoneModification, GeneRegulation, Transcription,
@@ -70,26 +43,21 @@ Imports:
     grDevices,
     IRanges (>= 2.40.0),
     methods,
-    org.Hs.eg.db (>= 3.20.0),
-    org.Mm.eg.db (>= 3.20.0),
-    Rcpp (>= 1.0.12),
     rtracklayer (>= 1.66.0),
     S4Vectors (>= 0.44.0),
     stats,
     tools,
-    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.18.0),
-    TxDb.Mmusculus.UCSC.mm10.knownGene (>= 3.10.0),
     utils
 Suggests:
     BiocFileCache (>= 2.14.0),
-    covr,
     knitr,
+    org.Hs.eg.db (>= 3.20.0),
+    org.Mm.eg.db (>= 3.20.0),
     parallel,
+    rmarkdown,
     testthat (>= 3.0.0),
-    pkgdown (>= 2.1.1),
-    prettydoc,
-    rmarkdown
-LinkingTo: Rcpp
+    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.18.0),
+    TxDb.Mmusculus.UCSC.mm10.knownGene (>= 3.10.0)
 Config/testthat/edition: 3
 ByteCompile: true
 Encoding: UTF-8

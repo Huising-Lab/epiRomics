@@ -11,6 +11,7 @@ Integrates various levels of epigenomic information, including ChIP-seq, histone
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://huising-lab.github.io/epiRomics/}
   \item \url{https://github.com/Huising-Lab/epiRomics}
   \item Report bugs at \url{https://github.com/Huising-Lab/epiRomics/issues}
 }
@@ -22,17 +23,6 @@ Useful links:
 Authors:
 \itemize{
   \item Mark O. Huising \email{mhuising@ucdavis.edu} (\href{https://orcid.org/0000-0002-6594-2205}{ORCID})
-}
-
-Other contributors:
-\itemize{
-  \item Huising Lab @ University of California, Davis [copyright holder]
-  \item National Institutes of Health NIDDK (NIDDK110276 to M.O.H.) [funder]
-  \item Juvenile Diabetes Research Foundation (CDA-2-2013-54 and 2-SRA-2021-1054-M-N to M.O.H.) [funder]
-  \item Stephen F. and Bettina A. Sims Immunology Fellowship (Fellowship to A.M.M.) [funder]
-  \item Amazon Web Services (Machine Learning Research Award to A.M.M.) [funder]
-  \item UC Davis Flow Cytometry Shared Resource Laboratory (NCI P30 CA093373 and NIH S10 OD018223) [funder]
-  \item University of California, Davis (Start-up funds to T.v.d.M.) [funder]
 }
 
 }

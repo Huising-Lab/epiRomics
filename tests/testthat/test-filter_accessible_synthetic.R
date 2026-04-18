@@ -1,6 +1,15 @@
-## Synthetic tests for epiRomics_filter_accessible() — 4 modes
+## Synthetic tests for filter_accessible_regions() — 4 modes
 ## Tests validation, genelist mode, bed mode overlap, scope, and combined logic.
 ## Signal mode requires real BigWig files and is tested in integration tests.
+##
+## NOTE on suppressMessages() usage throughout this file:
+## filter_accessible_regions() emits info-level progress messages
+## ("Matched N genes", "Retained N regions", "Loading BED"). These are
+## intentionally noisy for interactive use but are NOT under test here —
+## every test_that() block asserts a structural property of the returned
+## data.frame (e.g. result$atac_accessible logical vector). The suppression
+## keeps test output clean without hiding any behavior the tests pin.
+## suppressWarnings() — where used — is individually justified inline.
 
 # --- Helper: build a minimal putative enhancers data.frame ---
 .make_pe <- function(n = 5, with_symbol = TRUE, with_tss = FALSE) {
@@ -25,7 +34,7 @@
 
 test_that("filter_accessible rejects empty data.frame", {
   expect_error(
-    epiRomics_filter_accessible(data.frame(), mode = "genelist",
+    filter_accessible_regions(data.frame(), mode = "genelist",
       gene_list = "INS"),
     "non-empty data.frame"
   )
@@ -34,7 +43,7 @@ test_that("filter_accessible rejects empty data.frame", {
 test_that("filter_accessible rejects invalid mode", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "invalid"),
+    filter_accessible_regions(pe, mode = "invalid"),
     "'arg' should be one of"
   )
 })
@@ -42,7 +51,7 @@ test_that("filter_accessible rejects invalid mode", {
 test_that("filter_accessible rejects invalid scope", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "genelist", scope = "bogus",
+    filter_accessible_regions(pe, mode = "genelist", scope = "bogus",
       gene_list = "INS"),
     "'arg' should be one of"
   )
@@ -52,7 +61,7 @@ test_that("filter_accessible rejects missing chr/start/end", {
   pe <- data.frame(gene = "INS", start = 1, end = 100,
     stringsAsFactors = FALSE)
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "genelist", gene_list = "INS"),
+    filter_accessible_regions(pe, mode = "genelist", gene_list = "INS"),
     "missing required columns.*chr"
   )
 })
@@ -60,15 +69,15 @@ test_that("filter_accessible rejects missing chr/start/end", {
 test_that("signal mode requires track_connection", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "signal"),
-    "epiRomics_track_connection required"
+    filter_accessible_regions(pe, mode = "signal"),
+    "track_connection required"
   )
 })
 
 test_that("bed mode requires bed_path", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "bed"),
+    filter_accessible_regions(pe, mode = "bed"),
     "bed_path required"
   )
 })
@@ -76,7 +85,7 @@ test_that("bed mode requires bed_path", {
 test_that("genelist mode requires gene_list", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "genelist"),
+    filter_accessible_regions(pe, mode = "genelist"),
     "gene_list required"
   )
 })
@@ -84,7 +93,7 @@ test_that("genelist mode requires gene_list", {
 test_that("genelist mode requires SYMBOL column", {
   pe <- .make_pe(with_symbol = FALSE)
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       gene_list = c("INS")),
     "SYMBOL"
   )
@@ -97,7 +106,7 @@ test_that("genelist mode requires SYMBOL column", {
 test_that("genelist mode flags matching genes", {
   pe <- .make_pe()
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       gene_list = c("INS", "GCG"))
   )
   expect_true("atac_accessible" %in% names(result))
@@ -107,7 +116,7 @@ test_that("genelist mode flags matching genes", {
 test_that("genelist mode with no matches flags all FALSE", {
   pe <- .make_pe()
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       gene_list = c("BRCA1", "TP53"))
   )
   expect_true(all(!result$atac_accessible))
@@ -116,7 +125,7 @@ test_that("genelist mode with no matches flags all FALSE", {
 test_that("genelist mode with all matches flags all TRUE", {
   pe <- .make_pe()
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       gene_list = c("INS", "GCG", "SST", "PPY", "MAFA"))
   )
   expect_true(all(result$atac_accessible))
@@ -131,7 +140,7 @@ test_that("filter_distal retains promoter-proximal regions", {
   # Regions 1,2 are within 2000bp of TSS (100, 500)
   # With genelist only matching "SST" (region 3, distal)
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       scope = "filter_distal", gene_list = c("SST"))
   )
   # Regions 1,2 retained (promoter), region 3 retained (gene match),
@@ -142,7 +151,7 @@ test_that("filter_distal retains promoter-proximal regions", {
 test_that("filter_all does not retain promoter-proximal", {
   pe <- .make_pe(with_tss = TRUE)
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       scope = "filter_all", gene_list = c("SST"))
   )
   # Only region 3 matches
@@ -152,7 +161,7 @@ test_that("filter_all does not retain promoter-proximal", {
 test_that("filter_distal without distanceToTSS column marks none as promoter", {
   pe <- .make_pe(with_tss = FALSE)
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       scope = "filter_distal", gene_list = c("INS"))
   )
   # No distanceToTSS -> no promoter protection -> only INS passes
@@ -166,7 +175,7 @@ test_that("filter_distal without distanceToTSS column marks none as promoter", {
 test_that("bed mode rejects missing file", {
   pe <- .make_pe()
   expect_error(
-    epiRomics_filter_accessible(pe, mode = "bed",
+    filter_accessible_regions(pe, mode = "bed",
       bed_path = "/nonexistent/file.bed"),
     "BED file not found"
   )
@@ -183,7 +192,7 @@ test_that("bed mode finds overlapping regions", {
   on.exit(unlink(bed_file))
 
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "bed", bed_path = bed_file)
+    filter_accessible_regions(pe, mode = "bed", bed_path = bed_file)
   )
   expect_true(result$atac_accessible[1])   # overlaps peak1
   expect_true(result$atac_accessible[3])   # overlaps peak2
@@ -196,9 +205,10 @@ test_that("bed mode with non-overlapping BED gives all FALSE", {
   writeLines("chr2\t1000\t2000\tpeak1", bed_file)
   on.exit(unlink(bed_file))
 
-  result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "bed", bed_path = bed_file)
-  )
+  # Expected 'no sequence levels in common' is the behavior under test
+  result <- suppressWarnings(suppressMessages(
+    filter_accessible_regions(pe, mode = "bed", bed_path = bed_file)
+  ))
   expect_true(all(!result$atac_accessible))
 })
 
@@ -213,7 +223,7 @@ test_that("combined mode unions genelist and bed evidence", {
   on.exit(unlink(bed_file))
 
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "combined",
+    filter_accessible_regions(pe, mode = "combined",
       bed_path = bed_file, gene_list = c("SST"))  # region 3
   )
   # Region 1 from bed, region 3 from genelist
@@ -226,17 +236,18 @@ test_that("combined mode with no evidence gives all FALSE", {
   writeLines("chr2\t1000\t2000\tpeak1", bed_file)
   on.exit(unlink(bed_file))
 
-  result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "combined",
+  # Expected 'no sequence levels in common' is the behavior under test
+  result <- suppressWarnings(suppressMessages(
+    filter_accessible_regions(pe, mode = "combined",
       bed_path = bed_file, gene_list = c("BRCA1"))
-  )
+  ))
   expect_true(all(!result$atac_accessible))
 })
 
 test_that("combined mode with scope=filter_distal retains promoters", {
   pe <- .make_pe(with_tss = TRUE)
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "combined",
+    filter_accessible_regions(pe, mode = "combined",
       scope = "filter_distal", gene_list = c("MAFA"))
   )
   # Regions 1,2 from promoter proximity, region 5 from genelist
@@ -251,7 +262,7 @@ test_that("result preserves original columns plus atac_accessible", {
   pe <- .make_pe()
   pe$custom_col <- 1:5
   result <- suppressMessages(
-    epiRomics_filter_accessible(pe, mode = "genelist",
+    filter_accessible_regions(pe, mode = "genelist",
       gene_list = c("INS"))
   )
   expect_true("custom_col" %in% names(result))
@@ -275,10 +286,13 @@ test_that("signal mode emits proper warning on BigWig import failure", {
   # Capture all warnings to check that our code emits a proper warning()
   # (rtracklayer may also emit its own warnings about the missing file)
   warnings_caught <- character(0)
+  # suppressMessages: progress messages (see file-level note). Warnings are
+  # NOT suppressed — they are captured via withCallingHandlers below because
+  # the "failed to import" warning IS under test.
   result <- suppressMessages(
     withCallingHandlers(
-      epiRomics_filter_accessible(pe, mode = "signal",
-        epiRomics_track_connection = tc),
+      filter_accessible_regions(pe, mode = "signal",
+        track_connection = tc),
       warning = function(w) {
         warnings_caught <<- c(warnings_caught, conditionMessage(w))
         invokeRestart("muffleWarning")
@@ -306,9 +320,13 @@ test_that("signal mode returns zero signal for failed track", {
     type = "atac",
     stringsAsFactors = FALSE
   )
+  # Expected "failed to import" warning (tested elsewhere — see the
+  # preceding test_that block) plus info-level progress messages. Suppressing
+  # both here because this test asserts the graceful-degradation contract:
+  # the function returns a data.frame with the new column containing zeros.
   result <- suppressMessages(suppressWarnings(
-    epiRomics_filter_accessible(pe, mode = "signal",
-      epiRomics_track_connection = tc)
+    filter_accessible_regions(pe, mode = "signal",
+      track_connection = tc)
   ))
   expect_true(is.data.frame(result))
   expect_true("atac_test_atac" %in% names(result))

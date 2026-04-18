@@ -10,7 +10,7 @@ library(GenomicRanges)
 library(IRanges)
 
 test_that("plot_signal_histogram regression: default", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
   # Create synthetic BigWig with known score distribution
   gr <- GenomicRanges::GRanges(

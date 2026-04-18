@@ -1,3 +1,31 @@
+#' Normalize a BigWig path for rtracklayer / kent-library on Windows
+#'
+#' The UCSC kent-library's URL/path parser (\code{udcProtNew}) splits the
+#' input on the first \code{":"} to extract a protocol. On Windows, a
+#' native path like \code{C:/Users/.../file.bw} is misread as protocol
+#' \code{"C"}, which is not in the kent protocol table, producing the
+#' \code{"UCSC library operation failed"} error during
+#' \code{BigWigFile()}, \code{summary()}, or \code{import()}.
+#'
+#' The kent-library protocol table does recognize \code{"file"}, routing
+#' it to its local-file handler. Rewriting drive-letter paths to a
+#' \code{file:///} URI therefore prevents the misparse at the source
+#' without touching rtracklayer or kent internals. Non-Windows platforms
+#' are unaffected and get the path back unchanged.
+#'
+#' @param p character path to a BigWig file
+#' @return character; on Windows, a \code{file:///C:/...} URI for
+#'   drive-letter paths; otherwise \code{p} unchanged
+#' @noRd
+.bw_path_for_rtracklayer <- function(p) {
+  if (.Platform$OS.type != "windows") return(p)
+  # Short-circuit anything already a URI (file://, http://, https://, ftp://,
+  # s3://, gs://, etc.) so we never double-prefix or mangle remote paths.
+  if (base::grepl("^[A-Za-z][A-Za-z0-9+.-]*://", p)) return(p)
+  p <- base::normalizePath(p, winslash = "/", mustWork = FALSE)
+  if (base::grepl("^[A-Za-z]:/", p)) base::paste0("file:///", p) else p
+}
+
 #' Resolve TxDb object from a package::object string
 #'
 #' Parses a TxDb specification string (e.g.,
@@ -13,16 +41,13 @@ resolve_txdb <- function(txdb_string) {
   if (base::length(parts) == 2) {
     base::getExportedValue(parts[1], parts[2])
   } else {
-    base::stop(base::sprintf(
-      base::paste0(
-        "Invalid TxDb format: '%s'. ",
-        "Expected 'package::object' format ",
-        "(e.g., 'TxDb.Hsapiens.UCSC.hg38.",
-        "knownGene::TxDb.Hsapiens.UCSC.",
-        "hg38.knownGene')"
-      ),
-      txdb_string
-    ))
+    fmt <- paste0(
+      "Invalid TxDb format: '%s'. ",
+      "Expected 'package::object' (e.g. ",
+      "'TxDb.Hsapiens.UCSC.hg38.knownGene::",
+      "TxDb.Hsapiens.UCSC.hg38.knownGene')"
+    )
+    base::stop(base::sprintf(fmt, txdb_string))
   }
 }
 
@@ -39,18 +64,18 @@ resolve_txdb <- function(txdb_string) {
 #'   coverage across the regions
 #' @export
 #' @examples
+#' bw_path <- make_example_bigwig()
 #' gr <- GenomicRanges::GRanges(
-#'   "chr1", IRanges::IRanges(1000, 2000)
+#'   "chr1", IRanges::IRanges(1000L, 2000L)
 #' )
-#' \donttest{
-#' max_cov <- maxCovBwCached("path/to/file.bw", gr)
-#' }
+#' max_cov <- maxCovBwCached(bw_path, gr)
+#' file.remove(bw_path)
 maxCovBwCached <- function(bw_path, gr) {
   validate_file_paths(bw_path, "maxCovBwCached")
   validate_genomic_ranges(gr, "maxCovBwCached")
 
   bw_data <- rtracklayer::import(
-    bw_path, format = "BigWig",
+    .bw_path_for_rtracklayer(bw_path), format = "BigWig",
     selection = rtracklayer::BigWigSelection(gr)
   )
   bw_data <- IRanges::subsetByOverlaps(bw_data, gr)
@@ -89,15 +114,12 @@ maxCovBwCached <- function(bw_path, gr) {
 #'   added as metadata column X
 #' @export
 #' @examples
+#' bw_path <- make_example_bigwig()
 #' gr <- GenomicRanges::GRanges(
-#'   "chr1", IRanges::IRanges(1000, 2000)
+#'   "chr1", IRanges::IRanges(1000L, 2000L)
 #' )
-#' \donttest{
-#' bw_files <- base::c(
-#'   "path/to/file1.bw", "path/to/file2.bw"
-#' )
-#' result <- maxCovFilesCached(bw_files, gr)
-#' }
+#' result <- maxCovFilesCached(c(bw_path, bw_path), gr)
+#' file.remove(bw_path)
 maxCovFilesCached <- function(bw_paths, gr,
                               parallel = FALSE,
                               fast = FALSE) {
@@ -166,36 +188,36 @@ maxCovFilesCached <- function(bw_paths, gr,
 
 #' Validate epiRomics database object
 #'
-#' @param epiRomics_dB epiRomics database object to validate
+#' @param database epiRomics database object to validate
 #' @param function_name Name of the calling function for error messages
 #' @return TRUE if valid, stops with error if invalid
 #' @noRd
-validate_epiRomics_dB <- function(epiRomics_dB,
+validate_database <- function(database,
                                   function_name = "function") {
-  if (!methods::is(epiRomics_dB, "epiRomicsS4")) {
+  if (!methods::is(database, "epiRomicsS4")) {
     base::stop(base::sprintf(
-      "%s: epiRomics_dB must be an epiRomicsS4 object",
+      "%s: database must be an epiRomicsS4 object",
       function_name
     ))
   }
-  if (base::is.null(epiRomics_dB@annotations) ||
-      base::length(epiRomics_dB@annotations) == 0) {
+  if (base::is.null(database@annotations) ||
+      base::length(database@annotations) == 0) {
     base::stop(base::sprintf(
-      "%s: epiRomics_dB@annotations is empty or NULL",
+      "%s: database@annotations is empty or NULL",
       function_name
     ))
   }
-  if (base::is.null(epiRomics_dB@meta) ||
-      base::nrow(epiRomics_dB@meta) == 0) {
+  if (base::is.null(database@meta) ||
+      base::nrow(database@meta) == 0) {
     base::stop(base::sprintf(
-      "%s: epiRomics_dB@meta is empty or NULL",
+      "%s: database@meta is empty or NULL",
       function_name
     ))
   }
-  if (base::is.null(epiRomics_dB@genome) ||
-      base::length(epiRomics_dB@genome) == 0) {
+  if (base::is.null(database@genome) ||
+      base::length(database@genome) == 0) {
     base::stop(base::sprintf(
-      "%s: epiRomics_dB@genome is empty or NULL",
+      "%s: database@genome is empty or NULL",
       function_name
     ))
   }
@@ -242,7 +264,7 @@ validate_file_paths <- function(file_paths,
     if (base::length(missing_files) > 0) {
       base::stop(base::sprintf(
         "%s: The following files do not exist: %s",
-        function_name, base::paste(missing_files, collapse = ", ")
+        function_name, base::paste0(missing_files, collapse = ", ")
       ))
     }
   }
@@ -351,6 +373,13 @@ validate_numeric_param <- function(param, param_name,
       n <- base::as.integer(detected)
     }
   }
+  ## CRAN/Bioconductor check environments cap the number of
+  ## cores available to package code. When running under
+  ## R CMD check --as-cran or BiocCheck, honor the 2-core
+  ## ceiling signaled via _R_CHECK_LIMIT_CORES_.
+  if (base::nzchar(base::Sys.getenv("_R_CHECK_LIMIT_CORES_"))) {
+    n <- base::min(n, 2L)
+  }
   if (!base::is.null(max_cores)) {
     n <- base::min(n, base::as.integer(max_cores))
   }
@@ -408,6 +437,7 @@ validate_numeric_param <- function(param, param_name,
 .fast_bw_signal <- function(bw_path, regions, type = "mean") {
   n <- base::length(regions)
   if (n == 0L) return(base::numeric(0L))
+  bw_path <- .bw_path_for_rtracklayer(bw_path)
   base::tryCatch({
     bwf <- rtracklayer::BigWigFile(bw_path)
     s <- rtracklayer::summary(bwf, which = regions, size = 1L, type = type)
@@ -416,7 +446,8 @@ validate_numeric_param <- function(param, param_name,
     vals[base::is.na(vals)] <- 0
     vals
   }, error = function(e) {
-    # Fallback: import + aggregate (slower but robust)
+    # Fallback: import + aggregate. Triggered when the BigWig has no
+    # zoom levels (malformed or very small files); not Windows-specific.
     bw_data <- rtracklayer::import(bw_path, format = "BigWig",
       selection = rtracklayer::BigWigSelection(regions))
     agg_fun <- base::switch(type,
@@ -507,6 +538,7 @@ validate_numeric_param <- function(param, param_name,
 .fast_bw_weighted_signal <- function(bw_path, regions) {
   n <- base::length(regions)
   if (n == 0L) return(base::numeric(0L))
+  bw_path <- .bw_path_for_rtracklayer(bw_path)
   base::tryCatch({
     mean_signal <- .fast_bw_signal(bw_path, regions, type = "mean")
     widths <- BiocGenerics::width(regions)
@@ -570,6 +602,51 @@ validate_logical_param <- function(param, param_name,
   }
   if (base::is.na(param)) {
     base::stop(base::sprintf("%s: %s cannot be NA", function_name, param_name))
+  }
+  return(TRUE)
+}
+
+#' Validate that a genome string matches the assembly recorded in a TxDb
+#'
+#' Resolves the TxDb specification string via \code{resolve_txdb()} and
+#' compares the user-declared \code{genome} against the assembly recorded
+#' in the TxDb (via \code{GenomeInfoDb::genome()}). Errors with an
+#' informative message on mismatch so downstream analysis is not run
+#' against a TxDb for the wrong organism/build. If the TxDb has no
+#' genome field recorded (rare), validation is skipped (returns TRUE)
+#' rather than forcing a false negative.
+#'
+#' @param genome character string of genome assembly declared by the
+#'   user (e.g. \code{"hg38"}, \code{"mm10"}, \code{"rn6"}).
+#' @param txdb_string character string of TxDb specification in
+#'   \code{"package::object"} form (see \code{resolve_txdb}).
+#' @param function_name Name of the calling function for error messages
+#' @return TRUE if genome matches TxDb assembly or TxDb has no genome
+#'   field; stops with error on mismatch.
+#' @noRd
+validate_genome_matches_txdb <- function(genome, txdb_string,
+                                         function_name = "function") {
+  validate_character_param(genome, "genome", function_name)
+  validate_character_param(txdb_string, "txdb", function_name)
+  txdb_obj <- resolve_txdb(txdb_string)
+  txdb_genomes <- base::unique(
+    GenomeInfoDb::genome(txdb_obj)
+  )
+  txdb_genomes <- txdb_genomes[!base::is.na(txdb_genomes)]
+  if (base::length(txdb_genomes) == 0L) {
+    return(TRUE)
+  }
+  if (!(genome %in% txdb_genomes)) {
+    base::stop(base::sprintf(
+      base::paste0(
+        "%s: Supplied genome '%s' does not match ",
+        "TxDb genome(s) '%s'. Provide a TxDb built ",
+        "for '%s' or correct the genome argument."
+      ),
+      function_name, genome,
+      base::paste(txdb_genomes, collapse = ", "),
+      genome
+    ))
   }
   return(TRUE)
 }

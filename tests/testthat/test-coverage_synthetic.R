@@ -15,7 +15,7 @@
   )
 }
 
-# Helper: DB with a single dummy annotation (passes validate_epiRomics_dB)
+# Helper: DB with a single dummy annotation (passes validate_database)
 .make_minimal_db <- function(genome = "hg38") {
   gr <- GenomicRanges::GRanges("chr1:1-100")
   gr$type <- paste0(genome, "_custom_dummy")
@@ -47,54 +47,54 @@
   )
 }
 
-# ---- 1. epiRomics_track_layer_gene: validation ----
-test_that("epiRomics_track_layer_gene rejects non-character gene_symbol", {
+# ---- 1. plot_gene_tracks: validation ----
+test_that("plot_gene_tracks rejects non-character gene_symbol", {
   expect_error(
-    epiRomics_track_layer_gene(gene_symbol = 123, epiRomics_dB = .make_empty_db(),
-      epiRomics_track_connection = data.frame()),
+    plot_gene_tracks(gene_symbol = 123, database = .make_empty_db(),
+      track_connection = data.frame()),
     "gene_symbol"
   )
 })
 
-test_that("epiRomics_track_layer_gene rejects vector gene_symbol", {
+test_that("plot_gene_tracks rejects vector gene_symbol", {
   expect_error(
-    epiRomics_track_layer_gene(gene_symbol = c("INS", "GCG"),
-      epiRomics_dB = .make_empty_db(),
-      epiRomics_track_connection = data.frame()),
+    plot_gene_tracks(gene_symbol = c("INS", "GCG"),
+      database = .make_empty_db(),
+      track_connection = data.frame()),
     "single"
   )
 })
 
-# ---- 4. epiRomics_enhancer_predictor_to_ref: validation ----
-test_that("epiRomics_enhancer_predictor_to_ref validates dB", {
+# ---- 4. benchmark_enhancer_predictor: validation ----
+test_that("benchmark_enhancer_predictor validates dB", {
   expect_error(
-    epiRomics_enhancer_predictor_to_ref(list()),
-    "epiRomics_dB|epiRomicsS4"
+    benchmark_enhancer_predictor(list()),
+    "database|epiRomicsS4"
   )
 })
 
-test_that("epiRomics_enhancer_predictor_to_ref validates dB annotations before params", {
+test_that("benchmark_enhancer_predictor validates dB annotations before params", {
   db <- .make_empty_db()
   # Empty annotations error fires before curated_database validation
   expect_error(
-    epiRomics_enhancer_predictor_to_ref(db, epiRomics_curated_database = 123),
+    benchmark_enhancer_predictor(db, curated_database = 123),
     "empty|NULL|annotations"
   )
 })
 
-# ---- 5. epiRomics_enhancers_co_marks: validation ----
-test_that("epiRomics_enhancers_co_marks validates dB", {
+# ---- 5. find_enhancers_by_comarks: validation ----
+test_that("find_enhancers_by_comarks validates dB", {
   expect_error(
-    epiRomics_enhancers_co_marks(list()),
-    "epiRomics_dB|epiRomicsS4"
+    find_enhancers_by_comarks(list()),
+    "database|epiRomicsS4"
   )
 })
 
-test_that("epiRomics_enhancers_co_marks validates dB annotations before params", {
+test_that("find_enhancers_by_comarks validates dB annotations before params", {
   db <- .make_empty_db()
   # Empty annotations error fires before histone param validation
   expect_error(
-    epiRomics_enhancers_co_marks(db, epiRomics_histone_mark_1 = 123),
+    find_enhancers_by_comarks(db, histone_mark_1 = 123),
     "empty|NULL|annotations"
   )
 })
@@ -133,57 +133,57 @@ test_that("classify_celltype_accessibility rejects non-character input", {
   )
 })
 
-# ---- 8. epiRomics_annotate_putative: validation ----
-test_that("epiRomics_annotate_putative requires non-empty data.frame", {
+# ---- 8. annotate_enhancers: validation ----
+test_that("annotate_enhancers requires non-empty data.frame", {
   db <- .make_empty_db()
   expect_error(
-    epiRomics_annotate_putative(data.frame(), db),
+    annotate_enhancers(data.frame(), db),
     "non-empty"
   )
 })
 
-test_that("epiRomics_annotate_putative rejects non-data.frame", {
+test_that("annotate_enhancers rejects non-data.frame", {
   db <- .make_empty_db()
   expect_error(
-    epiRomics_annotate_putative("not_a_df", db),
+    annotate_enhancers("not_a_df", db),
     "data.frame"
   )
 })
 
-# ---- 9. epiRomics_tf_overlap: validation ----
-test_that("epiRomics_tf_overlap validates dB class", {
+# ---- 9. analyze_tf_overlap: validation ----
+test_that("analyze_tf_overlap validates dB class", {
   db <- .make_empty_db()
   expect_error(
-    epiRomics_tf_overlap(list(), db),
-    "epiRomics_dB|epiRomicsS4"
+    analyze_tf_overlap(list(), db),
+    "database|epiRomicsS4"
   )
   expect_error(
-    epiRomics_tf_overlap(db, list()),
-    "epiRomics_dB|epiRomicsS4"
+    analyze_tf_overlap(db, list()),
+    "database|epiRomicsS4"
   )
 })
 
-test_that("epiRomics_tf_overlap errors when no ChIP data in meta", {
-  # Use DB that has annotations (passes validate_epiRomics_dB) but no chip meta
+test_that("analyze_tf_overlap errors when no ChIP data in meta", {
+  # Use DB that has annotations (passes validate_database) but no chip meta
   db <- .make_minimal_db()
   expect_error(
-    epiRomics_tf_overlap(db, db),
+    analyze_tf_overlap(db, db),
     "No ChIP"
   )
 })
 
-test_that("epiRomics_tf_overlap rejects non-GRanges regions", {
+test_that("analyze_tf_overlap rejects non-GRanges regions", {
   # Need DB with chip meta to get past "No ChIP" check
   db <- .make_chip_db()
   expect_error(
-    epiRomics_tf_overlap(db, db, regions = "not_granges"),
+    analyze_tf_overlap(db, db, regions = "not_granges"),
     "GRanges"
   )
 })
 
-test_that("epiRomics_tf_overlap works with synthetic chip data", {
+test_that("analyze_tf_overlap works with synthetic chip data", {
   db <- .make_chip_db()
-  result <- epiRomics_tf_overlap(db, db)
+  result <- analyze_tf_overlap(db, db)
   expect_type(result, "list")
   expect_true("overlap_matrix" %in% names(result))
   expect_true("jaccard_matrix" %in% names(result))
@@ -193,20 +193,20 @@ test_that("epiRomics_tf_overlap works with synthetic chip data", {
   expect_equal(dim(result$overlap_matrix), c(2, 2))
 })
 
-# ---- 10. epiRomics_chromatin_states_categories: validation ----
-test_that("epiRomics_chromatin_states_categories validates empty annotations", {
+# ---- 10. chromatin_state_categories: validation ----
+test_that("chromatin_state_categories validates empty annotations", {
   db <- .make_empty_db()
   expect_error(
-    epiRomics_chromatin_states_categories(db),
+    chromatin_state_categories(db),
     "empty|NULL|annotations"
   )
 })
 
-test_that("epiRomics_chromatin_states_categories errors with no histone marks", {
+test_that("chromatin_state_categories errors with no histone marks", {
   # DB with annotations but no histone marks in meta -> error
   db <- .make_chip_db()  # only chip in meta, no histone
   expect_error(
-    epiRomics_chromatin_states_categories(db),
+    chromatin_state_categories(db),
     "No histone|histone_marks"
   )
 })

@@ -1,0 +1,45 @@
+# Force binary handling for genomic/data/archive files so git-for-Windows
+# with core.autocrlf=true cannot corrupt them on checkout. LF->CRLF on a
+# BigWig file triggers "UCSC library operation failed" from kent/rtracklayer
+# on Windows because the file magic and block offsets are broken.
+
+# BigWig / BedGraph / WIG
+*.bw       binary
+*.bigWig   binary
+*.BigWig   binary
+*.bb       binary
+*.bigBed   binary
+
+# BAM / BAI / CRAM / SAM index
+*.bam      binary
+*.bai      binary
+*.cram     binary
+*.crai     binary
+
+# Tabix / block-compressed
+*.gz       binary
+*.bgz      binary
+*.tbi      binary
+*.csi      binary
+
+# Serialized R objects
+*.rds      binary
+*.rda      binary
+*.RData    binary
+
+# 2bit / fasta index
+*.2bit     binary
+*.fai      binary
+
+# Archives / misc binaries
+*.zip      binary
+*.tar      binary
+*.tar.gz   binary
+*.tgz      binary
+*.pdf      binary
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.svg      binary
+*.ico      binary

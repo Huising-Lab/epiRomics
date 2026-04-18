@@ -10,7 +10,7 @@ library(GenomicRanges)
 library(IRanges)
 
 test_that("call_accessible_regions regression: z-score method", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
 
   # Create synthetic BigWig with known score distribution:
@@ -47,7 +47,7 @@ test_that("call_accessible_regions regression: z-score method", {
 })
 
 test_that("call_accessible_regions regression: auto threshold", {
-  testthat::skip_if_not_installed("rtracklayer")
+  # rtracklayer is an Imports of epiRomics; skip gate removed.
 
   # Same synthetic BigWig as above
 

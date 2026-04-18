@@ -1,0 +1,86 @@
+url: https://huising-lab.github.io/epiRomics/
+
+template:
+  bootstrap: 5
+
+authors:
+  sidebar:
+    roles: [aut, cre]
+  footer:
+    roles: [aut, cre]
+
+home:
+  title: epiRomics
+  description: >
+    Integrative multi-omics identification and visualization of enhancers
+    from histone-mark ChIP-seq, transcription-factor ChIP-seq, chromatin
+    accessibility, and curated regulatory references.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+articles:
+  - title: Vignettes
+    navbar: ~
+    contents:
+      - matches("^getting-started-with-epiRomics$")
+      - matches("^articles/full-analysis-with-epiRomics$")
+
+reference:
+  - title: Package overview
+    contents:
+      - "epiRomics-package"
+
+  - title: Build the database
+    contents:
+      - build_database
+      - epiRomicsS4-class
+      - make_example_database
+      - make_example_bigwig
+      - make_example_putative_enhancers
+      - make_example_enhanceosome
+
+  - title: Enhancer identification
+    contents:
+      - find_putative_enhancers
+      - find_enhancers_by_comarks
+      - find_enhanceosomes
+      - filter_enhancers
+      - filter_accessible_regions
+      - benchmark_enhancer_predictor
+
+  - title: Chromatin states
+    contents:
+      - classify_chromatin_states
+      - chromatin_state_categories
+      - classify_celltype_accessibility
+      - call_accessible_regions
+      - annotate_enhancers
+
+  - title: Transcription factor analysis
+    contents:
+      - analyze_tf_cobinding
+      - analyze_tf_overlap
+      - get_regions_of_interest
+
+  - title: Visualisation
+    contents:
+      - plot_quick_view
+      - plot_tracks
+      - plot_tracks_fast
+      - plot_gene_tracks
+      - plot_signal_histogram
+
+  - title: Cache management
+    contents:
+      - cache_data
+      - get_cache_path
+      - has_cache
+      - maxCovBwCached
+      - maxCovFilesCached
+
+  - title: Deprecated
+    contents:
+      - epiRomics-deprecated

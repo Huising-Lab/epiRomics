@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# ---------------------------------------------------------------------------
+# epiRomics pre-commit hook
+#
+# Blocks commits that would drag OS junk, editor cruft, build artifacts,
+# R session state, or internal-only planning files into the repository.
+# Matches the intent of .gitignore and .Rbuildignore; acts as belt-and-
+# suspenders in case something slips past .gitignore (e.g. via `git add -f`).
+#
+# Enable with:
+#   git config core.hooksPath .githooks
+# ---------------------------------------------------------------------------
+set -eu
+
+# Only inspect staged files (added, copied, modified, renamed).
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+[ -z "$staged" ] && exit 0
+
+# Patterns (egrep-style) that must never be committed.
+# Grouped for readability; each line is an independent regex alternative.
+bad_patterns='(^|/)\.DS_Store$|(^|/)\._[^/]+$|(^|/)Thumbs\.db$|(^|/)Desktop\.ini$|(^|/)ehthumbs\.db$'
+bad_patterns+='|(^|/)\.Rhistory$|(^|/)\.RData$|(^|/)\.Ruserdata$|(^|/)\.Rprofile$|(^|/)\.Rapp\.history$'
+bad_patterns+='|(^|/)\.Rproj\.user/|[^/]+\.Rproj$'
+bad_patterns+='|(^|/)\.vscode/|(^|/)\.idea/|[^/]+\.swp$|[^/]+\.swo$|[^/]+~$'
+bad_patterns+='|[^/]+\.tar\.gz$|(^|/)[^/]+\.Rcheck/|(^|/)epiRomics\.BiocCheck/'
+bad_patterns+='|(^|/)Meta/|(^|/)inst/doc/|(^|/)doc/'
+bad_patterns+='|(^|/)docs/|(^|/)vignettes/.*_cache/|(^|/)vignettes/.*_files/'
+bad_patterns+='|(^|/)src/[^/]+\.(o|so|dll)$'
+bad_patterns+='|(^|/)\.planning/|(^|/)\.tasks/|(^|/)RESPONSE-RUBRIC\.md$|(^|/)REVIEWER-FEEDBACK\.md$'
+bad_patterns+='|(^|/)\.claude/|(^|/)CLAUDE\.md$|(^|/)AGENTS\.md$|(^|/)GEMINI\.md$|(^|/)\.cursor/|(^|/)\.cursorrules$'
+bad_patterns+='|(^|/)\.aider[^/]*|(^|/)\.continue/|(^|/)\.windsurf[^/]*|(^|/)\.codeium/|(^|/)\.copilot[^/]*'
+bad_patterns+='|(^|/)\.github/copilot[^/]*|(^|/)\.chatgpt[^/]*|(^|/)\.anthropic[^/]*|(^|/)\.openai[^/]*'
+
+# Size guard: block any staged file >= 5 MB (Bioconductor per-file cap).
+max_bytes=$((5 * 1024 * 1024))
+
+violations=""
+size_violations=""
+
+while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    if printf '%s\n' "$f" | grep -Eq "$bad_patterns"; then
+        violations="${violations}  ${f}\n"
+    fi
+    if [ -f "$f" ]; then
+        # Portable byte count (BSD and GNU stat differ).
+        bytes=$(wc -c < "$f" | tr -d ' ')
+        if [ "$bytes" -ge "$max_bytes" ]; then
+            size_violations="${size_violations}  ${f} (${bytes} bytes)\n"
+        fi
+    fi
+done <<EOF
+$staged
+EOF
+
+fail=0
+if [ -n "$violations" ]; then
+    printf 'pre-commit: refusing to commit disallowed paths:\n' >&2
+    printf '%b' "$violations" >&2
+    printf 'These match .gitignore / .Rbuildignore policy (OS junk, editor\n' >&2
+    printf 'cruft, R session state, build artifacts, or internal-only files).\n' >&2
+    printf 'Unstage with: git reset HEAD -- <path>\n\n' >&2
+    fail=1
+fi
+
+if [ -n "$size_violations" ]; then
+    printf 'pre-commit: staged file(s) exceed 5 MB Bioconductor per-file cap:\n' >&2
+    printf '%b' "$size_violations" >&2
+    printf 'Move large data to ExperimentHub/AnnotationHub or inst/extdata/toy/.\n\n' >&2
+    fail=1
+fi
+
+exit $fail
