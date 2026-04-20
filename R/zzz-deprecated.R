@@ -16,12 +16,23 @@
 .warn_renamed <- local({
   state <- new.env(parent = emptyenv())
   state$seen <- character(0)
+  state$getter_hint_shown <- FALSE
   function(old, new) {
     if (!(old %in% state$seen)) {
       message("'", old, "' has been renamed to '", new, "'. ",
               "Please use '", new, "' in new code. ",
               "'", old, "' will be removed in the next release of epiRomics.")
       state$seen <- c(state$seen, old)
+      if (!state$getter_hint_shown) {
+        message(
+          "Tip: epiRomicsS4 slots are now accessible through public ",
+          "getter and setter methods: annotations(), meta(), txdb(), ",
+          "organism(), genome() (and their <- replacement forms). ",
+          "Prefer these over obj@slot or methods::slot(). ",
+          "See ?epiRomicsS4-accessors."
+        )
+        state$getter_hint_shown <- TRUE
+      }
     }
   }
 })

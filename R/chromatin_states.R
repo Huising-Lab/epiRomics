@@ -57,7 +57,8 @@
 #'   all data initially loaded
 #' @param histone_marks character vector of histone mark
 #'   names to use for classification.
-#'   Must match names in database@@meta. If NULL, auto-detects from meta.
+#'   Must match names in \code{\link{meta}(database)}. If NULL,
+#'   auto-detects from meta.
 #' @param regions GRanges object of regions to classify. If NULL, uses all
 #'   annotations in the database.
 #' @param refine_by_tss logical. If TRUE (default), promoter states are assigned

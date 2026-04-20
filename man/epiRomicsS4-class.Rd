@@ -9,22 +9,50 @@
 An S4 class definition for epiRomicsS4
 }
 \description{
-An S4 class to manage epiRomics databases and downstream results
+The \code{epiRomicsS4} class holds a genomic annotation set along
+with the metadata needed to interpret it (data-source catalog,
+TxDb identifier, organism annotation package, genome assembly).
+Every slot is exposed through a public getter and setter — users
+should access slot contents through those accessors rather than
+\code{obj@slot} or \code{methods::slot(obj, "slot")}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{annotations}}{GRanges object containing genomic annotations}
+\item{\code{annotations}}{GRanges object containing genomic annotations.
+Access via \code{\link{annotations}()}.}
 
-\item{\code{meta}}{data.frame containing metadata about loaded data sources}
+\item{\code{meta}}{data.frame containing metadata about loaded data sources.
+Access via \code{\link{meta}()}.}
 
-\item{\code{txdb}}{character string of TxDb package::object name}
+\item{\code{txdb}}{character string of TxDb package::object name.
+Access via \code{\link{txdb}()}.}
 
-\item{\code{organism}}{character string of org.db package name}
+\item{\code{organism}}{character string of org.db package name.
+Access via \code{\link{organism}()}.}
 
-\item{\code{genome}}{character string of genome assembly name (e.g., 'mm10', 'hg38')}
+\item{\code{genome}}{character string of genome assembly name
+(e.g., 'mm10', 'hg38'). Access via \code{\link{genome}()}.}
 }}
 
 \examples{
 showClass("epiRomicsS4")
+db <- make_example_database()
+genome(db)
+organism(db)
+length(annotations(db))
+}
+\seealso{
+Public accessors for this class:
+  \code{\link{annotations}},
+  \code{\link[=annotations<-]{annotations<-}},
+  \code{\link{meta}},
+  \code{\link[=meta<-]{meta<-}},
+  \code{\link{txdb}},
+  \code{\link[=txdb<-]{txdb<-}},
+  \code{\link{organism}},
+  \code{\link[=organism<-]{organism<-}},
+  \code{\link{genome}},
+  \code{\link[=genome<-]{genome<-}}.
+  Overview: \code{\link{epiRomicsS4-accessors}}.
 }

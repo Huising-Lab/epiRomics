@@ -82,6 +82,4 @@ Desktop.ini
 # Local tool caches / logs --------------------------------------------------
 *.log
 .cache/
-.mypy_cache/
-.pytest_cache/
 node_modules/

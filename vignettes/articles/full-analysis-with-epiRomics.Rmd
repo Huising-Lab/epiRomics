@@ -496,6 +496,12 @@ There is a lot of flexibility for data exploration here. In this
 example, we search for putative enhancers using two histone marks known
 to co-occur at enhancer regions: H3K4me1 and H3K27ac.
 
+`epiRomicsS4` objects expose their five slots through public getter
+functions: `annotations()`, `meta()`, `txdb()`, `organism()`, and
+`genome()`. Users should prefer these accessors over reaching into
+slots directly with `@` or `slot()` — they are the stable public
+API for reading and (via `<-` assignment) writing slot contents.
+
 ```{r putative-enhancers, eval = has_data}
 putative_enhancers <-
   find_enhancers_by_comarks(
@@ -505,7 +511,7 @@ putative_enhancers <-
 
 ## First 5 putative enhancers
 head(as.data.frame(
-  methods::slot(putative_enhancers, "annotations")), 5)
+  annotations(putative_enhancers)), 5)
 
 ```
 
@@ -524,7 +530,7 @@ putative_enhancers_filtered_fantom <-
     type = "hg38_custom_fantom")
 
 head(as.data.frame(
-  methods::slot(putative_enhancers_filtered_fantom, "annotations")), 5)
+  annotations(putative_enhancers_filtered_fantom)), 5)
 ```
 
 ## Human Islet Regulome Active Enhancers
@@ -537,7 +543,7 @@ putative_enhancers_filtered_regulome_active <-
     type = "hg38_custom_regulome_active")
 
 head(as.data.frame(
-  methods::slot(putative_enhancers_filtered_regulome_active, "annotations")), 5)
+  annotations(putative_enhancers_filtered_regulome_active)), 5)
 ```
 
 ## Human Islet Regulome Super Enhancers
@@ -550,7 +556,7 @@ putative_enhancers_filtered_regulome_super <-
     type = "hg38_custom_regulome_super")
 
 head(as.data.frame(
-  methods::slot(putative_enhancers_filtered_regulome_super, "annotations")), 5)
+  annotations(putative_enhancers_filtered_regulome_super)), 5)
 ```
 
 ## Ultra-Conserved Non-Coding Elements (UCNEs)
@@ -563,7 +569,7 @@ putative_enhancers_filtered_ucnes <-
     type = "hg38_custom_ucnes")
 
 head(as.data.frame(
-  methods::slot(putative_enhancers_filtered_ucnes, "annotations")), 5)
+  annotations(putative_enhancers_filtered_ucnes)), 5)
 ```
 
 # Screening for high TF co-binding sites (enhanceosomes)
@@ -580,15 +586,15 @@ putative_enhanceosome_fantom <-
     database)
 
 head(as.data.frame(
-  methods::slot(putative_enhanceosome_fantom, "annotations")), 5)
+  annotations(putative_enhanceosome_fantom)), 5)
 
 ## Evaluate calls on chromosome 1
 fantom_df <- as.data.frame(
-  methods::slot(putative_enhanceosome_fantom, "annotations"))
+  annotations(putative_enhanceosome_fantom))
 head(fantom_df[fantom_df$seqnames == "chr1", ], 5)
 
 ## Total enhanceosome regions
-length(methods::slot(putative_enhanceosome_fantom, "annotations"))
+length(annotations(putative_enhanceosome_fantom))
 ```
 
 # Transcription factor co-binding analysis
@@ -611,7 +617,7 @@ tf_cobinding$pairwise
 plot_tracks(
   putative_enhanceosome_fantom,
   index = which(names(
-    methods::slot(putative_enhanceosome_fantom, "annotations")) == "14"),
+    annotations(putative_enhanceosome_fantom)) == "14"),
   database = database,
   track_connection = track_connection)
 ```
@@ -625,14 +631,14 @@ putative_enhanceosome_regulome_active <-
     database)
 
 head(as.data.frame(
-  methods::slot(putative_enhanceosome_regulome_active, "annotations")), 5)
+  annotations(putative_enhanceosome_regulome_active)), 5)
 
 reg_active_df <- as.data.frame(
-  methods::slot(putative_enhanceosome_regulome_active, "annotations"))
+  annotations(putative_enhanceosome_regulome_active))
 head(reg_active_df[reg_active_df$seqnames == "chr1", ], 5)
 
 length(
-  methods::slot(putative_enhanceosome_regulome_active, "annotations"))
+  annotations(putative_enhanceosome_regulome_active))
 ```
 
 The head of the data frame shows the coordinates and per-TF hit
@@ -644,9 +650,8 @@ of such regions. We pick one for track visualization below.
 plot_tracks(
   putative_enhanceosome_regulome_active,
   index = which(
-    names(methods::slot(
-      putative_enhanceosome_regulome_active,
-      "annotations")) == "21"),
+    names(annotations(
+      putative_enhanceosome_regulome_active)) == "21"),
   database = database,
   track_connection = track_connection)
 ```
@@ -660,14 +665,14 @@ putative_enhanceosome_regulome_super <-
     database)
 
 head(as.data.frame(
-  methods::slot(putative_enhanceosome_regulome_super, "annotations")), 5)
+  annotations(putative_enhanceosome_regulome_super)), 5)
 
 reg_super_df <- as.data.frame(
-  methods::slot(putative_enhanceosome_regulome_super, "annotations"))
+  annotations(putative_enhanceosome_regulome_super))
 head(reg_super_df[reg_super_df$seqnames == "chr1", ], 5)
 
 length(
-  methods::slot(putative_enhanceosome_regulome_super, "annotations"))
+  annotations(putative_enhanceosome_regulome_super))
 ```
 
 As before, the printed data frame and total count summarise the
@@ -678,9 +683,8 @@ below renders a representative locus.
 plot_tracks(
   putative_enhanceosome_regulome_super,
   index = which(
-    names(methods::slot(
-      putative_enhanceosome_regulome_super,
-      "annotations")) == "13"),
+    names(annotations(
+      putative_enhanceosome_regulome_super)) == "13"),
   database = database,
   track_connection = track_connection)
 ```
@@ -694,15 +698,15 @@ putative_enhanceosome_ucnes <-
     database)
 
 head(as.data.frame(
-  methods::slot(putative_enhanceosome_ucnes, "annotations")), 5)
+  annotations(putative_enhanceosome_ucnes)), 5)
 
 ## Evaluate calls on chromosome 1
 ucne_df <- as.data.frame(
-  methods::slot(putative_enhanceosome_ucnes, "annotations"))
+  annotations(putative_enhanceosome_ucnes))
 head(ucne_df[ucne_df$seqnames == "chr1", ], 5)
 
 ## Total enhanceosome regions
-length(methods::slot(putative_enhanceosome_ucnes, "annotations"))
+length(annotations(putative_enhanceosome_ucnes))
 ```
 
 The UCNE-filtered result isolates enhanceosomes that sit inside
@@ -740,7 +744,7 @@ beta_enhancer_regions <-
     beta.enriched)
 
 head(as.data.frame(
-  methods::slot(beta_enhancer_regions, "annotations")), 5)
+  annotations(beta_enhancer_regions)), 5)
 ```
 
 These rows are enhanceosome regions that also overlap beta-enriched
@@ -752,7 +756,7 @@ One such region is rendered below.
 plot_tracks(
   beta_enhancer_regions,
   index = which(names(
-    methods::slot(beta_enhancer_regions, "annotations")) == "305"),
+    annotations(beta_enhancer_regions)) == "305"),
   database = database,
   track_connection = track_connection)
 ```

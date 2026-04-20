@@ -42,6 +42,24 @@ reference:
       - make_example_putative_enhancers
       - make_example_enhanceosome
 
+  - title: S4 accessors
+    desc: >
+      Public getter and setter methods for every slot of the
+      `epiRomicsS4` class. Prefer these over `obj@slot` or
+      `methods::slot(obj, "slot")`.
+    contents:
+      - epiRomicsS4-accessors
+      - annotations
+      - annotations-set
+      - meta
+      - meta-set
+      - txdb
+      - txdb-set
+      - organism
+      - organism-set
+      - genome
+      - genome-set
+
   - title: Enhancer identification
     contents:
       - find_putative_enhancers

@@ -1,13 +1,42 @@
 #' An S4 class to manage epiRomics databases and downstream results
 #'
-#' @slot annotations GRanges object containing genomic annotations
-#' @slot meta data.frame containing metadata about loaded data sources
-#' @slot txdb character string of TxDb package::object name
-#' @slot organism character string of org.db package name
-#' @slot genome character string of genome assembly name (e.g., 'mm10', 'hg38')
+#' The \code{epiRomicsS4} class holds a genomic annotation set along
+#' with the metadata needed to interpret it (data-source catalog,
+#' TxDb identifier, organism annotation package, genome assembly).
+#' Every slot is exposed through a public getter and setter — users
+#' should access slot contents through those accessors rather than
+#' \code{obj@slot} or \code{methods::slot(obj, "slot")}.
+#'
+#' @slot annotations GRanges object containing genomic annotations.
+#'   Access via \code{\link{annotations}()}.
+#' @slot meta data.frame containing metadata about loaded data sources.
+#'   Access via \code{\link{meta}()}.
+#' @slot txdb character string of TxDb package::object name.
+#'   Access via \code{\link{txdb}()}.
+#' @slot organism character string of org.db package name.
+#'   Access via \code{\link{organism}()}.
+#' @slot genome character string of genome assembly name
+#'   (e.g., 'mm10', 'hg38'). Access via \code{\link{genome}()}.
 #' @return An S4 class definition for epiRomicsS4
+#' @seealso
+#'   Public accessors for this class:
+#'   \code{\link{annotations}},
+#'   \code{\link[=annotations<-]{annotations<-}},
+#'   \code{\link{meta}},
+#'   \code{\link[=meta<-]{meta<-}},
+#'   \code{\link{txdb}},
+#'   \code{\link[=txdb<-]{txdb<-}},
+#'   \code{\link{organism}},
+#'   \code{\link[=organism<-]{organism<-}},
+#'   \code{\link{genome}},
+#'   \code{\link[=genome<-]{genome<-}}.
+#'   Overview: \code{\link{epiRomicsS4-accessors}}.
 #' @examples
 #' showClass("epiRomicsS4")
+#' db <- make_example_database()
+#' genome(db)
+#' organism(db)
+#' length(annotations(db))
 #' @export
 #' @importFrom methods setClass setValidity setMethod setGeneric
 epiRomicsS4 <- methods::setClass(Class = "epiRomicsS4", slots = c(

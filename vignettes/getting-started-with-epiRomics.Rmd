@@ -297,20 +297,26 @@ encodes the hypothesis; the function signature does not change.
 ChromHMM-style combinatorial states summarising these are revisited
 in the *Chromatin state classification* section below.
 
+`epiRomicsS4` objects expose their five slots through public getter
+functions: `annotations()`, `meta()`, `txdb()`, `organism()`, and
+`genome()`. Users should prefer these accessors over reaching into
+slots directly with `@` or `slot()` — they are the stable public
+API for reading and (via `<-` assignment) writing slot contents.
+
 ```{r putative-enhancers}
 putative_enhancers <- find_enhancers_by_comarks(
   database,
   histone_mark_1 = "h3k4me1",
   histone_mark_2 = "h3k27ac")
 
-head(as.data.frame(methods::slot(putative_enhancers, "annotations")), 5)
+head(as.data.frame(annotations(putative_enhancers)), 5)
 ```
 
 The resulting `epiRomicsS4` object carries the co-marked regions in
-its `@annotations` slot as a `GRanges`-like data frame — the genomic
+its annotations slot as a `GRanges`-like data frame — the genomic
 coordinates and feature metadata for each putative enhancer. We
-inspect the slot via `methods::slot(obj, "annotations")` throughout
-this vignette; the key columns are `seqnames`/`start`/`end` (genomic
+inspect the slot via the `annotations()` getter throughout this
+vignette; the key columns are `seqnames`/`start`/`end` (genomic
 coordinates), `annotation` (genic context from `ChIPseeker`), and
 `distanceToTSS` (signed distance to the nearest transcription start
 site).
@@ -345,7 +351,7 @@ fantom_enhancers <- filter_enhancers(
   database,
   type = "hg38_custom_fantom")
 
-head(as.data.frame(methods::slot(fantom_enhancers, "annotations")), 5)
+head(as.data.frame(annotations(fantom_enhancers)), 5)
 ```
 
 The Human Islet Regulome [@miguel_escalada2019] supplies an
@@ -359,7 +365,7 @@ regulome_enhancers <- filter_enhancers(
   database,
   type = "hg38_custom_regulome_active")
 
-head(as.data.frame(methods::slot(regulome_enhancers, "annotations")), 5)
+head(as.data.frame(annotations(regulome_enhancers)), 5)
 ```
 
 ```{r filter-regulome-super}
@@ -368,7 +374,7 @@ regulome_super_enhancers <- filter_enhancers(
   database,
   type = "hg38_custom_regulome_super")
 
-head(as.data.frame(methods::slot(regulome_super_enhancers, "annotations")), 5)
+head(as.data.frame(annotations(regulome_super_enhancers)), 5)
 ```
 
 Each filter narrows the putative set to the subset supported by the
@@ -397,9 +403,9 @@ enhanceosomes <- find_enhanceosomes(
   putative_enhancers,
   database)
 
-head(as.data.frame(methods::slot(enhanceosomes, "annotations")), 5)
+head(as.data.frame(annotations(enhanceosomes)), 5)
 
-length(methods::slot(enhanceosomes, "annotations"))
+length(annotations(enhanceosomes))
 ```
 
 The first rows list the most densely co-bound regions, ranked by
@@ -448,7 +454,7 @@ the BigWig window; outside that window the signal panels would be
 empty.
 
 ```{r pick-enhanceosome-index}
-enh_df <- as.data.frame(methods::slot(enhanceosomes, "annotations"))
+enh_df <- as.data.frame(annotations(enhanceosomes))
 in_window <- which(
   enh_df$seqnames == "chr11" &
     enh_df$start >= 1900000 &

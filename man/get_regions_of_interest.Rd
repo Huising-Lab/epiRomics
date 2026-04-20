@@ -14,7 +14,8 @@ get_regions_of_interest(
 }
 \arguments{
 \item{putative_enhanceosome}{epiRomics class database containing
-putative enhanceosome calls. Must have non-empty \code{@annotations}.}
+putative enhanceosome calls. Must have non-empty
+\code{\link{annotations}()}.}
 
 \item{test_regions}{GRanges or NULL. Direct GRanges regions of
 interest (original interface). If provided, \code{input_type} is ignored
@@ -55,5 +56,5 @@ test_gr <- GenomicRanges::GRanges(
   "chr1", IRanges::IRanges(start = 1000L, end = 60000L)
 )
 roi <- get_regions_of_interest(eso, test_regions = test_gr)
-length(methods::slot(roi, "annotations"))
+length(annotations(roi))
 }

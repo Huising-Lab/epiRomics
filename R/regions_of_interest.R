@@ -5,7 +5,8 @@
 #' Supports multiple input types for flexible region definition.
 #'
 #' @param putative_enhanceosome epiRomics class database containing
-#'   putative enhanceosome calls. Must have non-empty \code{@@annotations}.
+#'   putative enhanceosome calls. Must have non-empty
+#'   \code{\link{annotations}()}.
 #' @param test_regions GRanges or NULL. Direct GRanges regions of
 #'   interest (original interface). If provided, \code{input_type} is ignored
 #'   and this is used directly for overlap. Default NULL.
@@ -35,7 +36,7 @@
 #'   "chr1", IRanges::IRanges(start = 1000L, end = 60000L)
 #' )
 #' roi <- get_regions_of_interest(eso, test_regions = test_gr)
-#' length(methods::slot(roi, "annotations"))
+#' length(annotations(roi))
 get_regions_of_interest <- function(putative_enhanceosome,
                                            test_regions = NULL,
                                            input_type = c("granges", "bed",

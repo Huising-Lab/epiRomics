@@ -16,12 +16,12 @@ find_enhancers_by_comarks(
 containing all data initially loaded}
 
 \item{histone_mark_1}{name of first
-histone mark, must match name in
-epiROmics_dB@meta, default set to h3k4me1}
+histone mark, must match a \code{name} entry in
+\code{\link{meta}(database)}, default set to h3k4me1}
 
 \item{histone_mark_2}{name of second
-histone mark, must match name in
-epiROmics_dB@meta default set to h3k27ac}
+histone mark, must match a \code{name} entry in
+\code{\link{meta}(database)}, default set to h3k27ac}
 }
 \value{
 Variable of class epiRomics further
@@ -35,5 +35,5 @@ select histone mark co-occurrence
 \examples{
 db <- make_example_database()
 enhancers <- find_enhancers_by_comarks(db)
-length(methods::slot(enhancers, "annotations"))
+length(annotations(enhancers))
 }

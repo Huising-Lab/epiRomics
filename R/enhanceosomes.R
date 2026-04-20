@@ -77,7 +77,7 @@
 #' @examples
 #' db <- make_example_database()
 #' eso <- make_example_enhanceosome(db)
-#' length(methods::slot(eso, "annotations"))
+#' length(annotations(eso))
 find_enhanceosomes <- function(putative_enhancers, database) {
   epiRomics_chips <- database@meta[database@meta$type == "chip", "name"]
   epiRomics_chips_db_access <- base::paste0(

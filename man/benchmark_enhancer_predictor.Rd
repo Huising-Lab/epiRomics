@@ -15,12 +15,12 @@ benchmark_enhancer_predictor(
 containing all data initially loaded}
 
 \item{histone}{name or vector of histone
-mark(s), must match name in epiROmics_dB@meta,
-default set to h3k4me1}
+mark(s), must match a \code{name} entry in
+\code{\link{meta}(database)}, default set to h3k4me1}
 
 \item{curated_database}{database to test
-histone marks against, must match name in
-epiROmics_dB@meta default set to fantom}
+histone marks against, must match a \code{name} entry in
+\code{\link{meta}(database)}, default set to fantom}
 }
 \value{
 Variable of class dataframe further exploring top histone marks that

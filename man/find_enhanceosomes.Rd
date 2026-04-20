@@ -26,5 +26,5 @@ against co-TF enrichment
 \examples{
 db <- make_example_database()
 eso <- make_example_enhanceosome(db)
-length(methods::slot(eso, "annotations"))
+length(annotations(eso))
 }

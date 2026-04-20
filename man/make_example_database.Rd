@@ -36,8 +36,8 @@ in the epiRomics package. It is also used in vignettes and testthat helpers.
 }
 \examples{
 db <- make_example_database()
-methods::slot(db, "genome")
-nrow(methods::slot(db, "meta"))
+genome(db)
+nrow(meta(db))
 }
 \seealso{
 \code{\link{make_example_putative_enhancers}},

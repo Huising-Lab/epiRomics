@@ -1,3 +1,81 @@
+# epiRomics 0.99.5
+
+## Changes
+
+* Added public getter and setter methods for all five slots of the
+  `epiRomicsS4` class: `annotations()`, `meta()`, `txdb()`,
+  `organism()`, and `genome()` (plus the corresponding `<-`
+  assignment forms). Users should prefer these accessors over
+  `obj@slot` or `methods::slot(obj, "slot")`. `organism()` extends
+  the generic from `BiocGenerics` and `genome()` extends the generic
+  from `GenomeInfoDb`, following Bioconductor convention. Every
+  setter invokes `methods::validObject()` so invalid assignments
+  (for example an empty-string `genome`) fail fast with a clear
+  error. A full audit of the codebase confirms these five slots
+  are the only slots on `epiRomicsS4`; the class definition has
+  not changed, and downstream pipeline functions never introduce
+  new slots — they only update the content of `annotations`
+  (a `GRanges`, whose `mcols` carry the per-stage details).
+* Added `?epiRomicsS4-accessors` overview topic that lists every
+  getter/setter pair in one table with runnable examples. The
+  `?epiRomicsS4-class` page cross-references each individual
+  accessor via `@seealso` and documents each slot with an
+  explicit "Access via ..." note pointing at the matching
+  getter.
+* Refactored both vignettes to demonstrate the new accessor API.
+  `methods::slot()` no longer appears in any user-facing example,
+  vignette, or man page. `getting-started-with-epiRomics.Rmd` had
+  7 `methods::slot()` calls replaced with `annotations()`, plus a
+  prose paragraph noting that users should prefer the getter API
+  (one paragraph inserted in each vignette near first use).
+  `articles/full-analysis-with-epiRomics.Rmd` had 22
+  `methods::slot()` calls replaced.
+* Every roxygen `@examples` block that previously used
+  `methods::slot(obj, "...")` now uses the matching getter
+  (touched files: `R/synthetic-data.R`, `R/enhanceosomes.R`,
+  `R/enhancers.R`, `R/regions_of_interest.R`).
+* Swapped the four runtime `methods::slot(database, "...")`
+  calls inside `make_example_enhanceosome()` in
+  `R/synthetic-data.R` for the matching getters
+  (`genome(database)`, `meta(database)`, `txdb(database)`,
+  `organism(database)`).
+* Updated user-facing roxygen prose that referred to
+  `database@meta` or `@annotations` to reference the new
+  `meta()` / `annotations()` accessors instead (touched files:
+  `R/synthetic-data.R`, `R/chromatin_states.R`,
+  `R/enhancers.R`, `R/benchmark_enhancer_predictor.R`,
+  `R/regions_of_interest.R`).
+* Added `tests/testthat/test-accessors.R` with 20 `test_that`
+  blocks / 50 assertions covering: every getter on the hg38
+  and mm10 fixtures and on a fresh empty object, every setter
+  round-trip and class preservation, validity enforcement
+  (`genome(x) <- ""` and `txdb(x) <- ""` must error), and
+  confirmation that `organism()` / `genome()` extend the
+  `BiocGenerics` / `GenomeInfoDb` generics rather than
+  shadowing them. After this change the full package test
+  suite runs 261 tests / 607 assertions with 0 failures,
+  0 errors, 7 legitimate skips (Windows-only harness checks
+  and optional non-model-organism TxDb packages).
+* Added a one-time session tip to the rename-warning helper
+  (`.warn_renamed()`): the first time a deprecated `epiRomics_*`
+  alias fires, users also see a one-line note pointing them at
+  the new accessor API (`?epiRomicsS4-accessors`).
+* Fixed the `test-deprecated-aliases.R` harness, which was still
+  written against the pre-0.99.4 `.Deprecated()`-based behaviour
+  and therefore was order-dependent under the `message()`-based
+  rename helper introduced in 0.99.4. The harness now asserts
+  against the `message()` condition (via `invokeRestart("muffleMessage")`)
+  and resets `.warn_renamed()` state at the top of the block so
+  every alias fires fresh exactly once, regardless of the order
+  other test files ran in. No package code was changed by this
+  test fix.
+* Quality gates for 0.99.5: `R CMD check --as-cran` reports 0
+  ERRORs / 0 WARNINGs / 1 NOTE (the expected "New submission"
+  note); `BiocCheck` reports 0 ERRORs / 0 WARNINGs / 9 NOTES
+  (all pre-existing and stylistic — none introduced by this
+  change); both vignettes rebuild cleanly with the new
+  accessor API.
+
 # epiRomics 0.99.4
 
 ## Changes

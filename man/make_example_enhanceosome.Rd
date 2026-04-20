@@ -19,7 +19,8 @@ An \code{epiRomicsS4} object whose \code{annotations} slot contains
 Returns an \code{epiRomicsS4} object whose \code{annotations} slot holds a
 synthetic enhanceosome \code{GRanges} with the same column structure as the
 output of \code{\link{find_enhanceosomes}} (one integer count column per
-ChIP TF in \code{database@meta}, plus a \code{ChIP_Hits} total column).
+ChIP TF in the \code{\link{meta}()} table of \code{database}, plus a
+\code{ChIP_Hits} total column).
 }
 \details{
 The result is built directly from in-memory structures (no ChIPseeker
@@ -31,7 +32,7 @@ without the cost of the full enhancer-calling pipeline.
 }
 \examples{
 eso <- make_example_enhanceosome()
-length(methods::slot(eso, "annotations"))
+length(annotations(eso))
 }
 \seealso{
 \code{\link{make_example_database}},

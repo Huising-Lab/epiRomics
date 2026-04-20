@@ -4,11 +4,11 @@
 #' @param database epiRomics class database
 #'   containing all data initially loaded
 #' @param histone_mark_1 name of first
-#'   histone mark, must match name in
-#'   epiROmics_dB@meta, default set to h3k4me1
+#'   histone mark, must match a \code{name} entry in
+#'   \code{\link{meta}(database)}, default set to h3k4me1
 #' @param histone_mark_2 name of second
-#'   histone mark, must match name in
-#'   epiROmics_dB@meta default set to h3k27ac
+#'   histone mark, must match a \code{name} entry in
+#'   \code{\link{meta}(database)}, default set to h3k27ac
 #' @return Variable of class epiRomics further
 #'   exploring candidate enhancer regions identified
 #'   after histone integration
@@ -16,7 +16,7 @@
 #' @examples
 #' db <- make_example_database()
 #' enhancers <- find_enhancers_by_comarks(db)
-#' length(methods::slot(enhancers, "annotations"))
+#' length(annotations(enhancers))
 find_enhancers_by_comarks <- function(
     database,
     histone_mark_1 = "h3k4me1",

@@ -96,8 +96,8 @@
 #' @export
 #' @examples
 #' db <- make_example_database()
-#' methods::slot(db, "genome")
-#' nrow(methods::slot(db, "meta"))
+#' genome(db)
+#' nrow(meta(db))
 make_example_database <- function(genome = "hg38") {
   marks <- base::list(
     h3k4me1 = GenomicRanges::GRanges(
@@ -217,7 +217,8 @@ make_example_putative_enhancers <- function(database = NULL) {
 #' Returns an \code{epiRomicsS4} object whose \code{annotations} slot holds a
 #' synthetic enhanceosome \code{GRanges} with the same column structure as the
 #' output of \code{\link{find_enhanceosomes}} (one integer count column per
-#' ChIP TF in \code{database@meta}, plus a \code{ChIP_Hits} total column).
+#' ChIP TF in the \code{\link{meta}()} table of \code{database}, plus a
+#' \code{ChIP_Hits} total column).
 #'
 #' The result is built directly from in-memory structures (no ChIPseeker
 #' annotation, no TxDb lookup) so the example completes in under one second
@@ -237,7 +238,7 @@ make_example_putative_enhancers <- function(database = NULL) {
 #' @export
 #' @examples
 #' eso <- make_example_enhanceosome()
-#' length(methods::slot(eso, "annotations"))
+#' length(annotations(eso))
 make_example_enhanceosome <- function(database = NULL) {
   if (base::is.null(database)) {
     database <- make_example_database()
@@ -248,8 +249,8 @@ make_example_enhanceosome <- function(database = NULL) {
   ## ranges, ChIP_Hits column, and per-TF count columns mirror the output
   ## format of find_enhanceosomes() so downstream consumers (analyze_tf_*,
   ## filter_enhancers, etc.) work without modification.
-  genome <- methods::slot(database, "genome")
-  meta   <- methods::slot(database, "meta")
+  genome <- genome(database)
+  meta   <- meta(database)
   tf_names <- meta[meta$type == "chip", "name"]
 
   ranges <- GenomicRanges::GRanges(
@@ -285,8 +286,8 @@ make_example_enhanceosome <- function(database = NULL) {
     annotations = ranges,
     meta        = meta,
     genome      = genome,
-    txdb        = methods::slot(database, "txdb"),
-    organism    = methods::slot(database, "organism")
+    txdb        = txdb(database),
+    organism    = organism(database)
   )
 }
 

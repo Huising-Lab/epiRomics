@@ -1,7 +1,7 @@
 Package: epiRomics
 Type: Package
 Title: Epigenomic Analysis Package Built for R (epiRomics)
-Version: 0.99.4
+Version: 0.99.5
 Authors@R:
     c(person(given = "Alex M.",
              family = "Mawla",
@@ -63,3 +63,25 @@ ByteCompile: true
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3
+Collate: 
+    'class-epiRomics.R'
+    'accessors.R'
+    'benchmark_enhancer_predictor.R'
+    'build_database.R'
+    'cache.R'
+    'chromatin_states.R'
+    'enhanceosomes.R'
+    'enhancers.R'
+    'epiRomics-package.R'
+    'filter_enhancers.R'
+    'plot_quick_view.R'
+    'plot_tracks_fast.R'
+    'predictors.R'
+    'putative_enhancers.R'
+    'regions_of_interest.R'
+    'synthetic-data.R'
+    'tf_overlap.R'
+    'utils.R'
+    'visualizations.R'
+    'zzz-deprecated.R'
+    'zzz.R'
